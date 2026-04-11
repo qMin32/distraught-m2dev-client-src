@@ -298,8 +298,8 @@ void CPythonMiniMap::Render(float fScreenX, float fScreenY)
 	STATEMANAGER.SetTransform(D3DTS_TEXTURE1, &m_matMiniMapCover);
 
 	STATEMANAGER.SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
-	STATEMANAGER.SetStreamSource(0, m_VertexBuffer.GetD3DVertexBuffer(), 20);
-	STATEMANAGER.SetIndices(m_IndexBuffer.GetD3DIndexBuffer(), 0);
+	m_dx->SetVertexBuffer(m_VertexBuffer);
+	m_dx->SetIndexBuffer(m_IndexBuffer);
 	STATEMANAGER.SetTransform(D3DTS_WORLD, &m_matWorld);
 
 	for (BYTE byTerrainNum = 0; byTerrainNum < AROUND_AREA_NUM; ++byTerrainNum)
@@ -574,95 +574,44 @@ bool CPythonMiniMap::Create()
 
 	m_GuildAreaFlagImageInstance.SetImagePointer((CGraphicSubImage *) CResourceManager::Instance().GetResourcePointer("d:/ymir work/ui/minimap/GuildArea01.sub"));
 
-	// 그려질 폴리곤 세팅
-#pragma pack(push)
-#pragma pack(1)
-	LPMINIMAPVERTEX		lpMiniMapVertex;
-	LPMINIMAPVERTEX		lpOrigMiniMapVertex;
-#pragma pack(pop)
 
-	if (!m_VertexBuffer.Create(36, D3DFVF_XYZ | D3DFVF_TEX1, D3DUSAGE_DYNAMIC, D3DPOOL_DEFAULT) )
+	std::vector<MINIMAPVERTEX> miniMapVertices(36);
+
+	int idx = 0;
+	for (int iY = -3; iY <= 1; ++iY)
 	{
-		return false;
-	}
+		if (iY % 2 == 0) continue;
+		float fY = 0.5f * float(iY);
 
-	if (m_VertexBuffer.Lock((void **) &lpOrigMiniMapVertex))
-	{		
-		char * pchMiniMapVertex = (char *)lpOrigMiniMapVertex;
-		memset(pchMiniMapVertex, 0, sizeof(char) * 720);
-		lpMiniMapVertex = (LPMINIMAPVERTEX) pchMiniMapVertex;
-
-		for (int iY = -3; iY <= 1; ++iY)
+		for (int iX = -3; iX <= 1; ++iX)
 		{
-			if (0 == iY%2)
-				continue;
-			float fY = 0.5f * ((float)iY);
-			for (int iX = -3; iX <= 1; ++iX)
-			{
-				if (0 == iX%2)
-					continue;
-				float fX = 0.5f * ((float)iX);
-				lpMiniMapVertex = (LPMINIMAPVERTEX) pchMiniMapVertex;
-				lpMiniMapVertex->x = fX;
-				lpMiniMapVertex->y = fY;
-				lpMiniMapVertex->z = 0.0f;
-				lpMiniMapVertex->u = 0.0f;
-				lpMiniMapVertex->v = 0.0f;
-				pchMiniMapVertex += 20;
-				lpMiniMapVertex = (LPMINIMAPVERTEX) pchMiniMapVertex;
-				lpMiniMapVertex->x = fX;
-				lpMiniMapVertex->y = fY + 1.0f;
-				lpMiniMapVertex->z = 0.0f;
-				lpMiniMapVertex->u = 0.0f;
-				lpMiniMapVertex->v = 1.0f;
-				pchMiniMapVertex += 20;
-				lpMiniMapVertex = (LPMINIMAPVERTEX) pchMiniMapVertex;
-				lpMiniMapVertex->x = fX + 1.0f;
-				lpMiniMapVertex->y = fY;
-				lpMiniMapVertex->z = 0.0f;
-				lpMiniMapVertex->u = 1.0f;
-				lpMiniMapVertex->v = 0.0f;
-				pchMiniMapVertex += 20;
-				lpMiniMapVertex = (LPMINIMAPVERTEX) pchMiniMapVertex;
-				lpMiniMapVertex->x = fX + 1.0f;
-				lpMiniMapVertex->y = fY + 1.0f;
-				lpMiniMapVertex->z = 0.0f;
-				lpMiniMapVertex->u = 1.0f;
-				lpMiniMapVertex->v = 1.0f;
-				pchMiniMapVertex += 20;
-			}
+			if (iX % 2 == 0) continue;
+			float fX = 0.5f * float(iX);
+
+			miniMapVertices[idx++] = { fX,       fY,       0.0f, 0.0f, 0.0f };
+			miniMapVertices[idx++] = { fX,       fY + 1.0f, 0.0f, 0.0f, 1.0f };
+			miniMapVertices[idx++] = { fX + 1.0f, fY,      0.0f, 1.0f, 0.0f };
+			miniMapVertices[idx++] = { fX + 1.0f, fY + 1.0f, 0.0f, 1.0f, 1.0f };
 		}
-
-		m_VertexBuffer.Unlock();
 	}
-	
-	if (!m_IndexBuffer.Create(54, D3DFMT_INDEX16))
-	{
-		return false;
-	}
+	m_VertexBuffer = m_dx->CreateVertexBuffer(miniMapVertices.data(), sizeof(MINIMAPVERTEX), (UINT)miniMapVertices.size(), D3DUSAGE_DYNAMIC);
 
-	WORD pwIndices[54] = 
-	{
+
+	std::vector<WORD> indices = {
 		0, 1, 2, 2, 1, 3,
 		4, 5, 6, 6, 5, 7,
 		8, 9, 10, 10, 9, 11,
-		
+
 		12, 13, 14, 14, 13, 15,
 		16, 17, 18, 18, 17, 19,
 		20, 21, 22, 22, 21, 23,
-		
+
 		24, 25, 26, 26, 25, 27,
 		28, 29, 30, 30, 29, 31,
 		32, 33, 34, 34, 33, 35
 	};
 
-	void * pIndices;
-		
-	if (m_IndexBuffer.Lock(&pIndices))
-	{
-		memcpy(pIndices, pwIndices, 54 * sizeof(WORD));
-		m_IndexBuffer.Unlock();
-	}
+	m_IndexBuffer = m_dx->CreateIndexBuffer(indices.data(), (UINT)indices.size());
 
 	return true;
 }
@@ -1465,9 +1414,6 @@ void CPythonMiniMap::Destroy()
 {
 	ClearAllSignalPoint();
 	m_poHandler = 0;
-
-	m_VertexBuffer.Destroy();
-	m_IndexBuffer.Destroy();
 
 	m_PlayerMark.Destroy();
 

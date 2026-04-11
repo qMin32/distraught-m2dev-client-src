@@ -1,9 +1,6 @@
 #ifndef __TERRAIn_TYPES__
 #define __TERRAIn_TYPES__
 
-#include "EterLib/GrpVertexBuffer.h"
-#include "EterLib/GrpIndexBuffer.h"
-
 #define TERRAIN_PATCHSIZE	16
 #define TERRAIN_SIZE		128
 #define TERRAIN_PATCHCOUNT	TERRAIN_SIZE/TERRAIN_PATCHSIZE
@@ -28,9 +25,6 @@ typedef struct
 {
 	char					used;
 	short					mat;
-	
-	CGraphicVertexBuffer	vb;
-	CGraphicIndexBuffer		ib;
 	long					VertexSize;
 	
 	short					NumIndices;

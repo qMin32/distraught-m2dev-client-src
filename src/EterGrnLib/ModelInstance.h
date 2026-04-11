@@ -6,6 +6,7 @@
 
 #include "Model.h"
 #include "Motion.h"
+#include "qMin32Lib/Core.h"
 
 class CGrannyModelInstance : public CGraphicCollisionObject
 {
@@ -73,8 +74,8 @@ class CGrannyModelInstance : public CGraphicCollisionObject
 		void	SetMaterialData(const char* c_szImageName, const SMaterialData& c_rkMaterialData);
 		void	SetSpecularInfo(const char* c_szMtrlName, BOOL bEnable, float fPower);
 		
-		void	SetMainModelPointer(CGrannyModel* pkModel, CGraphicVertexBuffer* pkSharedDefromableVertexBuffer);
-		void	SetLinkedModelPointer(CGrannyModel* pkModel, CGraphicVertexBuffer* pkSharedDefromableVertexBuffer, CGrannyModelInstance** ppkSkeletonInst);
+		void	SetMainModelPointer(CGrannyModel* pkModel, RefPtr<CVertexBuffer> pkSharedDefromableVertexBuffer);
+		void	SetLinkedModelPointer(CGrannyModel* pkModel, RefPtr<CVertexBuffer> pkSharedDefromableVertexBuffer, CGrannyModelInstance** ppkSkeletonInst);
 
 		// Motion
 		void	SetMotionPointer(const CGrannyMotion* pMotion, float blendTime=0.0f, int loopCount=0, float speedRatio=1.0f);
@@ -118,7 +119,6 @@ class CGrannyModelInstance : public CGraphicCollisionObject
 				
 		void	__DestroyModelInstance();
 		void	__DestroyMeshMatrices();
-		void	__DestroyDynamicVertexBuffer();
 
 		
 		void	__CreateModelInstance();
@@ -135,10 +135,9 @@ class CGrannyModelInstance : public CGraphicCollisionObject
 		int*	__GetMeshBoneIndices(unsigned int iMeshBinding) const;		
 
 		bool	__IsDeformableVertexBuffer();
-		void	__SetSharedDeformableVertexBuffer(CGraphicVertexBuffer* pkSharedDeformableVertexBuffer);
+		void	__SetSharedDeformableVertexBuffer(RefPtr<CVertexBuffer> pkSharedDeformableVertexBuffer);
 		
-		IDirect3DVertexBuffer9* __GetDeformableD3DVertexBufferPtr();
-		CGraphicVertexBuffer&	__GetDeformableVertexBufferRef();
+		RefPtr<CVertexBuffer>	GetDeformableVertexBuffer();
 		
 		granny_world_pose* __GetWorldPosePtr() const;
 		// END_OF_WORK
@@ -186,8 +185,8 @@ class CGrannyModelInstance : public CGraphicCollisionObject
 		std::vector<granny_mesh_binding*>	m_vct_pgrnMeshBinding;		
 
 		// Dynamic Vertex Buffer
-		CGraphicVertexBuffer*			m_pkSharedDeformableVertexBuffer;
-		CGraphicVertexBuffer			m_kLocalDeformableVertexBuffer;
+		RefPtr<CVertexBuffer>			m_pkSharedDeformableVertexBuffer;
+		RefPtr<CVertexBuffer>			m_kLocalDeformableVertexBuffer;
 		bool							m_isDeformableVertexBuffer;		
 		// END_OF_WORK
 

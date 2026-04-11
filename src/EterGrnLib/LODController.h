@@ -299,6 +299,6 @@ class CGrannyLODController : public CGraphicBase
 		// WORK
 		std::deque<CGrannyModelInstance *>	m_que_pkModelInst;
 
-		CGraphicVertexBuffer*	m_pkSharedDeformableVertexBuffer;
+		RefPtr<CVertexBuffer>				m_pkSharedDeformableVertexBuffer;
 		// END_OF_WORK
 };

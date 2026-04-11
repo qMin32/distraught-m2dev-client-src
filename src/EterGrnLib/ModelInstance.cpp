@@ -80,7 +80,6 @@ bool CGrannyModelInstance::CreateDeviceObjects()
 
 void CGrannyModelInstance::DestroyDeviceObjects()
 {
-	__DestroyDynamicVertexBuffer();
 }
 
 void CGrannyModelInstance::__Initialize()

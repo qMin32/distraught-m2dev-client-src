@@ -7,8 +7,6 @@
 
 void CTerrainPatch::Clear()
 {
-	m_kVB.Destroy();	
-	m_WaterVertexBuffer.Destroy();
 	ClearID();
 	SetUse(false);
 
@@ -25,36 +23,14 @@ void CTerrainPatch::Clear()
 
 void CTerrainPatch::BuildWaterVertexBuffer(SWaterVertex* akSrcVertex, UINT uWaterVertexCount)
 {
-	CGraphicVertexBuffer& rkVB=m_WaterVertexBuffer;
+	m_WaterVertexBuffer = m_dx->CreateVertexBuffer(akSrcVertex, sizeof(SWaterVertex), uWaterVertexCount, D3DUSAGE_DYNAMIC);
 
-	if (!rkVB.Create(uWaterVertexCount, D3DFVF_XYZ | D3DFVF_DIFFUSE, D3DUSAGE_DYNAMIC, D3DPOOL_DEFAULT)) 
-		return;
-	
-	SWaterVertex* akDstWaterVertex;
-	if (rkVB.Lock((void **) &akDstWaterVertex))
-	{
-		UINT uVBSize=sizeof(SWaterVertex)*uWaterVertexCount;
-		memcpy(akDstWaterVertex, akSrcVertex, uVBSize);
-		m_dwWaterPriCount=uWaterVertexCount/3;
-
-		rkVB.Unlock();		
-	}	
+	m_dwWaterPriCount = uWaterVertexCount / 3;
 }
 		
 void CTerrainPatch::BuildTerrainVertexBuffer(HardwareTransformPatch_SSourceVertex* akSrcVertex)
 {
-	CGraphicVertexBuffer& rkVB = m_kVB;
-	if (!rkVB.Create(TERRAIN_VERTEX_COUNT, D3DFVF_XYZ | D3DFVF_NORMAL, D3DUSAGE_DYNAMIC, D3DPOOL_DEFAULT))
-		return;
-
-	HardwareTransformPatch_SSourceVertex* akDstVertex;
-	if (rkVB.Lock((void**)&akDstVertex))
-	{
-		UINT uVBSize = sizeof(HardwareTransformPatch_SSourceVertex) * TERRAIN_VERTEX_COUNT;
-
-		memcpy(akDstVertex, akSrcVertex, uVBSize);
-		rkVB.Unlock();
-	}
+	m_kVB = m_dx->CreateVertexBuffer(akSrcVertex, sizeof(HardwareTransformPatch_SSourceVertex), TERRAIN_VERTEX_COUNT, D3DUSAGE_DYNAMIC);
 }
 
 UINT CTerrainPatch::GetWaterFaceCount()
@@ -90,7 +66,7 @@ bool CTerrainPatchProxy::IsIn(const D3DXVECTOR3& c_rv3Target, float fRadius)
 	return false;
 }
 
-CGraphicVertexBuffer* CTerrainPatchProxy::HardwareTransformPatch_GetVertexBufferPtr()
+RefPtr<CVertexBuffer> CTerrainPatchProxy::HardwareTransformPatch_GetVertexBufferPtr()
 {
 	if (m_pTerrainPatch)
 		return m_pTerrainPatch->HardwareTransformPatch_GetVertexBufferPtr();

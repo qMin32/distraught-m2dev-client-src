@@ -39,8 +39,8 @@ class CSnowEnvironment : public CScreen
 		LPDIRECT3DSURFACE9 m_lpAccumRenderTargetSurface;
 		LPDIRECT3DSURFACE9 m_lpAccumDepthSurface;
 
-		LPDIRECT3DVERTEXBUFFER9 m_pVB;
-		LPDIRECT3DINDEXBUFFER9 m_pIB;
+		RefPtr<CVertexBuffer> m_pVB;
+		RefPtr<CIndexBuffer> m_pIB;
 
 		D3DXVECTOR3 m_v3Center;
 

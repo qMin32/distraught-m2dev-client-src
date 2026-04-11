@@ -53,13 +53,9 @@ protected:
 	void __Initialize();
 	void __WarningMessage(HWND hWnd, UINT uiMsg);
 
-	void __InitializeDefaultIndexBufferList();
-	void __DestroyDefaultIndexBufferList();	
 	bool __CreateDefaultIndexBufferList();
 	bool __CreateDefaultIndexBuffer(UINT eDefIB, UINT uIdxCount, const WORD* c_awIndices);
 
-	void __InitializePDTVertexBufferList();
-	void __DestroyPDTVertexBufferList();
 	bool __CreatePDTVertexBufferList();
 
 	LPDIRECT3DVERTEXDECLARATION9 CreatePTStreamVertexShader();

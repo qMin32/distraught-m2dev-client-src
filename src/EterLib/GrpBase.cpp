@@ -4,6 +4,7 @@
 #include "GrpBase.h"
 #include "Camera.h"
 #include "StateManager.h"
+#include "qMin32Lib/CBuffers.h"
 
 void PixelPositionToD3DXVECTOR3(const D3DXVECTOR3& c_rkPPosSrc, D3DXVECTOR3* pv3Dst)
 {
@@ -62,12 +63,12 @@ bool					CGraphicBase::ms_bSupportDXT = true;
 bool					CGraphicBase::ms_isLowTextureMemory = false;
 bool					CGraphicBase::ms_isHighTextureMemory = false;
 
-LPDIRECT3DVERTEXBUFFER9	CGraphicBase::ms_alpd3dPDTVB[PDT_VERTEXBUFFER_NUM];
+RefPtr<CVertexBuffer>	CGraphicBase::ms_alpd3dPDTVB[PDT_VERTEXBUFFER_NUM];
 
-LPDIRECT3DINDEXBUFFER9	CGraphicBase::ms_alpd3dDefIB[DEFAULT_IB_NUM];
+RefPtr<CIndexBuffer>	CGraphicBase::ms_alpd3dDefIB[DEFAULT_IB_NUM];
 
 BaseMatrix CGraphicBase::mat; // our new struct with matrix 
-
+UniquePtr<BaseClass> CGraphicBase::m_base; // all the buffers will be created with this class
 
 bool CGraphicBase::IsLowTextureMemory()
 {
@@ -109,42 +110,30 @@ void CGraphicBase::SetDefaultIndexBuffer(UINT eDefIB)
 	if (eDefIB>=DEFAULT_IB_NUM)
 		return;
 
-	STATEMANAGER.SetIndices(ms_alpd3dDefIB[eDefIB], 0);
+	m_dx->SetIndexBuffer(ms_alpd3dDefIB[eDefIB]);
 }
 
 bool CGraphicBase::SetPDTStream(SPDTVertex* pSrcVertices, UINT uVtxCount)
 {
-	if (!uVtxCount)
+	if (!uVtxCount || uVtxCount >= PDT_VERTEX_NUM)
 		return false;
 
-	static DWORD s_dwVBPos=0;
+	static DWORD s_dwVBPos = 0;
 
-	if (s_dwVBPos>=PDT_VERTEXBUFFER_NUM)
-		s_dwVBPos=0;
+	if (s_dwVBPos >= PDT_VERTEXBUFFER_NUM)
+		s_dwVBPos = 0;
 
-	IDirect3DVertexBuffer9* plpd3dFillRectVB=ms_alpd3dPDTVB[s_dwVBPos];
+	auto vb = ms_alpd3dPDTVB[s_dwVBPos];
+
 	++s_dwVBPos;
 
-	assert(PDT_VERTEX_NUM>=uVtxCount);
-	if (uVtxCount >= PDT_VERTEX_NUM)
+	if (!vb)
 		return false;
 
-	TPDTVertex* pDstVertices;
-	if (FAILED(
-		plpd3dFillRectVB->Lock(0, sizeof(TPDTVertex)*uVtxCount, (void**)&pDstVertices, D3DLOCK_DISCARD)
-	)) 
-	{
-		STATEMANAGER.SetStreamSource(0, NULL, 0);
+	if (!vb->Update(pSrcVertices, uVtxCount))
 		return false;
-	}
-	
-	
-	memcpy(pDstVertices, pSrcVertices, sizeof(TPDTVertex)*uVtxCount);
 
-	plpd3dFillRectVB->Unlock();
-
-	STATEMANAGER.SetStreamSource(0, plpd3dFillRectVB, sizeof(TPDTVertex));	
-
+	m_dx->SetVertexBuffer(vb, sizeof(TPDTVertex));
 	return true;
 }
 
@@ -301,6 +290,11 @@ void CGraphicBase::UpdatePipeLineMatrix()
 {
 	UpdateProjMatrix();
 	UpdateViewMatrix();
+}
+
+UniquePtr<BaseClass>& CGraphicBase::GetBase()
+{
+	return m_base;
 }
 
 void CGraphicBase::SetViewport(DWORD dwX, DWORD dwY, DWORD dwWidth, DWORD dwHeight, float fMinZ, float fMaxZ)

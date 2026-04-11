@@ -199,7 +199,7 @@ class CMapOutdoor : public CMapBase
 		// Index Buffer
 		WORD *						m_pwaIndices[TERRAINPATCH_LODMAX];
 
-		CGraphicIndexBuffer			m_IndexBuffer[TERRAINPATCH_LODMAX];
+		RefPtr<CIndexBuffer>				m_IndexBuffer[TERRAINPATCH_LODMAX];
 		WORD						m_wNumIndices[TERRAINPATCH_LODMAX];
 		
 		virtual void	DestroyTerrain();
@@ -541,9 +541,6 @@ class CMapOutdoor : public CMapBase
 	protected:
 		int m_iPatchTerrainVertexCount;
 		int m_iPatchWaterVertexCount;
-
-		int m_iPatchTerrainVertexSize;
-		int m_iPatchWaterVertexSize;
 
 		DWORD m_dwRenderedCRCNum;
 		DWORD m_dwRenderedGraphicThingInstanceNum;

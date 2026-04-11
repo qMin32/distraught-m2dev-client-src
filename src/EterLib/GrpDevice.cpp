@@ -37,9 +37,6 @@ void CGraphicDevice::__Initialize()
 	ms_dwFlashingEndTime = 0;
 
 	m_pStateManager		= NULL;
-
-	__InitializeDefaultIndexBufferList();
-	__InitializePDTVertexBufferList();
 }
 
 void CGraphicDevice::RegisterWarningString(UINT uiMsg, const char * c_szString)
@@ -524,6 +521,9 @@ RETRY:
 
 	m_pStateManager = new CStateManager(ms_lpd3dDevice);
 
+	//initialize base class after statemanager beacouse base class uses statemanager for now
+	m_base = std::make_unique<BaseClass>(ms_lpd3dDevice);
+
 	D3DXCreateMatrixStack(0, &ms_lpd3dMatStack);
 	ms_lpd3dMatStack->LoadIdentity();
 
@@ -583,79 +583,24 @@ RETRY:
 	return (iRet);
 }
 
-void CGraphicDevice::__InitializePDTVertexBufferList()
-{
-	for (UINT i=0; i<PDT_VERTEXBUFFER_NUM; ++i)
-		ms_alpd3dPDTVB[i]=NULL;	
-}
-		
-void CGraphicDevice::__DestroyPDTVertexBufferList()
-{
-	for (UINT i=0; i<PDT_VERTEXBUFFER_NUM; ++i)
-	{
-		if (ms_alpd3dPDTVB[i])
-		{
-			ms_alpd3dPDTVB[i]->Release();
-			ms_alpd3dPDTVB[i]=NULL;
-		}
-	}
-}
-
 bool CGraphicDevice::__CreatePDTVertexBufferList()
 {
-	for (UINT i=0; i<PDT_VERTEXBUFFER_NUM; ++i)
+	for (UINT i = 0; i < PDT_VERTEXBUFFER_NUM; ++i)
 	{
-		if (FAILED(
-			ms_lpd3dDevice->CreateVertexBuffer(
-			sizeof(TPDTVertex)*PDT_VERTEX_NUM, 
-			D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY, 
-			D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1, 
-				D3DPOOL_DEFAULT,
-			&ms_alpd3dPDTVB[i], nullptr)
-		))
-		return false;
+		ms_alpd3dPDTVB[i] = m_dx->CreateVertexBuffer(nullptr, sizeof(TPDTVertex), PDT_VERTEX_NUM, D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY);
+		if (!ms_alpd3dPDTVB[i])
+			return false;
 	}
 	return true;
 }
 
-void CGraphicDevice::__InitializeDefaultIndexBufferList()
-{
-	for (UINT i=0; i<DEFAULT_IB_NUM; ++i)
-		ms_alpd3dDefIB[i]=NULL;
-}
-
-void CGraphicDevice::__DestroyDefaultIndexBufferList()
-{
-	for (UINT i=0; i<DEFAULT_IB_NUM; ++i)
-		if (ms_alpd3dDefIB[i])
-		{
-			ms_alpd3dDefIB[i]->Release();
-			ms_alpd3dDefIB[i]=NULL;
-		}	
-}
-
 bool CGraphicDevice::__CreateDefaultIndexBuffer(UINT eDefIB, UINT uIdxCount, const WORD* c_awIndices)
 {
-	assert(ms_alpd3dDefIB[eDefIB]==NULL);
-
-	auto hr = ms_lpd3dDevice->CreateIndexBuffer(
-		sizeof(WORD)*uIdxCount,
-		D3DUSAGE_WRITEONLY,
-		D3DFMT_INDEX16,
-		D3DPOOL_DEFAULT,
-		&ms_alpd3dDefIB[eDefIB], nullptr
-	);
-	if (FAILED(hr))
-		return false;
-	
-	WORD* dstIndices;
-	hr = ms_alpd3dDefIB[eDefIB]->Lock(0, 0, (void**)&dstIndices, 0);
-	if (FAILED(hr))
+	assert(ms_alpd3dDefIB[eDefIB] == nullptr);
+	if (uIdxCount == 0 || !c_awIndices)
 		return false;
 
-	memcpy(dstIndices, c_awIndices, sizeof(WORD)*uIdxCount);
-
-	ms_alpd3dDefIB[eDefIB]->Unlock();
+	ms_alpd3dDefIB[eDefIB] = m_dx->CreateIndexBuffer(c_awIndices, uIdxCount);
 
 	return true;
 }
@@ -706,9 +651,6 @@ void CGraphicDevice::InitBackBufferCount(UINT uBackBufferCount)
 
 void CGraphicDevice::Destroy()
 {
-	__DestroyPDTVertexBufferList();
-	__DestroyDefaultIndexBufferList();
-
 	if (ms_hDC)
 	{
 		ReleaseDC(ms_hWnd, ms_hDC);

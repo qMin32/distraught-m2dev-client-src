@@ -17,12 +17,12 @@ void CGrannyModelInstance::Clear()
 	__Initialize();
 }
 
-void CGrannyModelInstance::SetMainModelPointer(CGrannyModel* pModel, CGraphicVertexBuffer* pkSharedDeformableVertexBuffer)
+void CGrannyModelInstance::SetMainModelPointer(CGrannyModel* pModel, RefPtr<CVertexBuffer> pkSharedDeformableVertexBuffer)
 {
 	SetLinkedModelPointer(pModel, pkSharedDeformableVertexBuffer, NULL);
 }
 
-void CGrannyModelInstance::SetLinkedModelPointer(CGrannyModel* pkModel, CGraphicVertexBuffer* pkSharedDeformableVertexBuffer, CGrannyModelInstance** ppkSkeletonInst)
+void CGrannyModelInstance::SetLinkedModelPointer(CGrannyModel* pkModel, RefPtr<CVertexBuffer> pkSharedDeformableVertexBuffer, CGrannyModelInstance** ppkSkeletonInst)
 {
 	Clear();
 
@@ -195,7 +195,7 @@ DWORD CGrannyModelInstance::GetVertexCount()
 
 // WORK
 
-void CGrannyModelInstance::__SetSharedDeformableVertexBuffer(CGraphicVertexBuffer* pkSharedDeformableVertexBuffer)
+void CGrannyModelInstance::__SetSharedDeformableVertexBuffer(RefPtr<CVertexBuffer> pkSharedDeformableVertexBuffer)
 {
 	m_pkSharedDeformableVertexBuffer = pkSharedDeformableVertexBuffer;
 }
@@ -205,43 +205,24 @@ bool CGrannyModelInstance::__IsDeformableVertexBuffer()
 	if (m_pkSharedDeformableVertexBuffer)
 		return true;
 
-	return m_kLocalDeformableVertexBuffer.IsEmpty();
+	return m_kLocalDeformableVertexBuffer != nullptr;
 }
 
-IDirect3DVertexBuffer9* CGrannyModelInstance::__GetDeformableD3DVertexBufferPtr()
+RefPtr<CVertexBuffer> CGrannyModelInstance::GetDeformableVertexBuffer()
 {
-	return __GetDeformableVertexBufferRef().GetD3DVertexBuffer();
-}
-
-CGraphicVertexBuffer& CGrannyModelInstance::__GetDeformableVertexBufferRef()
-{
-	if (m_pkSharedDeformableVertexBuffer)
-		return *m_pkSharedDeformableVertexBuffer;
-
-	return m_kLocalDeformableVertexBuffer;
+	return m_pkSharedDeformableVertexBuffer ? m_pkSharedDeformableVertexBuffer : m_kLocalDeformableVertexBuffer;
 }
 
 void CGrannyModelInstance::__CreateDynamicVertexBuffer()
 {
 	assert(m_pModel != NULL);
-	assert(m_kLocalDeformableVertexBuffer.IsEmpty());
 
 	int vtxCount = m_pModel->GetDeformVertexCount();
 
 	if (0 != vtxCount)
 	{
-		if (!m_kLocalDeformableVertexBuffer.Create(vtxCount,
-									   D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1,
-									   D3DUSAGE_DYNAMIC, D3DPOOL_DEFAULT
-		))
-			return;
-	}	
-}
-
-void CGrannyModelInstance::__DestroyDynamicVertexBuffer()
-{
-	m_kLocalDeformableVertexBuffer.Destroy();
-	m_pkSharedDeformableVertexBuffer = NULL;
+		m_kLocalDeformableVertexBuffer = m_dx->CreateVertexBuffer(nullptr, sizeof(TPNTVertex), m_pModel->GetDeformVertexCount(), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY);
+	}
 }
 
 // END_OF_WORK

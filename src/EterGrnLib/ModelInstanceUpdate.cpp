@@ -2,7 +2,7 @@
 #include "Eterbase/Debug.h"
 #include "ModelInstance.h"
 #include "Model.h"
-
+#include "qMin32Lib/CBuffers.h"
 
 void CGrannyModelInstance::Update(DWORD dwAniFPS)
 {		
@@ -54,34 +54,30 @@ void CGrannyModelInstance::UpdateTransform(D3DXMATRIX * pMatrix, float fSecondsE
 	
 }
 
-void CGrannyModelInstance::Deform(const D3DXMATRIX * c_pWorldMatrix)
+void CGrannyModelInstance::Deform(const D3DXMATRIX* c_pWorldMatrix)
 {
 	if (IsEmpty())
 		return;
 
-	// DELETED
-	//m_pgrnWorldPose = m_pgrnWorldPoseReal;
-	/////////////////////////////////////////////
-	
 	UpdateWorldPose();
 	UpdateWorldMatrices(c_pWorldMatrix);
 
 	if (m_pModel->CanDeformPNTVertices())
 	{
 		// WORK
-		CGraphicVertexBuffer& rkDeformableVertexBuffer = __GetDeformableVertexBufferRef();
-		TPNTVertex* pntVertices;
-		if (rkDeformableVertexBuffer.LockRange(m_pModel->GetDeformVertexCount(), (void **)&pntVertices))
+		auto vb = GetDeformableVertexBuffer();
+		if (!vb)
+			return;
+
+		std::vector<TPNTVertex> tempVertices(m_pModel->GetDeformVertexCount());
+
+		DeformPNTVertices(tempVertices.data());
+
+		if (!vb->Update(tempVertices.data(), (UINT)tempVertices.size()))
 		{
-			DeformPNTVertices(pntVertices);
-			rkDeformableVertexBuffer.Unlock();
+			TraceError("GRANNY DEFORM DYNAMIC BUFFER UPDATE ERROR");
 		}
-		else
-		{
-			TraceError("GRANNY DEFORM DYNAMIC BUFFER LOCK ERROR");
-		}
-		// END_OF_WORK
-	}	
+	}
 }
 
 //////////////////////////////////////////////////////

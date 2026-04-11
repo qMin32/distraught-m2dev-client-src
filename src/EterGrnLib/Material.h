@@ -8,6 +8,7 @@
 #include "Eterlib/Ref.h"
 #include "Eterlib/GrpImageInstance.h"
 #include "Util.h"
+#include "qMin32Lib/Core.h"
 
 class CGrannyMaterial : public CReferenceObject
 {

@@ -282,11 +282,11 @@ void CMapOutdoor::__HardwareTransformPatch_RenderPatchSplat(long patchnum, WORD 
 	D3DXMatrixMultiply(&matSplatColorTexTransform, &m_matViewInverse, &matTiling);
 	STATEMANAGER.SetTransform(D3DTS_TEXTURE0, &matSplatColorTexTransform);
 					
-	CGraphicVertexBuffer* pkVB=pTerrainPatchProxy->HardwareTransformPatch_GetVertexBufferPtr();
+	auto pkVB = pTerrainPatchProxy->HardwareTransformPatch_GetVertexBufferPtr();
 	if (!pkVB)
 		return;
 
-	STATEMANAGER.SetStreamSource(0, pkVB->GetD3DVertexBuffer(), m_iPatchTerrainVertexSize);
+	m_dx->SetVertexBuffer(pkVB);
 	
 	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 
@@ -433,10 +433,11 @@ void CMapOutdoor::__HardwareTransformPatch_RenderPatchNone(long patchnum, WORD w
 	if (!pTerrainPatchProxy->isUsed())
 		return;
 
-	CGraphicVertexBuffer* pkVB=pTerrainPatchProxy->HardwareTransformPatch_GetVertexBufferPtr();
+	auto pkVB = pTerrainPatchProxy->HardwareTransformPatch_GetVertexBufferPtr();
 	if (!pkVB)
 		return;
 
-	STATEMANAGER.SetStreamSource(0, pkVB->GetD3DVertexBuffer(), m_iPatchTerrainVertexSize);
+	m_dx->SetVertexBuffer(pkVB);
+
 	STATEMANAGER.DrawIndexedPrimitive(ePrimitiveType, 0, m_iPatchTerrainVertexCount, 0, wPrimitiveCount);
 }

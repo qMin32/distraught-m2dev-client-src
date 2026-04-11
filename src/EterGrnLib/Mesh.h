@@ -4,14 +4,6 @@
 
 extern granny_data_type_definition GrannyPNT3322VertexType[5];
 
-struct granny_pnt3322_vertex
-{
-    granny_real32 Position[3];
-    granny_real32 Normal[3];
-    granny_real32 UV0[2];
-    granny_real32 UV1[2];
-};
-
 class CGrannyMesh
 {
 	public:
@@ -37,8 +29,8 @@ class CGrannyMesh
 		bool					IsEmpty() const;
 		bool					CreateFromGrannyMeshPointer(granny_skeleton* pgrnSkeleton, granny_mesh* pgrnMesh, int vtxBasePos, int idxBasePos, CGrannyMaterialPalette& rkMtrlPal);			
 		void					LoadIndices(void* dstBaseIndices);
- 		void					LoadPNTVertices(void* dstBaseVertices);
-		void					NEW_LoadVertices(void* dstBaseVertices);
+		void					LoadVertices(void* dstBaseVertices);
+		bool					IsPNT2() const;
 		void					Destroy();
 
 		void					SetPNT2Mesh();

@@ -101,64 +101,6 @@ public:
 	UINT					m_BaseVertexIndex;
 };
 
-// State types managed by the class
-typedef enum eStateType
-{
-	STATE_MATERIAL = 0,
-	STATE_RENDER,
-	STATE_TEXTURE,
-	STATE_TEXTURESTAGE,
-	STATE_VSHADER,
-	STATE_PSHADER,
-	STATE_TRANSFORM,
-	STATE_VCONSTANT,
-	STATE_PCONSTANT,
-	STATE_STREAM,
-	STATE_INDEX
-} eStateType;
-
-class CStateID
-{
-public:
-	CStateID(eStateType Type, DWORD dwValue0 = 0, DWORD dwValue1 = 0)
-		: m_Type(Type),
-		m_dwValue0(dwValue0),
-		m_dwValue1(dwValue1)
-	{
-	}
-
-	CStateID(eStateType Type, DWORD dwStage, D3DTEXTURESTAGESTATETYPE StageType)
-		: m_Type(Type),
-		m_dwStage(dwStage),
-		m_TextureStageStateType(StageType)
-	{
-	}
-
-	CStateID(eStateType Type, D3DRENDERSTATETYPE RenderType)
-		: m_Type(Type),
-		m_RenderStateType(RenderType)
-	{
-	}
-
-	eStateType m_Type;
-
-	union
-	{
-		DWORD					m_dwValue0;
-		DWORD					m_dwStage;
-		D3DRENDERSTATETYPE		m_RenderStateType;
-		D3DTRANSFORMSTATETYPE	m_TransformStateType;
-	};
-
-	union
-	{
-		DWORD						m_dwValue1;
-		D3DTEXTURESTAGESTATETYPE	m_TextureStageStateType;
-	};
-};
-
-typedef std::vector<CStateID> TStateID;
-
 class CStateManagerState
 {
 public:

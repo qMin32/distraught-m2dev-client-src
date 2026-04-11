@@ -12,6 +12,7 @@
 #include "ProcessScanner.h"
 
 #include <utf8.h>
+#include "qMin32Lib/BaseClass.h"
 
 extern void GrannyCreateSharedDeformBuffer();
 extern void GrannyDestroySharedDeformBuffer();
@@ -443,9 +444,13 @@ bool CPythonApplication::Process()
 			if (m_pyGraphic.IsLostDevice()) [[unlikely]] {
 				CPythonBackground& rkBG = CPythonBackground::Instance();
 				rkBG.ReleaseCharacterShadowTexture();
+				m_dx->DestroyResource();
 
-				if (m_pyGraphic.RestoreDevice())					
+				if (m_pyGraphic.RestoreDevice())
+				{
+					m_dx->RecreateResource();
 					rkBG.CreateCharacterShadowTexture();
+				}
 				else
 					canRender = false;				
 			}

@@ -5,6 +5,7 @@
 #include "EterLib/Camera.h"
 #include "EterLib/ResourceManager.h"
 #include "SnowParticle.h"
+#include "qMin32Lib/CBuffers.h"
 
 void CSnowEnvironment::Enable()
 {
@@ -188,22 +189,20 @@ void CSnowEnvironment::Render()
 	const D3DXVECTOR3 & c_rv3Up = pCamera->GetUp();
 	const D3DXVECTOR3 & c_rv3Cross = pCamera->GetCross();
 
-	SParticleVertex * pv3Verticies;
-	if (SUCCEEDED(m_pVB->Lock(0, sizeof(SParticleVertex)*dwParticleCount*4, (void **) &pv3Verticies, D3DLOCK_DISCARD)))
+	std::vector<SParticleVertex> tempVertices(dwParticleCount * 4);
+	int i = 0;
+	auto itor = m_kVct_pkParticleSnow.begin();
+	for (; i < dwParticleCount && itor != m_kVct_pkParticleSnow.end(); ++i, ++itor)
 	{
-		int i = 0;
-		std::vector<CSnowParticle*>::iterator itor = m_kVct_pkParticleSnow.begin();
-		for (; i < dwParticleCount && itor != m_kVct_pkParticleSnow.end(); ++i, ++itor)
-		{
-			CSnowParticle * pSnow = *itor;
-			pSnow->SetCameraVertex(c_rv3Up, c_rv3Cross);
-			pSnow->GetVerticies(pv3Verticies[i*4+0],
-								pv3Verticies[i*4+1],
-								pv3Verticies[i*4+2],
-								pv3Verticies[i*4+3]);
-		}
-		m_pVB->Unlock();
+		CSnowParticle* pSnow = *itor;
+		pSnow->SetCameraVertex(c_rv3Up, c_rv3Cross);
+		pSnow->GetVerticies(
+			tempVertices[i * 4 + 0],
+			tempVertices[i * 4 + 1],
+			tempVertices[i * 4 + 2],
+			tempVertices[i * 4 + 3]);
 	}
+	m_pVB->Update(tempVertices.data(), dwParticleCount * 4);
 
 	STATEMANAGER.SaveRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -219,8 +218,8 @@ void CSnowEnvironment::Render()
 	STATEMANAGER.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
 	m_pImageInstance->GetGraphicImagePointer()->GetTextureReference().SetTextureStage(0);
-	STATEMANAGER.SetIndices(m_pIB, 0);
-	STATEMANAGER.SetStreamSource(0, m_pVB, sizeof(SParticleVertex));
+	m_dx->SetIndexBuffer(m_pIB);
+	m_dx->SetVertexBuffer(m_pVB);
 	STATEMANAGER.SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
 	STATEMANAGER.DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, dwParticleCount*4, 0, dwParticleCount*2);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE);
@@ -254,34 +253,24 @@ bool CSnowEnvironment::__CreateBlurTexture()
 
 bool CSnowEnvironment::__CreateGeometry()
 {
-	if (FAILED(ms_lpd3dDevice->CreateVertexBuffer(sizeof(SParticleVertex) * m_dwParticleMaxNum * 4,
-		D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
-		D3DFVF_XYZ | D3DFVF_TEX1,
-		D3DPOOL_DEFAULT,
-		&m_pVB, nullptr)))
+	m_pVB = m_dx->CreateVertexBuffer(nullptr, sizeof(SParticleVertex), m_dwParticleMaxNum * 4, D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY);
+	if (!m_pVB)
 		return false;
 
-	if (FAILED(ms_lpd3dDevice->CreateIndexBuffer(sizeof(WORD) * m_dwParticleMaxNum * 6,
-		D3DUSAGE_DYNAMIC,
-		D3DFMT_INDEX16,
-		D3DPOOL_DEFAULT,
-		&m_pIB, nullptr)))
-		return false;
 
-	WORD* dstIndices;
-	if (FAILED(m_pIB->Lock(0, sizeof(WORD) * m_dwParticleMaxNum * 6, (void**)&dstIndices, 0)))
-		return false;
+	std::vector<WORD> indices(m_dwParticleMaxNum * 6);
+	const WORD c_awFillRectIndices[6] = { 0, 2, 1, 2, 3, 1 };
 
-	const WORD c_awFillRectIndices[6] = { 0, 2, 1, 2, 3, 1, };
 	for (int i = 0; i < m_dwParticleMaxNum; ++i)
 	{
 		for (int j = 0; j < 6; ++j)
 		{
-			dstIndices[i*6 + j] = i*4 + c_awFillRectIndices[j];
+			indices[i * 6 + j] = i * 4 + c_awFillRectIndices[j];
 		}
 	}
 
-	m_pIB->Unlock();
+	m_pIB = m_dx->CreateIndexBuffer(indices.data(), (UINT)indices.size(), D3DUSAGE_DYNAMIC);
+
 	return true;
 }
 
@@ -310,8 +299,6 @@ void CSnowEnvironment::Destroy()
 	SAFE_RELEASE(m_lpAccumTexture);
 	SAFE_RELEASE(m_lpAccumRenderTargetSurface);
 	SAFE_RELEASE(m_lpAccumDepthSurface);
-	SAFE_RELEASE(m_pVB);
-	SAFE_RELEASE(m_pIB);
 
 	stl_wipe(m_kVct_pkParticleSnow);
 	CSnowParticle::DestroyPool();

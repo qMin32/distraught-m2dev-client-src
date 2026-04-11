@@ -3,53 +3,51 @@
 
 void CMapOutdoor::SetIndexBuffer()
 {
-	void * pIndices;
+	void* pIndices;
 	long x, y;
-	
+
 	DWORD dwIndexNum = TERRAIN_PATCHSIZE * TERRAIN_PATCHSIZE * 4;
 	WORD	count[TERRAINPATCH_LODMAX], count2[TERRAINPATCH_LODMAX];
 	BYTE uci;
 	for (uci = 0; uci < TERRAINPATCH_LODMAX; ++uci)
-	{		
+	{
 		m_pwaIndices[uci] = new WORD[dwIndexNum];
 		memset(m_pwaIndices[uci], 0, sizeof(WORD) * dwIndexNum);
 		count[uci] = 0;
 		count2[uci] = 0;
-		if ( !m_IndexBuffer[uci].Create(dwIndexNum, D3DFMT_INDEX16) )
-			TraceError("CMapOutdoor::SetIndexBuffer() IndexBuffer Create Error");
 	}
 
 	BYTE ucNumLineWarp = TERRAIN_PATCHSIZE + 1;
-	
+
 	for (y = 0; y < TERRAIN_PATCHSIZE; y++)
 	{
-		if (y%2 == 0)
+		if (y % 2 == 0)
 		{
 			m_pwaIndices[0][(count[0])++] = count2[0];
-			m_pwaIndices[0][(count[0])++] = count2[0]+ucNumLineWarp;
+			m_pwaIndices[0][(count[0])++] = count2[0] + ucNumLineWarp;
 		}
 		else
 		{
-			m_pwaIndices[0][(count[0])++] = count2[0]+ucNumLineWarp;
+			m_pwaIndices[0][(count[0])++] = count2[0] + ucNumLineWarp;
 			m_pwaIndices[0][(count[0])++] = count2[0];
 		}
-		
+
 		for (x = 0; x < TERRAIN_PATCHSIZE; x++)
 		{
-			if (y%2 == 0)
+			if (y % 2 == 0)
 			{
-				m_pwaIndices[0][(count[0])++] = (WORD) (count2[0]+1);
-				m_pwaIndices[0][(count[0])++] = (WORD) (count2[0]+ucNumLineWarp+1);
-				count2[0] += (short) 1;
+				m_pwaIndices[0][(count[0])++] = (WORD)(count2[0] + 1);
+				m_pwaIndices[0][(count[0])++] = (WORD)(count2[0] + ucNumLineWarp + 1);
+				count2[0] += (short)1;
 			}
 			else
 			{
-				m_pwaIndices[0][(count[0])++] = (WORD) (count2[0]+ucNumLineWarp-1);
-				m_pwaIndices[0][(count[0])++] = (WORD) (count2[0]-1);
-				count2[0] -= (short) 1;
+				m_pwaIndices[0][(count[0])++] = (WORD)(count2[0] + ucNumLineWarp - 1);
+				m_pwaIndices[0][(count[0])++] = (WORD)(count2[0] - 1);
+				count2[0] -= (short)1;
 			}
-			
-			if (0 == x%2)
+
+			if (0 == x % 2)
 			{
 				if (0 == y)
 				{
@@ -69,7 +67,7 @@ void CMapOutdoor::SetIndexBuffer()
 					else
 						ADDLvl1B(m_pwaIndices[1], count[1], count2[1], ucNumLineWarp);
 				}
-				else if (0 == y%2)
+				else if (0 == y % 2)
 				{
 					if (0 == x)
 						ADDLvl1L(m_pwaIndices[1], count[1], count2[1], ucNumLineWarp);
@@ -80,8 +78,8 @@ void CMapOutdoor::SetIndexBuffer()
 				}
 				count2[1] += 2;
 			}
-			
-			if (0 == x%4)
+
+			if (0 == x % 4)
 			{
 				if (0 == y)
 				{
@@ -101,7 +99,7 @@ void CMapOutdoor::SetIndexBuffer()
 					else
 						ADDLvl2B(m_pwaIndices[2], count[2], count2[2], ucNumLineWarp);
 				}
-				else if (0 == y%4)
+				else if (0 == y % 4)
 				{
 					if (0 == x)
 						ADDLvl2L(m_pwaIndices[2], count[2], count2[2], ucNumLineWarp);
@@ -113,15 +111,15 @@ void CMapOutdoor::SetIndexBuffer()
 				count2[2] += 4;
 			}
 		}
-		
-		if (y < TERRAIN_PATCHSIZE-1)
+
+		if (y < TERRAIN_PATCHSIZE - 1)
 		{
-			m_pwaIndices[0][(count[0])++] = (WORD) (count2[0]+ucNumLineWarp);
-			m_pwaIndices[0][(count[0])++] = (WORD) (count2[0]+ucNumLineWarp);
+			m_pwaIndices[0][(count[0])++] = (WORD)(count2[0] + ucNumLineWarp);
+			m_pwaIndices[0][(count[0])++] = (WORD)(count2[0] + ucNumLineWarp);
 			count2[0] += ucNumLineWarp;
-			if (0 == y%2)
+			if (0 == y % 2)
 				count2[1] += 2;
-			if (0 == y%4)
+			if (0 == y % 4)
 				count2[2] += 4;
 		}
 	}
@@ -129,11 +127,8 @@ void CMapOutdoor::SetIndexBuffer()
 	for (uci = 0; uci < TERRAINPATCH_LODMAX; ++uci)
 	{
 		m_wNumIndices[uci] = count[uci];
-		if( !m_IndexBuffer[uci].Lock((void **) &pIndices) )
-			TraceError("CMapOutdoor::SetIndexBuffer() IndexBuffer Unlock Error");
-		memcpy(pIndices, m_pwaIndices[uci], count[uci] * sizeof(WORD));
-		m_IndexBuffer[uci].Unlock();
-		delete [] m_pwaIndices[uci];
+		m_IndexBuffer[uci] = m_dx->CreateIndexBuffer(m_pwaIndices[uci], dwIndexNum);
+		delete[] m_pwaIndices[uci];
 		m_pwaIndices[uci] = NULL;
 	}
 }

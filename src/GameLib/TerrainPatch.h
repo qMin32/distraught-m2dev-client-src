@@ -9,7 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "EterLib/GrpVertexBuffer.h"
 #include "PRTerrainLib/Terrain.h"
 
 #pragma pack(push)
@@ -103,20 +102,20 @@ private:
 	DWORD					m_dwID;
 	DWORD m_dwWaterPriCount;
 	
-	CGraphicVertexBuffer	m_WaterVertexBuffer;
+	RefPtr<CVertexBuffer>	m_WaterVertexBuffer;
 	BYTE					m_byType;
 
 	bool					m_bNeedUpdate;
 	DWORD					m_dwVersion;
 
 public:
-	CGraphicVertexBuffer* GetWaterVertexBufferPointer()	{ return &m_WaterVertexBuffer;}
+	RefPtr<CVertexBuffer> GetWaterVertexBufferPointer()	{ return m_WaterVertexBuffer;}
 
 public:
-	CGraphicVertexBuffer* HardwareTransformPatch_GetVertexBufferPtr() {return &m_kVB;}
+	RefPtr<CVertexBuffer> HardwareTransformPatch_GetVertexBufferPtr() {return m_kVB;}
 
 protected:
-	CGraphicVertexBuffer	m_kVB;
+	RefPtr<CVertexBuffer>	m_kVB;
 
 
 };
@@ -156,8 +155,8 @@ public:
 	float GetMaxZ();
 
 	// Vertex Buffer
-	CGraphicVertexBuffer * GetWaterVertexBufferPointer();
-	CGraphicVertexBuffer* HardwareTransformPatch_GetVertexBufferPtr();
+	RefPtr<CVertexBuffer> GetWaterVertexBufferPointer();
+	RefPtr<CVertexBuffer> HardwareTransformPatch_GetVertexBufferPtr();
 	
 protected:
 	bool					m_bUsed;
@@ -205,7 +204,7 @@ inline float CTerrainPatchProxy::GetMaxZ()
 	return m_pTerrainPatch->GetMaxZ();
 }
 
-inline CGraphicVertexBuffer * CTerrainPatchProxy::GetWaterVertexBufferPointer()
+inline RefPtr<CVertexBuffer> CTerrainPatchProxy::GetWaterVertexBufferPointer()
 {
 	return m_pTerrainPatch->GetWaterVertexBufferPointer();
 }

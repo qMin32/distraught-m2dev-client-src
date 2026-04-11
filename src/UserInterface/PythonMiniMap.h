@@ -207,8 +207,8 @@ class CPythonMiniMap : public CScreen, public CSingleton<CPythonMiniMap>
 		bool							m_bAtlas;
 		bool							m_bShow;
 
-		CGraphicVertexBuffer			m_VertexBuffer;
-		CGraphicIndexBuffer				m_IndexBuffer;
+		RefPtr<CVertexBuffer>					m_VertexBuffer;
+		RefPtr<CIndexBuffer>					m_IndexBuffer;
 
 		D3DXMATRIX						m_matIdentity;
 		D3DXMATRIX						m_matWorld;

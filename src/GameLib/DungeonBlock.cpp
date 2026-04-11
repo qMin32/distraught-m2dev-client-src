@@ -15,10 +15,10 @@ class CDungeonModelInstance : public CGrannyModelInstance
 				return;
 
 			STATEMANAGER.SetVertexDeclaration(ms_pnt2VS);
-			LPDIRECT3DVERTEXBUFFER9 lpd3dRigidPNTVtxBuf = m_pModel->GetPNTD3DVertexBuffer();
+			auto lpd3dRigidPNTVtxBuf = m_pModel->GetVertexBuffer();
 			if (lpd3dRigidPNTVtxBuf)
 			{
-				STATEMANAGER.SetStreamSource(0, lpd3dRigidPNTVtxBuf, sizeof(TPNT2Vertex));
+				m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf, sizeof(TPNT2Vertex));
 				RenderMeshNodeListWithTwoTexture(CGrannyMesh::TYPE_RIGID, CGrannyMaterial::TYPE_BLEND_PNT);
 			}
 		}
@@ -37,10 +37,10 @@ class CDungeonModelInstance : public CGrannyModelInstance
 			STATEMANAGER.SaveRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCCOLOR);
 
 			STATEMANAGER.SetVertexDeclaration(ms_pnt2VS);
-			LPDIRECT3DVERTEXBUFFER9 lpd3dRigidPNTVtxBuf = m_pModel->GetPNTD3DVertexBuffer();
+			auto lpd3dRigidPNTVtxBuf = m_pModel->GetVertexBuffer();
 			if (lpd3dRigidPNTVtxBuf)
 			{
-				STATEMANAGER.SetStreamSource(0, lpd3dRigidPNTVtxBuf, sizeof(TPNT2Vertex));
+				m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf, sizeof(TPNT2Vertex));
 				RenderMeshNodeListWithoutTexture(CGrannyMesh::TYPE_RIGID, CGrannyMaterial::TYPE_BLEND_PNT);
 			}
 
@@ -219,15 +219,10 @@ bool CDungeonBlock::Load(const char * c_szFileName)
 
 	for (int i = 0; i < m_pThing->GetModelCount(); ++i)
 	{
-		CDungeonModelInstance * pModelInstance = new CDungeonModelInstance;
-		pModelInstance->SetMainModelPointer(m_pThing->GetModelPointer(i), &m_kDeformableVertexBuffer);
-		DWORD dwVertexCount = pModelInstance->GetVertexCount();
-		m_kDeformableVertexBuffer.Destroy();
-		m_kDeformableVertexBuffer.Create(
-			dwVertexCount,
-			D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1,
-			D3DUSAGE_DYNAMIC,
-			D3DPOOL_DEFAULT);	
+		CDungeonModelInstance* pModelInstance = new CDungeonModelInstance;
+		DWORD dwVertexCount = m_pThing->GetModelPointer(i)->GetVertexCount();
+		m_kDeformableVertexBuffer = m_dx->CreateVertexBuffer(nullptr, sizeof(TPNTVertex), dwVertexCount, D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY);
+		pModelInstance->SetMainModelPointer(m_pThing->GetModelPointer(i), m_kDeformableVertexBuffer);
 		m_ModelInstanceContainer.push_back(pModelInstance);
 	}
 

@@ -21,26 +21,32 @@ void CGrannyMesh::LoadIndices(void * dstBaseIndices)
 	GrannyCopyMeshIndices(pgrnMesh, sizeof(WORD), dstIndices);
 }
 
-void CGrannyMesh::LoadPNTVertices(void * dstBaseVertices)
+void CGrannyMesh::LoadVertices(void* dstBaseVertices)
 {
-	const granny_mesh * pgrnMesh = GetGrannyMeshPointer();
+	const granny_mesh* pgrnMesh = GetGrannyMeshPointer();
+	if (!pgrnMesh)
+		return;
 
 	if (!GrannyMeshIsRigid(pgrnMesh))
 		return;
 
-	TPNTVertex * dstVertices = ((TPNTVertex *)dstBaseVertices) + m_vtxBasePos;
+	void* dstVertices = nullptr;
+
+	if (IsPNT2())
+	{
+		dstVertices = ((TPNT2Vertex*)dstBaseVertices) + m_vtxBasePos;
+	}
+	else
+	{
+		dstVertices = ((TPNTVertex*)dstBaseVertices) + m_vtxBasePos;
+	}
+
 	GrannyCopyMeshVertices(pgrnMesh, m_pgrnMeshType, dstVertices);
 }
 
-void CGrannyMesh::NEW_LoadVertices(void * dstBaseVertices)
+bool CGrannyMesh::IsPNT2() const
 {
-	const granny_mesh * pgrnMesh = GetGrannyMeshPointer();
-	
-	if (!GrannyMeshIsRigid(pgrnMesh))
-		return;
-	
-	TPNTVertex * dstVertices = ((TPNTVertex *)dstBaseVertices) + m_vtxBasePos;
-	GrannyCopyMeshVertices(pgrnMesh, m_pgrnMeshType, dstVertices);
+	return m_pgrnMeshType == GrannyPNT3322VertexType;
 }
 
 void CGrannyMesh::DeformPNTVertices(void* dstBaseVertices, D3DXMATRIX* boneMatrices, granny_mesh_binding* pgrnMeshBinding) const

@@ -2,6 +2,8 @@
 
 #include "Ray.h"
 #include <vector>
+#include "../qMin32Lib/Core.h"
+#include "../qMin32Lib/BaseClass.h"
 
 // to remove ms_matIdentity we use only MatIdentity()
 static inline const D3DXMATRIX& MatIdentity()
@@ -218,7 +220,14 @@ class CGraphicBase
 			PDT_VERTEXBUFFER_NUM = 100,				
 		};
 		
-		
-		static LPDIRECT3DVERTEXBUFFER9	ms_alpd3dPDTVB[PDT_VERTEXBUFFER_NUM];
-		static LPDIRECT3DINDEXBUFFER9	ms_alpd3dDefIB[DEFAULT_IB_NUM];
+	protected:
+		static UniquePtr<BaseClass>	m_base;
+
+		static RefPtr<CIndexBuffer>	ms_alpd3dDefIB[DEFAULT_IB_NUM];
+		static RefPtr<CVertexBuffer>	ms_alpd3dPDTVB[PDT_VERTEXBUFFER_NUM];
+
+	public:
+		static UniquePtr<BaseClass>& GetBase();
 };
+
+#define m_dx CGraphicBase::GetBase()

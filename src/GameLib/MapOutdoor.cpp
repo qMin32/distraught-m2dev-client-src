@@ -108,8 +108,6 @@ bool CMapOutdoor::Initialize()
 	m_lOldReadX = m_lOldReadY = -1;
 
 	memset(m_pwaIndices, 0, sizeof(m_pwaIndices));
-	for (i = 0; i < TERRAINPATCH_LODMAX; ++i)
-		m_IndexBuffer[i].Destroy();
 
 	m_bSettingTerrainVisible = false;
 	m_bDrawWireFrame	= false;
@@ -340,8 +338,6 @@ void CMapOutdoor::CreateTerrainPatchProxyList()
 	
 	m_iPatchTerrainVertexCount = (TERRAIN_PATCHSIZE+1)*(TERRAIN_PATCHSIZE+1);
 	m_iPatchWaterVertexCount = TERRAIN_PATCHSIZE * TERRAIN_PATCHSIZE * 6;
-	m_iPatchTerrainVertexSize = 24;
-	m_iPatchWaterVertexSize = 16;
 
 	SetIndexBuffer();
 }
@@ -353,9 +349,6 @@ void CMapOutdoor::DestroyTerrainPatchProxyList()
 		delete [] m_pTerrainPatchProxyList;
 		m_pTerrainPatchProxyList = NULL;
 	}
-
-	for (int i = 0; i < TERRAINPATCH_LODMAX; ++i)
-		m_IndexBuffer[i].Destroy();
 }
 
 //////////////////////////////////////////////////////////////////////////

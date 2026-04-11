@@ -152,18 +152,15 @@ void CMapOutdoor::DrawWater(long patchnum)
 	if (!rkTerrainPatchProxy.isWaterExists())
 		return;
 
-	CGraphicVertexBuffer* pkVB=rkTerrainPatchProxy.GetWaterVertexBufferPointer();
+	auto pkVB = rkTerrainPatchProxy.GetWaterVertexBufferPointer();
 	if (!pkVB)
-		return;
-	
-	if (!pkVB->GetD3DVertexBuffer())
 		return;
 
 	UINT uPriCount=rkTerrainPatchProxy.GetWaterFaceCount();
 	if (!uPriCount)
 		return;
 	
-	STATEMANAGER.SetStreamSource(0, pkVB->GetD3DVertexBuffer(), sizeof(SWaterVertex));
+	m_dx->SetVertexBuffer(pkVB);
 	STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLELIST, 0, uPriCount);
 
 	ms_faceCount += uPriCount;

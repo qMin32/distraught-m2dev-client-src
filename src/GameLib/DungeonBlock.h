@@ -52,5 +52,5 @@ class CDungeonBlock : public CGraphicObjectInstance
 
 		CGraphicThing * m_pThing;
 		TModelInstanceContainer m_ModelInstanceContainer;
-		CGraphicVertexBuffer	m_kDeformableVertexBuffer;
+		RefPtr<CVertexBuffer>	m_kDeformableVertexBuffer;
 };
