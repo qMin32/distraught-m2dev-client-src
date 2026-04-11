@@ -559,8 +559,8 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 			break;
 	}
 
-	static std::unordered_map<LPDIRECT3DTEXTURE9, std::vector<SVertex>> s_outlineBatches;
-	static std::unordered_map<LPDIRECT3DTEXTURE9, std::vector<SVertex>> s_mainBatches;
+	static std::unordered_map<LPDIRECT3DTEXTURE9, std::vector<TPDTVertex>> s_outlineBatches;
+	static std::unordered_map<LPDIRECT3DTEXTURE9, std::vector<TPDTVertex>> s_mainBatches;
 	s_outlineBatches.clear();
 	s_mainBatches.clear();
 
@@ -598,11 +598,11 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 		float fFontMaxHeight;
 		float fFontAdvance;
 
-		SVertex akVertex[4];
-		akVertex[0].z=m_v3Position.z;
-		akVertex[1].z=m_v3Position.z;
-		akVertex[2].z=m_v3Position.z;
-		akVertex[3].z=m_v3Position.z;
+		TPDTVertex akVertex[4];
+		akVertex[0].position.z=m_v3Position.z;
+		akVertex[1].position.z=m_v3Position.z;
+		akVertex[2].position.z=m_v3Position.z;
+		akVertex[3].position.z=m_v3Position.z;
 
 		CGraphicFontTexture::TCharacterInfomation* pCurCharInfo;
 
@@ -653,63 +653,59 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				fFontEy = fFontSy + fFontHeight;
 
 				pFontTexture->SelectTexture(pCurCharInfo->index);
-				std::vector<SVertex>& vtxBatch = s_outlineBatches[pFontTexture->GetD3DTexture()];
+				std::vector<TPDTVertex>& vtxBatch = s_outlineBatches[pFontTexture->GetD3DTexture()];
 
-				akVertex[0].u=pCurCharInfo->left;
-				akVertex[0].v=pCurCharInfo->top;
-				akVertex[1].u=pCurCharInfo->left;
-				akVertex[1].v=pCurCharInfo->bottom;
-				akVertex[2].u=pCurCharInfo->right;
-				akVertex[2].v=pCurCharInfo->top;
-				akVertex[3].u=pCurCharInfo->right;
-				akVertex[3].v=pCurCharInfo->bottom;
+				akVertex[0].texCoord = { pCurCharInfo->left,pCurCharInfo->top };
+				akVertex[1].texCoord = { pCurCharInfo->left,pCurCharInfo->bottom };
+				akVertex[2].texCoord = { pCurCharInfo->right,pCurCharInfo->top };
+				akVertex[3].texCoord = { pCurCharInfo->right,pCurCharInfo->bottom };
 
-				akVertex[3].color = akVertex[2].color = akVertex[1].color = akVertex[0].color = m_dwOutLineColor;
+				akVertex[3].diffuse = akVertex[2].diffuse = akVertex[1].diffuse = akVertex[0].diffuse = m_dwOutLineColor;
 
 				float feather = 0.0f; // m_fFontFeather
 
-				akVertex[0].y=fFontSy-feather;
-				akVertex[1].y=fFontEy+feather;
-				akVertex[2].y=fFontSy-feather;
-				akVertex[3].y=fFontEy+feather;
+				akVertex[0].position.y = fFontSy - feather;
+				akVertex[1].position.y = fFontEy + feather;
+				akVertex[2].position.y = fFontSy - feather;
+				akVertex[3].position.y = fFontEy + feather;
 
 				// 왼
-				akVertex[0].x=fFontSx-fFontHalfWeight-feather;
-				akVertex[1].x=fFontSx-fFontHalfWeight-feather;
-				akVertex[2].x=fFontEx-fFontHalfWeight+feather;
-				akVertex[3].x=fFontEx-fFontHalfWeight+feather;
+				akVertex[0].position.x = fFontSx - fFontHalfWeight - feather;
+				akVertex[1].position.x = fFontSx - fFontHalfWeight - feather;
+				akVertex[2].position.x = fFontEx - fFontHalfWeight + feather;
+				akVertex[3].position.x = fFontEx - fFontHalfWeight + feather;
 
 				vtxBatch.push_back(akVertex[0]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[2]);
 				vtxBatch.push_back(akVertex[2]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[3]);
 
 				// 오른
-				akVertex[0].x=fFontSx+fFontHalfWeight-feather;
-				akVertex[1].x=fFontSx+fFontHalfWeight-feather;
-				akVertex[2].x=fFontEx+fFontHalfWeight+feather;
-				akVertex[3].x=fFontEx+fFontHalfWeight+feather;
+				akVertex[0].position.x = fFontSx + fFontHalfWeight - feather;
+				akVertex[1].position.x = fFontSx + fFontHalfWeight - feather;
+				akVertex[2].position.x = fFontEx + fFontHalfWeight + feather;
+				akVertex[3].position.x = fFontEx + fFontHalfWeight + feather;
 
 				vtxBatch.push_back(akVertex[0]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[2]);
 				vtxBatch.push_back(akVertex[2]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[3]);
 
-				akVertex[0].x=fFontSx-feather;
-				akVertex[1].x=fFontSx-feather;
-				akVertex[2].x=fFontEx+feather;
-				akVertex[3].x=fFontEx+feather;
+				akVertex[0].position.x = fFontSx - feather;
+				akVertex[1].position.x = fFontSx - feather;
+				akVertex[2].position.x = fFontEx + feather;
+				akVertex[3].position.x = fFontEx + feather;
 
 				// 위
-				akVertex[0].y=fFontSy-fFontHalfWeight-feather;
-				akVertex[1].y=fFontEy-fFontHalfWeight+feather;
-				akVertex[2].y=fFontSy-fFontHalfWeight-feather;
-				akVertex[3].y=fFontEy-fFontHalfWeight+feather;
+				akVertex[0].position.y = fFontSy - fFontHalfWeight - feather;
+				akVertex[1].position.y = fFontEy - fFontHalfWeight + feather;
+				akVertex[2].position.y = fFontSy - fFontHalfWeight - feather;
+				akVertex[3].position.y = fFontEy - fFontHalfWeight + feather;
 
 				vtxBatch.push_back(akVertex[0]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[2]);
 				vtxBatch.push_back(akVertex[2]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[3]);
 
 				// 아래
-				akVertex[0].y=fFontSy+fFontHalfWeight-feather;
-				akVertex[1].y=fFontEy+fFontHalfWeight+feather;
-				akVertex[2].y=fFontSy+fFontHalfWeight-feather;
-				akVertex[3].y=fFontEy+fFontHalfWeight+feather;
+				akVertex[0].position.y = fFontSy + fFontHalfWeight - feather;
+				akVertex[1].position.y = fFontEy + fFontHalfWeight + feather;
+				akVertex[2].position.y = fFontSy + fFontHalfWeight - feather;
+				akVertex[3].position.y = fFontEy + fFontHalfWeight + feather;
 
 				vtxBatch.push_back(akVertex[0]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[2]);
 				vtxBatch.push_back(akVertex[2]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[3]);
@@ -761,29 +757,25 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 			fFontEy = fFontSy + fFontHeight;
 
 			pFontTexture->SelectTexture(pCurCharInfo->index);
-			std::vector<SVertex>& vtxBatch = s_mainBatches[pFontTexture->GetD3DTexture()];
+			std::vector<TPDTVertex>& vtxBatch = s_mainBatches[pFontTexture->GetD3DTexture()];
 
-			akVertex[0].x=fFontSx;
-			akVertex[0].y=fFontSy;
-			akVertex[0].u=pCurCharInfo->left;
-			akVertex[0].v=pCurCharInfo->top;
+			akVertex[0].position.x = fFontSx;
+			akVertex[0].position.y = fFontSy;
+			akVertex[0].texCoord = { pCurCharInfo->left,pCurCharInfo->top };
 
-			akVertex[1].x=fFontSx;
-			akVertex[1].y=fFontEy;
-			akVertex[1].u=pCurCharInfo->left;
-			akVertex[1].v=pCurCharInfo->bottom;
+			akVertex[1].position.x = fFontSx;
+			akVertex[1].position.y = fFontEy;
+			akVertex[1].texCoord = { pCurCharInfo->left,pCurCharInfo->bottom };
 
-			akVertex[2].x=fFontEx;
-			akVertex[2].y=fFontSy;
-			akVertex[2].u=pCurCharInfo->right;
-			akVertex[2].v=pCurCharInfo->top;
+			akVertex[2].position.x = fFontEx;
+			akVertex[2].position.y = fFontSy;
+			akVertex[2].texCoord = { pCurCharInfo->right, pCurCharInfo->top };
 
-			akVertex[3].x=fFontEx;
-			akVertex[3].y=fFontEy;
-			akVertex[3].u=pCurCharInfo->right;
-			akVertex[3].v=pCurCharInfo->bottom;
+			akVertex[3].position.x = fFontEx;
+			akVertex[3].position.y = fFontEy;
+			akVertex[3].texCoord = { pCurCharInfo->right, pCurCharInfo->bottom };
 
-			akVertex[0].color = akVertex[1].color = akVertex[2].color = akVertex[3].color = m_dwColorInfoVector[i];
+			akVertex[0].diffuse = akVertex[1].diffuse = akVertex[2].diffuse = akVertex[3].diffuse = m_dwColorInfoVector[i];
 
 			vtxBatch.push_back(akVertex[0]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[2]);
 			vtxBatch.push_back(akVertex[2]); vtxBatch.push_back(akVertex[1]); vtxBatch.push_back(akVertex[3]);
@@ -887,10 +879,10 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 			vertices[2].diffuse = 0x80339CFF;
 			vertices[3].diffuse = 0x80339CFF;
 
-			vertices[0].position = TPosition(sx, top, 0.0f);
-			vertices[1].position = TPosition(ex, top, 0.0f);
-			vertices[2].position = TPosition(sx, bot, 0.0f);
-			vertices[3].position = TPosition(ex, bot, 0.0f);
+			vertices[0].position = {sx, top, 0.0f};
+			vertices[1].position = {ex, top, 0.0f};
+			vertices[2].position = {sx, bot, 0.0f};
+			vertices[3].position = {ex, bot, 0.0f};
 
 			STATEMANAGER.SetTexture(0, NULL);
 			CGraphicBase::SetDefaultIndexBuffer(CGraphicBase::DEFAULT_IB_FILL_RECT);
@@ -900,7 +892,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 	}
 
 	// LCD subpixel two-pass rendering: correct per-channel alpha blending
-	auto DrawBatchLCD = [](const std::unordered_map<LPDIRECT3DTEXTURE9, std::vector<SVertex>>& batches, bool skipPass2) {
+	auto DrawBatchLCD = [](const std::unordered_map<LPDIRECT3DTEXTURE9, std::vector<TPDTVertex>>& batches, bool skipPass2) {
 		for (const auto& [pTexture, vtxBatch] : batches) {
 			if (vtxBatch.empty())
 				continue;
@@ -915,7 +907,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 			STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 			STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 			STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLELIST,
-				vtxBatch.size() / 3, vtxBatch.data(), sizeof(SVertex));
+				vtxBatch.size() / 3, vtxBatch.data(), sizeof(TPDTVertex));
 
 			if (!skipPass2) {
 				// Pass 2: dest.rgb += textColor.rgb * coverage.rgb
@@ -928,7 +920,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 				STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 				STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLELIST,
-					vtxBatch.size() / 3, vtxBatch.data(), sizeof(SVertex));
+					vtxBatch.size() / 3, vtxBatch.data(), sizeof(TPDTVertex));
 			}
 		}
 	};
@@ -944,7 +936,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 	{
 		// Draw Cursor
 		float sx, sy, ex, ey;
-		TDiffuse diffuse;
+		DWORD diffuse;
 
 		int curpos = CIME::GetCurPos();
 		int compend = curpos + CIME::GetCompLen();
@@ -1009,10 +1001,10 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 		vertices[1].diffuse = diffuse;
 		vertices[2].diffuse = diffuse;
 		vertices[3].diffuse = diffuse;
-		vertices[0].position = TPosition(sx, sy, 0.0f);
-		vertices[1].position = TPosition(ex, sy, 0.0f);
-		vertices[2].position = TPosition(sx, ey, 0.0f);
-		vertices[3].position = TPosition(ex, ey, 0.0f);
+		vertices[0].position = {sx, sy, 0.0f};
+		vertices[1].position = {ex, sy, 0.0f};
+		vertices[2].position = {sx, ey, 0.0f};
+		vertices[3].position = {ex, ey, 0.0f};
 
 		STATEMANAGER.SetTexture(0, NULL);
 
@@ -1037,10 +1029,10 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 			vertices[1].diffuse = 0xFFFF0000;
 			vertices[2].diffuse = 0xFFFF0000;
 			vertices[3].diffuse = 0xFFFF0000;
-			vertices[0].position = TPosition(sx, sy, 0.0f);
-			vertices[1].position = TPosition(ex, sy, 0.0f);
-			vertices[2].position = TPosition(sx, ey, 0.0f);
-			vertices[3].position = TPosition(ex, ey, 0.0f);
+			vertices[0].position = {sx, sy, 0.0f};
+			vertices[1].position = {ex, sy, 0.0f};
+			vertices[2].position = {sx, ey, 0.0f};
+			vertices[3].position = {ex, ey, 0.0f};
 
 			STATEMANAGER.DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, c_FillRectIndices, D3DFMT_INDEX16, vertices, sizeof(TPDTVertex));
 		}

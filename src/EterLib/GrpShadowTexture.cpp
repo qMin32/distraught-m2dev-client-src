@@ -64,7 +64,7 @@ LPDIRECT3DTEXTURE9 CGraphicShadowTexture::GetD3DTexture() const
 
 void CGraphicShadowTexture::Begin()
 {
-	D3DXMatrixMultiply(&m_d3dLightVPMatrix, &ms_matView, &ms_matProj);
+	D3DXMatrixMultiply(&m_d3dLightVPMatrix, &mat.view, &mat.proj);
 
 	ms_lpd3dDevice->GetRenderTarget(0, &m_lpd3dOldBackBufferSurface);
 	ms_lpd3dDevice->GetDepthStencilSurface(&m_lpd3dOldDepthBufferSurface);

@@ -174,7 +174,7 @@ void CFlyTrace::Render()
 	m._33 = F.z;
 
 	Frustum & frustum = s.GetFrustum();
-	//frustum.BuildViewFrustum(ms_matView * ms_matProj);
+	//frustum.BuildViewFrustum(mat.view * mat.proj);
 
 	TTimePositionDeque::iterator it1, it2;
 	it2 = it1 = m_TimePositionDeque.begin();
@@ -210,27 +210,6 @@ void CFlyTrace::Render()
 			TFlyVertex(D3DXVECTOR3(-size2,0.0f,0.0f),m_dwColor,D3DXVECTOR2(0.5f,1.0f)),
 			TFlyVertex(D3DXVECTOR3(size2,0.0f,0.0f), m_dwColor,D3DXVECTOR2(1.0f,0.5f)),
 			TFlyVertex(D3DXVECTOR3(0.0f,-size2,0.0f),m_dwColor,D3DXVECTOR2(1.0f,1.0f)),
-	
-			/*TVertex(D3DXVECTOR3(0.0f,size1,0.0f), ((DWORD)(0x40*rate1)<<24) + 0x0000ff,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(-size1,0.0f,0.0f),((DWORD)(0x40*rate1)<<24) + 0x0000ff,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(size1,0.0f,0.0f), ((DWORD)(0x40*rate1)<<24) + 0x0000ff,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(-size2,0.0f,0.0f),((DWORD)(0x40*rate2)<<24) + 0x0000ff,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(size2,0.0f,0.0f), ((DWORD)(0x40*rate2)<<24) + 0x0000ff,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(0.0f,-size2,0.0f),((DWORD)(0x40*rate2)<<24) + 0x0000ff,D3DXVECTOR2(0.0f,0.0f)),*/
-
-			/*TVertex(D3DXVECTOR3(0.0f,size1,0.0f),0x20ff0000,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(-size1,0.0f,0.0f),0x20ff0000,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(size1,0.0f,0.0f),0x20ff0000,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(-size2,0.0f,0.0f),0x20ff0000,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(size2,0.0f,0.0f),0x20ff0000,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(0.0f,-size2,0.0f),0x20ff0000,D3DXVECTOR2(0.0f,0.0f)),*/
-
-			/*TVertex(D3DXVECTOR3(0.0f,size1,0.0f),0xffff0000,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(-size1,0.0f,0.0f),0xffff0000,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(size1,0.0f,0.0f),0xffff0000,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(-size2,0.0f,0.0f),0xff0000ff,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(size2,0.0f,0.0f),0xff0000ff,D3DXVECTOR2(0.0f,0.0f)),
-			TVertex(D3DXVECTOR3(0.0f,-size2,0.0f),0xff0000ff,D3DXVECTOR2(0.0f,0.0f)),*/
 		};
 
 
@@ -246,7 +225,6 @@ void CFlyTrace::Render()
 		D3DXVec3Normalize(&U,&U);
 		D3DXVECTOR3 R;
 		D3DXVec3Cross(&R,&F,&U);
-		//D3DXMatrixIdentity(&m);
 		m._21 = U.x;
 		m._22 = U.y;
 		m._23 = U.z;
@@ -260,19 +238,14 @@ void CFlyTrace::Render()
 			v[i].p += it1->second;
 		for(;i<6;i++)
 			v[i].p += it2->second;
-		//for(i=0;i<6;i++)
-		//	Tracenf("#%d:%f %f %f", i, v[i].p.x,v[i].p.y,v[i].p.z);
-		
-		VSVector.push_back(std::make_pair(-D3DXVec3Dot(&E,&pCurrentCamera->GetView()),TFlyVertexSet(v)));
-		//OLD: STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 4, v, sizeof(TVertex));
-		//OLD: STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, v+1, sizeof(TVertex));		
+		VSVector.push_back(std::make_pair(-D3DXVec3Dot(&E,&pCurrentCamera->GetView()),TFlyVertexSet(v)));		
 	}
 
 	std::sort(VSVector.begin(),VSVector.end());
 
 	for(TFlyVertexSetVector::iterator it = VSVector.begin();it!=VSVector.end();++it)
 	{
-		STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 4, it->second.v, sizeof(TVertex));
+		STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 4, it->second.v, sizeof(TPDTVertex));
 	}
 	STATEMANAGER.RestoreRenderState(D3DRS_DESTBLEND);
 	STATEMANAGER.RestoreRenderState(D3DRS_SRCBLEND);

@@ -4,28 +4,6 @@
 #include "EterLib/StateManager.h"
 #include "GameLib/MapOutDoor.h"
 
-PyObject * backgroundIsSoftwareTiling(PyObject * poSelf, PyObject * poArgs)
-{
-	CPythonBackground& rkBG=CPythonBackground::Instance();
-	return Py_BuildValue("i", rkBG.IsSoftwareTilingEnable());
-}
-
-PyObject * backgroundEnableSoftwareTiling(PyObject * poSelf, PyObject * poArgs)
-{
-	int nIsEnable;
-	if (!PyTuple_GetInteger(poArgs, 0, &nIsEnable))
-		return Py_BadArgument();
-
-	bool isEnable=nIsEnable ? true : false;
-
-	CPythonBackground& rkBG=CPythonBackground::Instance();
-	rkBG.ReserveSoftwareTilingEnable(isEnable);
-
-	CPythonSystem& rkSystem=CPythonSystem::Instance();
-	rkSystem.SetSoftwareTiling(isEnable);
-	return Py_BuildNone();
-}
-
 PyObject * backgroundEnableSnow(PyObject * poSelf, PyObject * poArgs)
 {
 	int nIsEnable;
@@ -527,8 +505,6 @@ void initBackground()
 {
 	static PyMethodDef s_methods[] =
 	{
-		{ "IsSoftwareTiling",					backgroundIsSoftwareTiling,					METH_VARARGS }, 
-		{ "EnableSoftwareTiling",				backgroundEnableSoftwareTiling,				METH_VARARGS }, 
 		{ "EnableSnow",							backgroundEnableSnow,						METH_VARARGS }, 
 		{ "GlobalPositionToLocalPosition",		backgroundGlobalPositionToLocalPosition,	METH_VARARGS }, 
 		{ "GlobalPositionToMapInfo",			backgroundGlobalPositionToMapInfo,			METH_VARARGS }, 

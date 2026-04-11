@@ -9,16 +9,10 @@ bool CGraphicCollisionObject::IntersectBoundBox(const D3DXMATRIX* c_pmatWorld, c
 bool CGraphicCollisionObject::IntersectCube(const D3DXMATRIX* c_pmatWorld, float sx, float sy, float sz, float ex, float ey, float ez,
 								   D3DXVECTOR3 & RayOriginal, D3DXVECTOR3 & RayDirection, float* pu, float* pv, float* pt)
 {
-	TPosition posVertices[8];
-
-	posVertices[0] = TPosition(sx, sy, sz);
-	posVertices[1] = TPosition(ex, sy, sz);
-	posVertices[2] = TPosition(sx, ey, sz);
-	posVertices[3] = TPosition(ex, ey, sz);
-	posVertices[4] = TPosition(sx, sy, ez);
-	posVertices[5] = TPosition(ex, sy, ez);
-	posVertices[6] = TPosition(sx, ey, ez);
-	posVertices[7] = TPosition(ex, ey, ez);
+	D3DXVECTOR3 posVertices[] = {
+		{sx, sy, sz}, {ex, sy, sz}, {sx, ey, sz}, {ex, ey, sz},
+		{sx, sy, ez}, {ex, sy, ez}, {sx, ey, ez}, {ex, ey, ez},
+	};
 
 	static const WORD c_awFillCubeIndices[36] = { 
 		0, 1, 2, 1, 3, 2,
@@ -32,7 +26,7 @@ bool CGraphicCollisionObject::IntersectCube(const D3DXMATRIX* c_pmatWorld, float
 	return IntersectIndexedMesh(
 		c_pmatWorld,
 		posVertices,
-		sizeof(TPosition),
+		sizeof(D3DXVECTOR3),
 		8,
 		c_awFillCubeIndices,
 		36,

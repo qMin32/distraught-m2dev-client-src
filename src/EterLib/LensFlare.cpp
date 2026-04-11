@@ -150,9 +150,9 @@ void CLensFlare::Compute(const D3DXVECTOR3 & c_rv3LightDirection)
 	afSunVector[2] = -afSunPos[2] / fSunVectorMagnitude;
 	
 	float afCameraDirection[3];
-	afCameraDirection[0] = ms_matView._13;
-	afCameraDirection[1] = ms_matView._23;
-	afCameraDirection[2] = ms_matView._33;
+	afCameraDirection[0] = mat.view._13;
+	afCameraDirection[1] = mat.view._23;
+	afCameraDirection[2] = mat.view._33;
 	
 
 	float fDotProduct = 
@@ -190,7 +190,7 @@ void CLensFlare::DrawBeforeFlare()
 	D3DXMATRIX matProj;
 	D3DXMatrixOrthoOffCenterRH(&matProj, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f);
 	STATEMANAGER.SaveTransform(D3DTS_PROJECTION, &matProj);
-	STATEMANAGER.SaveTransform(D3DTS_VIEW, &ms_matIdentity);
+	STATEMANAGER.SaveTransform(D3DTS_VIEW, &MatIdentity());
 
 	D3DXMATRIX matWorld;
 	D3DXMatrixTranslation(&matWorld, m_afFlarePos[0], m_afFlarePos[1], 0.0f);
@@ -205,51 +205,28 @@ void CLensFlare::DrawBeforeFlare()
     STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// glEnable(GL_BLEND);
 	STATEMANAGER.SaveRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	STATEMANAGER.SaveRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	/*
-	if (m_fBeforeBright != 0.0f && m_bDrawFlare && m_bDrawBrightScreen && false)	// ¿Ø false?
-	{
-		glColor4f(1.0f, 1.0f, 1.0f, m_fBeforeBright);
-		glDisable(GL_TEXTURE_2D);
-		glBegin(GL_TRIANGLE_STRIP);
-			glVertex2f(0.0f, 0.0f);
-			glVertex2f(0.0f, 1.0f);
-			glVertex2f(1.0f, 0.0f);
-			glVertex2f(1.0f, 1.0f);
-		glEnd();
-	}
-	*/
+
+
 	float fAspectRatio = ms_Viewport.Width / float(ms_Viewport.Height);
 	float fHeight = m_fSunSize * fAspectRatio;
 	D3DXCOLOR color(1.0f, 1.0f, 1.0f, 1.0f);
 
-	SVertex vertices[4];
-	vertices[0].x = -m_fSunSize;
-	vertices[0].y = -fHeight;
-	vertices[0].z = 0.0f;
-	vertices[0].color = color;
-	vertices[0].u = 0.0f;
-	vertices[0].v = 0.0f;
+	TPDTVertex vertices[4];
+	vertices[0].position = { -m_fSunSize , -fHeight, 0.0f };
+	vertices[0].diffuse = color;
+	vertices[0].texCoord = { 0.0f, 0.0f };
 
-	vertices[1].x = -m_fSunSize;
-	vertices[1].y = fHeight;
-	vertices[1].z = 0.0f;
-	vertices[1].color = color;
-	vertices[1].u = 0.0f;
-	vertices[1].v = 1.0f;
+	vertices[1].position = { -m_fSunSize , fHeight, 0.0f };
+	vertices[1].diffuse = color;
+	vertices[1].texCoord = { 0.0f, 1.0f };
 
-	vertices[2].x = m_fSunSize;
-	vertices[2].y = -fHeight;
-	vertices[2].z = 0.0f;
-	vertices[2].color = color;
-	vertices[2].u = 1.0f;
-	vertices[2].v = 0.0f;
+	vertices[2].position = { m_fSunSize , -fHeight, 0.0f };
+	vertices[2].diffuse = color;
+	vertices[2].texCoord = { 1.0f, 0.0f };
 
-	vertices[3].x = m_fSunSize;
-	vertices[3].y = fHeight;
-	vertices[3].z = 0.0f;
-	vertices[3].color = color;
-	vertices[3].u = 1.0f;
-	vertices[3].v = 1.0f;
+	vertices[3].position = { m_fSunSize , fHeight, 0.0f };
+	vertices[3].diffuse = color;
+	vertices[3].texCoord = { 1.0f, 1.0f };
 
 	STATEMANAGER.SetTexture(0, m_SunFlareImageInstance.GetTexturePointer()->GetD3DTexture());
 	STATEMANAGER.SetTexture(1, NULL);
@@ -260,7 +237,7 @@ void CLensFlare::DrawBeforeFlare()
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 	
 	STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
-	STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(SVertex));
+	STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(TPDTVertex));
 
 	STATEMANAGER.RestoreRenderState(D3DRS_LIGHTING);
 	STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE); // glDisable(GL_DEPTH_TEST);
@@ -325,9 +302,9 @@ void CLensFlare::DrawFlare()
 		D3DXMATRIX matProj;
 		D3DXMatrixOrthoOffCenterRH(&matProj, 0.0f, ms_Viewport.Width, ms_Viewport.Height, 0.0f, -1.0f, 1.0f);
 		STATEMANAGER.SaveTransform(D3DTS_PROJECTION, &matProj);
-		STATEMANAGER.SaveTransform(D3DTS_VIEW, &ms_matIdentity);
+		STATEMANAGER.SaveTransform(D3DTS_VIEW, &MatIdentity());
 
-		STATEMANAGER.SetTransform(D3DTS_WORLD, &ms_matIdentity);
+		STATEMANAGER.SetTransform(D3DTS_WORLD, &MatIdentity());
 		//glMatrixMode(GL_MODELVIEW);
 		//glLoadIdentity();
 
@@ -562,37 +539,14 @@ void CFlare::Draw(float fBrightScale, int nWidth, int nHeight, int nX, int nY)
 
 		STATEMANAGER.SetTexture(0, m_vFlares[i]->m_imageInstance.GetTexturePointer()->GetD3DTexture());
 
-		TVertex vertices[4];
-		
-		vertices[0].u = 0.0f;
-		vertices[0].v = 0.0f;
-		vertices[0].x = fCenterX - fW;
-		vertices[0].y = fCenterY - fW;
-		vertices[0].z = 0.0f;
-		vertices[0].color = d3dColor;
+		TPDTVertex vertices[] = {
+			{fCenterX - fW , fCenterY - fW , 0.0f, d3dColor, 0.0f, 0.0f},
+			{fCenterX - fW , fCenterY + fW , 0.0f, d3dColor, 0.0f, 1.0f},
+			{fCenterX + fW , fCenterY - fW , 0.0f, d3dColor, 1.0f, 0.0f},
+			{fCenterX + fW , fCenterY + fW , 0.0f, d3dColor, 1.0f, 1.0f},
+		};
 
-		vertices[1].u = 0.0f;
-		vertices[1].v = 1.0f;
-		vertices[1].x = fCenterX - fW;
-		vertices[1].y = fCenterY + fW;
-		vertices[1].z = 0.0f;
-		vertices[1].color = d3dColor;
-
-		vertices[2].u = 1.0f;
-		vertices[2].v = 0.0f;
-		vertices[2].x = fCenterX + fW;
-		vertices[2].y = fCenterY - fW;
-		vertices[2].z = 0.0f;
-		vertices[2].color = d3dColor;
-
-		vertices[3].u = 1.0f;
-		vertices[3].v = 1.0f;
-		vertices[3].x = fCenterX + fW;
-		vertices[3].y = fCenterY + fW;
-		vertices[3].z = 0.0f;
-		vertices[3].color = d3dColor;
-
-		STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(TVertex));
+		STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(TPDTVertex));
 	}
 
 	STATEMANAGER.RestoreRenderState(D3DRS_DESTBLEND);

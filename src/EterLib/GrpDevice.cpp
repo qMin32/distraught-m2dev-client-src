@@ -11,7 +11,6 @@ bool GRAPHICS_CAPS_CAN_NOT_DRAW_LINE = false;
 bool GRAPHICS_CAPS_CAN_NOT_DRAW_SHADOW = false;
 bool GRAPHICS_CAPS_HALF_SIZE_IMAGE = false;
 bool GRAPHICS_CAPS_CAN_NOT_TEXTURE_ADDRESS_BORDER = false;
-bool GRAPHICS_CAPS_SOFTWARE_TILING = false;
 
 D3DPRESENT_PARAMETERS g_kD3DPP;
 bool g_isBrowserMode=false;
@@ -532,26 +531,8 @@ RETRY:
 	ms_pntVS = CreatePNTStreamVertexShader();
 	ms_pnt2VS = CreatePNT2StreamVertexShader();
 
-	D3DXMatrixIdentity(&ms_matIdentity);
-	D3DXMatrixIdentity(&ms_matView);
-	D3DXMatrixIdentity(&ms_matProj);
-	D3DXMatrixIdentity(&ms_matInverseView);
-	D3DXMatrixIdentity(&ms_matInverseViewYAxis);
-	D3DXMatrixIdentity(&ms_matScreen0);
-	D3DXMatrixIdentity(&ms_matScreen1);
-	D3DXMatrixIdentity(&ms_matScreen2);
-
-	ms_matScreen0._11 = 1;
-	ms_matScreen0._22 = -1;	
-
-	ms_matScreen1._41 = 1;
-	ms_matScreen1._42 = 1;
-
-	ms_matScreen2._11 = (float) iHres / 2;
-	ms_matScreen2._22 = (float) iVres / 2;
-	
-	D3DXCreateSphere(ms_lpd3dDevice, 1.0f, 32, 32, &ms_lpSphereMesh, NULL);
-	D3DXCreateCylinder(ms_lpd3dDevice, 1.0f, 1.0f, 1.0f, 8, 8, &ms_lpCylinderMesh, NULL);
+	D3DXMatrixIdentity(&mat.view);
+	D3DXMatrixIdentity(&mat.proj);
 
 	ms_lpd3dDevice->Clear(0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xff000000, 1.0f, 0);
 
@@ -751,9 +732,6 @@ void CGraphicDevice::Destroy()
 		ms_pnt2VS->Release();
 		ms_pnt2VS = nullptr;
 	}
-
-	safe_release(ms_lpSphereMesh);
-	safe_release(ms_lpCylinderMesh);
 
 	safe_release(ms_lpd3dMatStack);
 	safe_release(ms_lpd3dDevice);

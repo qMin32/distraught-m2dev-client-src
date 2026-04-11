@@ -42,7 +42,6 @@ CMapOutdoor& CMapManager::GetMapOutdoorRef()
 CMapManager::CMapManager() : mc_pcurEnvironmentData(NULL)
 {
 	m_pkMap = NULL;
-	m_isSoftwareTilingEnableReserved=false;
 
 //	Initialize();
 }
@@ -51,17 +50,6 @@ CMapManager::~CMapManager()
 {
 	Destroy();
 }
-
-bool CMapManager::IsSoftwareTilingEnable()
-{
-	return CTerrainPatch::SOFTWARE_TRANSFORM_PATCH_ENABLE;
-}
-
-void CMapManager::ReserveSoftwareTilingEnable(bool isEnable)
-{
-	m_isSoftwareTilingEnableReserved=isEnable;
-}
-
 
 void CMapManager::Initialize()
 {
@@ -77,8 +65,6 @@ void CMapManager::Create()
 		Clear();
 		return;
 	}
-
-	CTerrainPatch::SOFTWARE_TRANSFORM_PATCH_ENABLE=m_isSoftwareTilingEnableReserved;
 
 	m_pkMap = (CMapOutdoor*)AllocMap();
 

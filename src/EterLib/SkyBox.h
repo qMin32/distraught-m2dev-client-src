@@ -63,7 +63,7 @@ public:
 	
 private:
 	TPDTVertex m_Vertex[4];
-	TIndex m_Indices[4];					// 인덱스 버퍼...
+	WORD m_Indices[4];					// 인덱스 버퍼...
 	CColorTransitionHelper m_Helper[4];
 };
 

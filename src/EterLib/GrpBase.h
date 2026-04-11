@@ -3,106 +3,73 @@
 #include "Ray.h"
 #include <vector>
 
+// to remove ms_matIdentity we use only MatIdentity()
+static inline const D3DXMATRIX& MatIdentity()
+{
+	static const D3DXMATRIX mat(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	return mat;
+}
+
+//what directx need for start is world,view and projection matrix so we can use this struct to set them at once.
+struct BaseMatrix
+{
+	D3DXMATRIX world;
+	D3DXMATRIX view;
+	D3DXMATRIX proj;
+};
+
 void PixelPositionToD3DXVECTOR3(const D3DXVECTOR3& c_rkPPosSrc, D3DXVECTOR3* pv3Dst);
 void D3DXVECTOR3ToPixelPosition(const D3DXVECTOR3& c_rv3Src, D3DXVECTOR3* pv3Dst);
 
 class CGraphicTexture;
 
-typedef WORD TIndex;
-
 typedef struct SFace
 {
-	TIndex indices[3];
+	WORD indices[3];
 } TFace;
 
-typedef D3DXVECTOR3 TPosition;
-
-typedef D3DXVECTOR3 TNormal;
-
-typedef D3DXVECTOR2 TTextureCoordinate;
-
-typedef DWORD TDiffuse;
-typedef DWORD TAmbient;
-typedef DWORD TSpecular;
-
-typedef union UDepth
-{
-	float	f;
-	long	l;
-	DWORD	dw;
-} TDepth;
-
-typedef struct SVertex
-{
-	float x, y, z;
-	DWORD color;
-	float u, v;
-} TVertex;
-
-struct STVertex
-{
-	float x, y, z, rhw;
-};
-
-struct SPVertex
-{
-	float x, y, z;
-};
-
+// a lot of structs have the same size so i will delete some of them 
 typedef struct SPDVertex
 {
 	float x, y, z;
 	DWORD color;
 } TPDVertex;
 
-struct SPDTVertexRaw
-{
-	float px, py, pz;
-	DWORD diffuse;
-	float u, v;
-};
-
 typedef struct SPTVertex
 {
-	TPosition position;
-	TTextureCoordinate texCoord;
+	D3DXVECTOR3 position;
+	D3DXVECTOR2 texCoord;
 } TPTVertex;
 
 typedef struct SPDTVertex
 {
-	TPosition	position;
-	TDiffuse	diffuse;
-	TTextureCoordinate texCoord;
+	D3DXVECTOR3	position;
+	DWORD		diffuse;
+	D3DXVECTOR2 texCoord;
+	SPDTVertex() : position(0.0f, 0.0f, 0.0f), diffuse(0x80339CFF), texCoord(0.0f, 0.0f) {}
+	SPDTVertex(D3DXVECTOR3 pos, DWORD col, D3DXVECTOR2 uv) : position(pos), diffuse(col), texCoord(uv) {}
+	SPDTVertex(float x, float y, float z, DWORD color, float pu, float pv) : position(x, y, z), diffuse(color), texCoord(pu, pv) {}
 } TPDTVertex;
 
 typedef struct SPNTVertex
 {
-	TPosition			position;
-	TNormal				normal;
-	TTextureCoordinate	texCoord;
+	D3DXVECTOR3	position;
+	D3DXVECTOR3 normal;
+	D3DXVECTOR2	texCoord;
 } TPNTVertex;
 
 typedef struct SPNT2Vertex
 {
-	TPosition	position;
-	TNormal		normal;
-	TTextureCoordinate texCoord;
-	TTextureCoordinate texCoord2;
+	D3DXVECTOR3	position;
+	D3DXVECTOR3	normal;
+	D3DXVECTOR2 texCoord;
+	D3DXVECTOR2 texCoord2;
 } TPNT2Vertex;
-
-typedef struct SPDT2Vertex
-{	
-	TPosition	position;
-	DWORD		diffuse;	
-	TTextureCoordinate texCoord;
-	TTextureCoordinate texCoord2;
-} TPDT2Vertex;
-
-typedef struct SNameInfo
-{
-	DWORD	name;
-	TDepth	depth;
-} TNameInfo;
 
 typedef struct SBoundBox
 {
@@ -114,25 +81,11 @@ typedef struct SBoundBox
 
 const WORD c_FillRectIndices[6] = { 0, 2, 1, 2, 3, 1 };
 
-/*
-enum EIndexCount
-{
-	LINE_INDEX_COUNT = 2,
-	TRIANGLE_INDEX_COUNT = 2*3,
-	RECTANGLE_INDEX_COUNT = 2*4,
-	CUBE_INDEX_COUNT = 2*4*3,
-	FILLED_TRIANGLE_INDEX_COUNT = 3,
-	FILLED_RECTANGLE_INDEX_COUNT = 3*2,
-	FILLED_CUBE_INDEX_COUNT = 3*2*6,
-};
-*/
-
 class CGraphicBase
 {
 	public:
 		static DWORD GetAvailableTextureMemory();
 		static const D3DXMATRIX& GetViewMatrix();
-		static const D3DXMATRIX & GetIdentityMatrix();
 
 		enum
 		{			
@@ -154,7 +107,6 @@ class CGraphicBase
 		void		SetEyeCamera(float xEye, float yEye, float zEye, float xCenter, float yCenter, float zCenter, float xUp, float yUp, float zUp);
 		void		SetAroundCamera(float distance, float pitch, float roll, float lookAtZ = 0.0f);
 		void		SetPositionCamera(float fx, float fy, float fz, float fDistance, float fPitch, float fRotation);
-		void		MoveCamera(float fdeltax, float fdeltay, float fdeltaz);
 
 		void		GetTargetPosition(float * px, float * py, float * pz);
 		void		GetCameraPosition(float * px, float * py, float * pz);
@@ -184,8 +136,6 @@ class CGraphicBase
 		void		GetMatrix(D3DXMATRIX * pRetMatrix) const;
 		const		D3DXMATRIX * GetMatrixPointer() const;
 
-		// Special Routine
-		void		GetSphereMatrix(D3DXMATRIX * pMatrix, float fValue = 0.1f);
 
 		////////////////////////////////////////////////////////////////////////
 		void		InitScreenEffect();
@@ -210,28 +160,13 @@ class CGraphicBase
 		static bool		IsHighTextureMemory();
 
 		static void SetDefaultIndexBuffer(UINT eDefIB);
-		static bool SetPDTStream(SPDTVertexRaw* pVertices, UINT uVtxCount);
 		static bool SetPDTStream(SPDTVertex* pVertices, UINT uVtxCount);
 		
 	protected:
-		static D3DXMATRIX				ms_matIdentity;
-
-		static D3DXMATRIX				ms_matView;
-		static D3DXMATRIX				ms_matProj;
-		static D3DXMATRIX				ms_matInverseView;
-		static D3DXMATRIX				ms_matInverseViewYAxis;
-
-		static D3DXMATRIX				ms_matWorld;
-		static D3DXMATRIX				ms_matWorldView;
+		static BaseMatrix				mat;
 
 	protected:
-		//void		UpdatePrePipeLineMatrix();
 		void		UpdatePipeLineMatrix();
-
-	protected:
-		// 각종 D3DX Mesh 들 (컬루젼 데이터 등을 표시활 때 쓴다)
-		static LPD3DXMESH				ms_lpSphereMesh;
-		static LPD3DXMESH				ms_lpCylinderMesh;
 
 	protected:
 		static HRESULT					ms_hLastResult;
@@ -255,11 +190,6 @@ class CGraphicBase
 		static LPDIRECT3DVERTEXDECLARATION9					ms_pntVS;
 		static LPDIRECT3DVERTEXDECLARATION9					ms_pnt2VS;
 
-		static D3DXMATRIX				ms_matScreen0;
-		static D3DXMATRIX				ms_matScreen1;
-		static D3DXMATRIX				ms_matScreen2;
-		//static D3DXMATRIX				ms_matPrePipeLine;
-
 		static D3DXVECTOR3				ms_vtPickRayOrig;
 		static D3DXVECTOR3				ms_vtPickRayDir;
 
@@ -267,18 +197,6 @@ class CGraphicBase
 		static float					ms_fAspect;
 		static float					ms_fNearY;
 		static float					ms_fFarY;
-
-		// 2004.11.18.myevan.DynamicVertexBuffer로 교체
-		/*
-		static std::vector<TIndex>		ms_lineIdxVector;
-		static std::vector<TIndex>		ms_lineTriIdxVector;
-		static std::vector<TIndex>		ms_lineRectIdxVector;
-		static std::vector<TIndex>		ms_lineCubeIdxVector;
-
-		static std::vector<TIndex>		ms_fillTriIdxVector;
-		static std::vector<TIndex>		ms_fillRectIdxVector;
-		static std::vector<TIndex>		ms_fillCubeIdxVector;
-		*/
 
 		// Screen Effect - Waving, Flashing and so on..
 		static DWORD					ms_dwWavingEndTime;

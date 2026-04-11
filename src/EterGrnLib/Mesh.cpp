@@ -17,8 +17,8 @@ void CGrannyMesh::LoadIndices(void * dstBaseIndices)
 {
 	const granny_mesh * pgrnMesh = GetGrannyMeshPointer();
 
-	TIndex * dstIndices = ((TIndex *)dstBaseIndices) + m_idxBasePos;
-	GrannyCopyMeshIndices(pgrnMesh, sizeof(TIndex), dstIndices);
+	WORD * dstIndices = ((WORD*)dstBaseIndices) + m_idxBasePos;
+	GrannyCopyMeshIndices(pgrnMesh, sizeof(WORD), dstIndices);
 }
 
 void CGrannyMesh::LoadPNTVertices(void * dstBaseVertices)

@@ -43,25 +43,25 @@ void CGraphicExpandedImageInstance::OnRender()
 	vertices[0].position.x	= m_v2Position.x-0.5f;
 	vertices[0].position.y	= m_v2Position.y-0.5f;
 	vertices[0].position.z	= m_fDepth;
-	vertices[0].texCoord	= TTextureCoordinate(su, sv);
+	vertices[0].texCoord	= D3DXVECTOR2(su, sv);
 	vertices[0].diffuse		= m_DiffuseColor;
 
 	vertices[1].position.x	= m_v2Position.x-0.5f;
 	vertices[1].position.y	= m_v2Position.y-0.5f;
 	vertices[1].position.z	= m_fDepth;
-	vertices[1].texCoord	= TTextureCoordinate(eu, sv);
+	vertices[1].texCoord	= D3DXVECTOR2(eu, sv);
 	vertices[1].diffuse		= m_DiffuseColor;
 
 	vertices[2].position.x	= m_v2Position.x-0.5f;
 	vertices[2].position.y	= m_v2Position.y-0.5f;
 	vertices[2].position.z	= m_fDepth;
-	vertices[2].texCoord	= TTextureCoordinate(su, ev);
+	vertices[2].texCoord	= D3DXVECTOR2(su, ev);
 	vertices[2].diffuse		= m_DiffuseColor;
 
 	vertices[3].position.x	= m_v2Position.x-0.5f;
 	vertices[3].position.y	= m_v2Position.y-0.5f;
 	vertices[3].position.z	= m_fDepth;
-	vertices[3].texCoord	= TTextureCoordinate(eu, ev);	
+	vertices[3].texCoord	= D3DXVECTOR2(eu, ev);	
 	vertices[3].diffuse		= m_DiffuseColor;
 
 	if (0.0f == m_fRotation)

@@ -7,9 +7,9 @@ void CScreenFilter::Render()
 	if (!m_bEnable)
 		return;
 
-	STATEMANAGER.SaveTransform(D3DTS_PROJECTION, &ms_matIdentity);
- 	STATEMANAGER.SaveTransform(D3DTS_VIEW, &ms_matIdentity);
- 	STATEMANAGER.SetTransform(D3DTS_WORLD, &ms_matIdentity);
+	STATEMANAGER.SaveTransform(D3DTS_PROJECTION, &MatIdentity());
+ 	STATEMANAGER.SaveTransform(D3DTS_VIEW, &MatIdentity());
+ 	STATEMANAGER.SetTransform(D3DTS_WORLD, &MatIdentity());
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_SRCBLEND, m_bySrcType);
 	STATEMANAGER.SaveRenderState(D3DRS_DESTBLEND, m_byDestType);

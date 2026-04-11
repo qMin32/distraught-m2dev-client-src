@@ -309,7 +309,6 @@ void CPythonSystem::SetDefaultConfig()
 	m_Config.voice_volume		= 1.0f;
 
 	m_Config.bDecompressDDS		= 0;
-	m_Config.bSoftwareTiling	= 0;
 	m_Config.iShadowLevel		= 3;
 	// MR-14: Fog update by Alaric
 	m_Config.iFogLevel			= 0;
@@ -365,30 +364,6 @@ void CPythonSystem::SetShowSalesTextFlag(int iFlag)
 	m_Config.bShowSalesText = iFlag == 1 ? true : false;
 }
 
-bool CPythonSystem::IsAutoTiling()
-{
-	if (m_Config.bSoftwareTiling == 0)
-		return true;
-
-	return false;
-}
-
-void CPythonSystem::SetSoftwareTiling(bool isEnable)
-{
-	if (isEnable)
-		m_Config.bSoftwareTiling=1;
-	else
-		m_Config.bSoftwareTiling=2;
-}
-
-bool CPythonSystem::IsSoftwareTiling()
-{
-	if (m_Config.bSoftwareTiling==1)
-		return true;
-
-	return false;
-}
-
 bool CPythonSystem::IsUseDefaultIME()
 {
 	return m_Config.bUseDefaultIME;
@@ -442,8 +417,6 @@ bool CPythonSystem::LoadConfig()
 		}
 		else if (!stricmp(command, "USE_DEFAULT_IME"))
 			m_Config.bUseDefaultIME = atoi(value) == 1 ? true : false;
-		else if (!stricmp(command, "SOFTWARE_TILING"))
-			m_Config.bSoftwareTiling = atoi(value);
 		else if (!stricmp(command, "SHADOW_LEVEL"))
 			m_Config.iShadowLevel = atoi(value);
 		// MR-14: Fog update by Alaric
@@ -550,7 +523,6 @@ bool CPythonSystem::SaveConfig()
 		fprintf(fp, "SHOW_SALESTEXT		%d\n", m_Config.bShowSalesText);
 
 	fprintf(fp, "USE_DEFAULT_IME		%d\n", m_Config.bUseDefaultIME);
-	fprintf(fp, "SOFTWARE_TILING		%d\n", m_Config.bSoftwareTiling);
 	fprintf(fp, "SHADOW_LEVEL			%d\n", m_Config.iShadowLevel);
 	// MR-14: Fog update by Alaric
 	fprintf(fp, "FOG_LEVEL				%d\n", m_Config.iFogLevel);

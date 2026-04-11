@@ -264,7 +264,7 @@ void CGrannyLODController::AddModel(CGraphicThing * pThing, int iSrcModel, CGran
 	if (!m_pCurrentModelInstance)
 	{
 		m_pCurrentModelInstance = pModelInstance;
-		pModelInstance->DeformNoSkin(&ms_matIdentity);
+		pModelInstance->DeformNoSkin(&MatIdentity());
 
 		D3DXVECTOR3 vtMin, vtMax;
 		pModelInstance->GetBoundBox(&vtMin, &vtMax);
@@ -282,9 +282,7 @@ void CGrannyLODController::AddModel(CGraphicThing * pThing, int iSrcModel, CGran
 	}
 	else
 	{
-		// FIXME : CModelInstance::m_pgrnWorldPose를 Update에서 사용하는데,
-		//         Deform을 하지 않으면 NULL 입니다. 구조가 조금 바뀌어야 할지도.. - [levites]
- 		pModelInstance->DeformNoSkin(&ms_matIdentity);
+ 		pModelInstance->DeformNoSkin(&MatIdentity());
 	}	
 
 	pThing->Release();

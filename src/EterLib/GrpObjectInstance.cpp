@@ -230,18 +230,18 @@ bool CGraphicObjectInstance::isIntersect(const CRay & c_rRay, float * pu, float 
 	c_rRay.GetStartPoint(&v3Start);
 	c_rRay.GetDirection(&v3Dir, &fRayRange);
 
-	TPosition posVertices[8];
+	D3DXVECTOR3 posVertices[] = {
+		{m_v3TBBoxMin.x, m_v3TBBoxMin.y, m_v3TBBoxMin.z},
+		{m_v3TBBoxMax.x, m_v3TBBoxMin.y, m_v3TBBoxMin.z},
+		{m_v3TBBoxMin.x, m_v3TBBoxMax.y, m_v3TBBoxMin.z},
+		{m_v3TBBoxMax.x, m_v3TBBoxMax.y, m_v3TBBoxMin.z},
+		{m_v3TBBoxMin.x, m_v3TBBoxMin.y, m_v3TBBoxMax.z},
+		{m_v3TBBoxMax.x, m_v3TBBoxMin.y, m_v3TBBoxMax.z},
+		{m_v3TBBoxMin.x, m_v3TBBoxMax.y, m_v3TBBoxMax.z},
+		{m_v3TBBoxMax.x, m_v3TBBoxMax.y, m_v3TBBoxMax.z}
+	};
 
-	posVertices[0] = TPosition(m_v3TBBoxMin.x, m_v3TBBoxMin.y, m_v3TBBoxMin.z);
-	posVertices[1] = TPosition(m_v3TBBoxMax.x, m_v3TBBoxMin.y, m_v3TBBoxMin.z);
-	posVertices[2] = TPosition(m_v3TBBoxMin.x, m_v3TBBoxMax.y, m_v3TBBoxMin.z);
-	posVertices[3] = TPosition(m_v3TBBoxMax.x, m_v3TBBoxMax.y, m_v3TBBoxMin.z);
-	posVertices[4] = TPosition(m_v3TBBoxMin.x, m_v3TBBoxMin.y, m_v3TBBoxMax.z);
-	posVertices[5] = TPosition(m_v3TBBoxMax.x, m_v3TBBoxMin.y, m_v3TBBoxMax.z);
-	posVertices[6] = TPosition(m_v3TBBoxMin.x, m_v3TBBoxMax.y, m_v3TBBoxMax.z);
-	posVertices[7] = TPosition(m_v3TBBoxMax.x, m_v3TBBoxMax.y, m_v3TBBoxMax.z);
-
-	TIndex Indices[36] = {0, 1, 2, 1, 3, 2,
+	WORD Indices[36] = {0, 1, 2, 1, 3, 2,
 						  2, 0, 6, 0, 4, 6, 
 						  0, 1, 4, 1, 5, 4,
 						  1, 3, 5, 3, 7, 5,

@@ -22,9 +22,9 @@ float CPythonGraphic::GetOrthoDepth()
 
 void CPythonGraphic::SetInterfaceRenderState()
 {
-	STATEMANAGER.SetTransform(D3DTS_PROJECTION, &ms_matIdentity);
- 	STATEMANAGER.SetTransform(D3DTS_VIEW, &ms_matIdentity);
-	STATEMANAGER.SetTransform(D3DTS_WORLD, &ms_matIdentity);
+	STATEMANAGER.SetTransform(D3DTS_PROJECTION, &MatIdentity());
+ 	STATEMANAGER.SetTransform(D3DTS_VIEW, &MatIdentity());
+	STATEMANAGER.SetTransform(D3DTS_WORLD, &MatIdentity());
 
 	STATEMANAGER.SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_NONE);
 	STATEMANAGER.SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_NONE);
@@ -392,8 +392,8 @@ void CPythonGraphic::PushState()
 {
 	TState curState;
 
-	curState.matProj = ms_matProj;
-	curState.matView = ms_matView;
+	curState.matProj = mat.proj;
+	curState.matView = mat.view;
 	//STATEMANAGER.SaveTransform(D3DTS_WORLD, &m_SaveWorldMatrix);
 
 	m_stateStack.push(curState);
@@ -411,8 +411,8 @@ void CPythonGraphic::PopState()
 	TState & rState = m_stateStack.top();
 
 	//STATEMANAGER.RestoreTransform(D3DTS_WORLD);
-	ms_matProj = rState.matProj;
-	ms_matView = rState.matView;
+	mat.proj = rState.matProj;
+	mat.view = rState.matView;
 	
 	UpdatePipeLineMatrix();
 
@@ -469,21 +469,21 @@ void CPythonGraphic::RenderAlphaImage(CGraphicImageInstance* pImageInstance, flo
 	float ev = 1.0f;
 
 	TPDTVertex vertices[4];
-	vertices[0].position = TPosition(sx, sy, z);
+	vertices[0].position = { sx, sy, z };
 	vertices[0].diffuse = DiffuseColor1;
-	vertices[0].texCoord = TTextureCoordinate(su, sv);
+	vertices[0].texCoord = { su, sv };
 
-	vertices[1].position = TPosition(ex, sy, z);
+	vertices[1].position = { ex, sy, z };
 	vertices[1].diffuse = DiffuseColor2;
-	vertices[1].texCoord = TTextureCoordinate(eu, sv);
+	vertices[1].texCoord = { eu, sv };
 
-	vertices[2].position = TPosition(sx, ey, z);
+	vertices[2].position = { sx, ey, z };
 	vertices[2].diffuse = DiffuseColor1;
-	vertices[2].texCoord = TTextureCoordinate(su, ev);
+	vertices[2].texCoord = { su, ev };
 
-	vertices[3].position = TPosition(ex, ey, z);
+	vertices[3].position = { ex, ey, z };
 	vertices[3].diffuse = DiffuseColor2;
-	vertices[3].texCoord = TTextureCoordinate(eu, ev);
+	vertices[3].texCoord = { eu, ev };
 
 	STATEMANAGER.SetVertexDeclaration(ms_pntVS);
 	// 2004.11.18.myevan.DrawIndexPrimitiveUP -> DynamicVertexBuffer

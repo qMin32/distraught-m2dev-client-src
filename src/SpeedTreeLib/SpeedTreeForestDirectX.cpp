@@ -145,7 +145,7 @@ void CSpeedTreeForestDirectX::Render(unsigned long ulRenderBitVector)
 		return;
 
 	if (!(ulRenderBitVector & Forest_RenderToShadow) && !(ulRenderBitVector & Forest_RenderToMiniMap))
-		UpdateCompundMatrix(CCameraManager::Instance().GetCurrentCamera()->GetEye(), ms_matView, ms_matProj);
+		UpdateCompundMatrix(CCameraManager::Instance().GetCurrentCamera()->GetEye(), mat.view, mat.proj);
 
 	DWORD dwLightState = STATEMANAGER.GetRenderState(D3DRS_LIGHTING);
 	DWORD dwColorVertexState = STATEMANAGER.GetRenderState(D3DRS_COLORVERTEX);

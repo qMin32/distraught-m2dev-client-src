@@ -18,9 +18,6 @@ class CMapManager : public CScreen, public IPhysicsWorld
 		bool IsMapOutdoor();
 		CMapOutdoor& GetMapOutdoorRef();
 
-		bool	IsSoftwareTilingEnable();
-		void	ReserveSoftwareTilingEnable(bool isEnable);
-
 		//////////////////////////////////////////////////////////////////////////
 		// Contructor / Destructor
 		//////////////////////////////////////////////////////////////////////////
@@ -137,8 +134,6 @@ class CMapManager : public CScreen, public IPhysicsWorld
 
 	protected:
 		TMapInfoVector			m_kVct_kMapInfo;
-
-		bool m_isSoftwareTilingEnableReserved;
 
 	protected:
 		void	__LoadMapInfoVector();

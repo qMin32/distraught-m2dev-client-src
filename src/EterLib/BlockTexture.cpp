@@ -66,25 +66,25 @@ void CBlockTexture::Render(int ix, int iy)
 	vertices[0].position.x	= isx - 0.5f;
 	vertices[0].position.y	= isy - 0.5f;
 	vertices[0].position.z	= 0.0f;
-	vertices[0].texCoord	= TTextureCoordinate(su, sv);
+	vertices[0].texCoord	= D3DXVECTOR2(su, sv);
 	vertices[0].diffuse		= 0xffffffff;
 
 	vertices[1].position.x	= iex - 0.5f;
 	vertices[1].position.y	= isy - 0.5f;
 	vertices[1].position.z	= 0.0f;
-	vertices[1].texCoord	= TTextureCoordinate(eu, sv);
+	vertices[1].texCoord	= D3DXVECTOR2(eu, sv);
 	vertices[1].diffuse		= 0xffffffff;
 
 	vertices[2].position.x	= isx - 0.5f;
 	vertices[2].position.y	= iey - 0.5f;
 	vertices[2].position.z	= 0.0f;
-	vertices[2].texCoord	= TTextureCoordinate(su, ev);
+	vertices[2].texCoord	= D3DXVECTOR2(su, ev);
 	vertices[2].diffuse		= 0xffffffff;
 
 	vertices[3].position.x	= iex - 0.5f;
 	vertices[3].position.y	= iey - 0.5f;
 	vertices[3].position.z	= 0.0f;
-	vertices[3].texCoord	= TTextureCoordinate(eu, ev);	
+	vertices[3].texCoord	= D3DXVECTOR2(eu, ev);	
 	vertices[3].diffuse		= 0xffffffff;
 
 	if (CGraphicBase::SetPDTStream(vertices, 4))
