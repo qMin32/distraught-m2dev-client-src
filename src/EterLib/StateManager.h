@@ -180,9 +180,6 @@ public:
 	void	SetMaterial(const D3DMATERIAL9* pMaterial);
 	void	GetMaterial(D3DMATERIAL9* pMaterial);
 
-	void	SetLight(DWORD index, CONST D3DLIGHT9* pLight);
-	void	GetLight(DWORD index, D3DLIGHT9* pLight);
-
 	// Scissor Rect
 	void	SetScissorRect(const RECT& c_rRect);
 	void	GetScissorRect(RECT* pRect);

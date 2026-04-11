@@ -1,7 +1,6 @@
 #pragma once
 
 #include <d3dx9.h>
-
 #include "EterLib/TextFileLoader.h"
 
 #include "Type.h"
@@ -24,7 +23,7 @@ class CLightData : public CEffectElementBase
 		{
 			return m_iLoopCount;
 		}
-		void InitializeLight(D3DLIGHT9& light);
+		void InitializeLight(Light& light);
 
 	protected:
 		void OnClear();

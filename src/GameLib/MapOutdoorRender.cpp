@@ -125,9 +125,9 @@ void CMapOutdoor::__RenderTerrain_AppendPatch(const D3DXVECTOR3& c_rv3Center, fl
 	m_PatchVector.push_back(std::make_pair(fDistance, lPatchNum));
 }
 
-void CMapOutdoor::ApplyLight(DWORD dwVersion, const D3DLIGHT9& c_rkLight)
+void CMapOutdoor::ApplyLight(DWORD dwVersion, const Light& c_rkLight)
 {
-	STATEMANAGER.SetLight(0, &c_rkLight);
+	//STATEMANAGER.SetLight(0, &c_rkLight);
 }
 
 // 2004. 2. 17. myevan. 모든 부분을 보이게 초기화 한다

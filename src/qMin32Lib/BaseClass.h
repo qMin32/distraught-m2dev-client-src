@@ -19,9 +19,13 @@ public: // BaseClassResource.cpp
 
 	RefPtr<CIndexBuffer> CreateIndexBuffer(const void* data, UINT indexCount, DWORD usage = D3DUSAGE_WRITEONLY, D3DFORMAT format = D3DFMT_INDEX16);
 	void SetIndexBuffer(const RefPtr<CIndexBuffer>& ib) const;
+	
+	RefPtr<CShaders> CreateShader(const std::string& vsName = "", const std::string& psName = "");
+	void SetShader(const RefPtr<CShaders>& shader);
 
 private:
 	LPDIRECT3DDEVICE9EX m_device;
 	RefPtr<CVertexDecl> m_layout;
+	RefPtr<ShadersContainer> m_shadersContainer;
 };
 

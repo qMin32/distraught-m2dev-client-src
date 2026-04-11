@@ -59,42 +59,32 @@ void CPythonGraphic::SetCursorPosition(int x, int y)
 
 void CPythonGraphic::SetOmniLight()
 {
-    // Set up a material
-    D3DMATERIAL9 Material;
+	// Set up a material
+	D3DMATERIAL9 Material;
 	Material.Ambient = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
 	Material.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	Material.Emissive = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
-    STATEMANAGER.SetMaterial(&Material);
+	STATEMANAGER.SetMaterial(&Material);
 
-	D3DLIGHT9 Light;
-	Light.Type = D3DLIGHT_SPOT;
-    Light.Position = D3DXVECTOR3(50.0f, 150.0f, 350.0f);
-    Light.Direction = D3DXVECTOR3(-0.15f, -0.3f, -0.9f);
-    Light.Theta = D3DXToRadian(30.0f);
-    Light.Phi = D3DXToRadian(45.0f);
-    Light.Falloff = 1.0f;
-    Light.Attenuation0 = 0.0f;
-    Light.Attenuation1 = 0.005f;
-    Light.Attenuation2 = 0.0f;
-    Light.Diffuse.r = 1.0f;
-    Light.Diffuse.g = 1.0f;
-    Light.Diffuse.b = 1.0f;
-	Light.Diffuse.a = 1.0f;
-	Light.Ambient.r = 1.0f;
-	Light.Ambient.g = 1.0f;
-	Light.Ambient.b = 1.0f;
-	Light.Ambient.a = 1.0f;
-    Light.Range = 500.0f;
-	ms_lpd3dDevice->SetLight(0, &Light);
-	ms_lpd3dDevice->LightEnable(0, TRUE);
+	Light Light;
+	Light.Type = LightType::Spot;
+	Light.Position = D3DXVECTOR3(50.0f, 150.0f, 350.0f);
+	Light.Direction = D3DXVECTOR3(-0.15f, -0.3f, -0.9f);
+	Light.Theta = D3DXToRadian(30.0f);
+	Light.Phi = D3DXToRadian(45.0f);
+	Light.FallOff = 1.0f;
+	Light.Attenuation0 = 0.0f;
+	Light.Attenuation1 = 0.005f;
+	Light.Attenuation2 = 0.0f;
+	Light.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Light.Ambient = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Light.Range = 500.0f;
 
-	Light.Type = D3DLIGHT_POINT;
+	Light.Type = LightType::Point;
 	Light.Position = D3DXVECTOR3(0.0f, 200.0f, 200.0f);
 	Light.Attenuation0 = 0.1f;
 	Light.Attenuation1 = 0.01f;
 	Light.Attenuation2 = 0.0f;
-	ms_lpd3dDevice->SetLight(1, &Light);
-	ms_lpd3dDevice->LightEnable(1, TRUE);
 }
 
 void CPythonGraphic::SetViewport(float fx, float fy, float fWidth, float fHeight)

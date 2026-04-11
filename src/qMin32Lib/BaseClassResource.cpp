@@ -39,3 +39,25 @@ void BaseClass::SetIndexBuffer(const RefPtr<CIndexBuffer>& ib) const
     STATEMANAGER.SetIndices(ib->Get(), 0);
 }
 // end IndexBuffer
+
+// start Shader
+
+RefPtr<CShaders> BaseClass::CreateShader(const std::string& vsName, const std::string& psName)
+{
+    return std::make_shared<CShaders>(m_device, vsName, psName);
+}
+
+void BaseClass::SetShader(const RefPtr<CShaders>& shader)
+{
+    if (!shader)
+    {
+        m_device->SetVertexShader(nullptr);
+        m_device->SetPixelShader(nullptr);
+        return;
+    }
+
+    m_device->SetVertexShader(shader->GetVS());
+    m_device->SetPixelShader(shader->GetPS());
+}
+
+// end Shader

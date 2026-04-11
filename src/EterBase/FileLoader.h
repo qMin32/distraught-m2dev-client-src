@@ -7,6 +7,7 @@
 #include <map>
 
 #include "Stl.h"
+#include "qMin32Lib/Core.h"
 
 class CMemoryTextFileLoader
 {

@@ -13,7 +13,7 @@ void Environment_Init(SEnvironmentData& envData)
 		envData.DirLights[i].Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 		envData.DirLights[i].Ambient = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
 		envData.DirLights[i].Range = 0.0f; // Used by Point Light & Spot Light
-		envData.DirLights[i].Falloff = 1.0f; // Used by Spot Light
+		envData.DirLights[i].FallOff = 1.0f; // Used by Spot Light
 		envData.DirLights[i].Theta = 0.0f; // Used by Spot Light
 		envData.DirLights[i].Phi = 0.0f; // Used by Spot Light
 		envData.DirLights[i].Attenuation0 = 0.0f;

@@ -32,7 +32,7 @@ void CLightManager::Initialize()
 	m_LightPool.FreeAll();
 }
 
-void CLightManager::RegisterLight(ELightType /*LightType*/, TLightID * poutLightID, D3DLIGHT9 & LightData)
+void CLightManager::RegisterLight(ELightType /*LightType*/, TLightID * poutLightID, Light & LightData)
 {
 	CLight * pLight = m_LightPool.Alloc();
 	TLightID ID = NewLightID();
@@ -184,9 +184,7 @@ void CLight::Initialize()
 	m_isEdited	= TRUE;
 	m_fDistance	= 0.0f;
 
-	memset(&m_d3dLight, 0, sizeof(m_d3dLight));
-
-	m_d3dLight.Type			= D3DLIGHT_POINT;
+	m_d3dLight.Type			= LightType::Point;
 	m_d3dLight.Attenuation0	= 0.0f;
 	m_d3dLight.Attenuation1	= 1.0f;
 	m_d3dLight.Attenuation2	= 0.0f;
@@ -201,18 +199,10 @@ void CLight::Clear()
 
 void CLight::SetDeviceLight(BOOL bActive)
 {
-	if (bActive && m_isEdited)
-	{
-		if (ms_lpd3dDevice)
-			ms_lpd3dDevice->SetLight(m_LightID, &m_d3dLight);
-	}
-	if (ms_lpd3dDevice)
-	{
-		ms_lpd3dDevice->LightEnable(m_LightID, bActive);
-	}
+
 }
 
-void CLight::SetParameter(TLightID id, const D3DLIGHT9 & c_rLight)
+void CLight::SetParameter(TLightID id, const Light& c_rLight)
 {
 	m_LightID	= id;
 	m_d3dLight	= c_rLight;

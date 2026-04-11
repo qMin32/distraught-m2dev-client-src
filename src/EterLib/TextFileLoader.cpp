@@ -677,6 +677,25 @@ BOOL CTextFileLoader::GetTokenColor(const std::string & c_rstrKey, D3DCOLORVALUE
 	return TRUE;
 }
 
+BOOL CTextFileLoader::GetTokenColor(const std::string& c_rstrKey, ColorStruct* pColor)
+{
+	CTokenVector* pTokenVector;
+	if (!GetTokenVector(c_rstrKey, &pTokenVector))
+		return FALSE;
+
+	if (pTokenVector->size() != 4)
+	{
+		return FALSE;
+	}
+
+	pColor->r = atof(pTokenVector->at(0).c_str());
+	pColor->g = atof(pTokenVector->at(1).c_str());
+	pColor->b = atof(pTokenVector->at(2).c_str());
+	pColor->a = atof(pTokenVector->at(3).c_str());
+
+	return TRUE;
+}
+
 BOOL CTextFileLoader::GetTokenString(const std::string & c_rstrKey, std::string * pString)
 {
 	CTokenVector * pTokenVector;
