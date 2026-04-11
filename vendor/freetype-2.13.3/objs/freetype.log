@@ -14,8 +14,8 @@
   ftpatent.c
   ftpfr.c
   ftstroke.c
-  fttype1.c
   ftsynth.c
+  fttype1.c
   ftwinfnt.c
   bdf.c
   ftcache.c
