@@ -46,7 +46,7 @@ void CMapOutdoor::RenderWater()
 	D3DXMatrixMultiply(&matTexTransformWater, &m_matViewInverse, &matTexTransformWater);
 	
 	STATEMANAGER.SaveTransform(D3DTS_TEXTURE0, &matTexTransformWater);
-	STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+	m_dx->SetVertexDeclaration(VD_PD);
 
 	STATEMANAGER.SaveTextureStageState(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEPOSITION);
 	STATEMANAGER.SaveTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);

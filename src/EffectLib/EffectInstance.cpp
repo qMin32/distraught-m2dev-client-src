@@ -91,7 +91,7 @@ void CEffectInstance::OnUpdate()
 
 void CEffectInstance::OnRender()
 {
-	STATEMANAGER.SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+	m_dx->SetVertexDeclaration(VD_PT);
 
 	STATEMANAGER.SaveSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_NONE);
 	STATEMANAGER.SaveSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_NONE);

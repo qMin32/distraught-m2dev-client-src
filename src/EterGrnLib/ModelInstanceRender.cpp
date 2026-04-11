@@ -25,7 +25,7 @@ void CGrannyModelInstance::RenderWithOneTexture()
 	if (IsEmpty())
 		return;
 
-	STATEMANAGER.SetVertexDeclaration(ms_pntVS);
+	m_dx->SetVertexDeclaration(VD_PNT);
 
 	// WORK
 	auto lpd3dDeformPNTVtxBuf = GetDeformableVertexBuffer();
@@ -55,7 +55,7 @@ void CGrannyModelInstance::BlendRenderWithOneTexture()
 	// END_OF_WORK
 	auto lpd3dRigidPNTVtxBuf = m_pModel->GetVertexBuffer();
 
- 	STATEMANAGER.SetVertexDeclaration(ms_pntVS);
+	m_dx->SetVertexDeclaration(VD_PNT);
 
 	if (lpd3dDeformPNTVtxBuf)
 	{
@@ -77,7 +77,7 @@ void CGrannyModelInstance::RenderWithTwoTexture()
 	if (IsEmpty())
 		return;
 
-	STATEMANAGER.SetVertexDeclaration(ms_pntVS);
+	m_dx->SetVertexDeclaration(VD_PNT2);
 
 	// WORK
 	auto lpd3dDeformPNTVtxBuf = GetDeformableVertexBuffer();
@@ -106,7 +106,7 @@ void CGrannyModelInstance::BlendRenderWithTwoTexture()
 	// END_OF_WORK
 	auto lpd3dRigidPNTVtxBuf = m_pModel->GetVertexBuffer();
 
- 	STATEMANAGER.SetVertexDeclaration(ms_pntVS);
+	m_dx->SetVertexDeclaration(VD_PNT2);
 
 	if (lpd3dDeformPNTVtxBuf)
 	{
@@ -126,7 +126,7 @@ void CGrannyModelInstance::RenderWithoutTexture()
 	if (IsEmpty())
 		return;
 
-	STATEMANAGER.SetVertexDeclaration(ms_pntVS);
+	m_dx->SetVertexDeclaration(VD_PNT);
 	STATEMANAGER.SetTexture(0, NULL);
 	STATEMANAGER.SetTexture(1, NULL);
 

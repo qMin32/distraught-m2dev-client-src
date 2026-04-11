@@ -164,10 +164,8 @@ void CStateManager::SetDefaultState()
 		stack.clear();
 
 	m_MaterialStack.clear();
-	m_FVFStack.clear();
 	m_PixelShaderStack.clear();
 	m_VertexShaderStack.clear();
-	m_VertexDeclarationStack.clear();
 	m_VertexProcessingStack.clear();
 	m_IndexStack.clear();
 
@@ -398,7 +396,6 @@ void CStateManager::SetDefaultState()
 	SetTexture(7, NULL);
 
 	SetPixelShader(0);
-	SetFVF(D3DFVF_XYZ);
 
 	D3DXVECTOR4 av4Null[STATEMANAGER_MAX_VCONSTANTS];
 	memset(av4Null, 0, sizeof(av4Null));
@@ -622,48 +619,6 @@ void CStateManager::RestoreVertexProcessing()
 {
 	m_lpD3DDev->SetSoftwareVertexProcessing(m_VertexProcessingStack.back());
 	m_VertexProcessingStack.pop_back();
-}
-// Vertex Declaration
-void CStateManager::SaveVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9 dwShader)
-{
-	m_VertexDeclarationStack.push_back(m_CurrentState.m_dwVertexDeclaration);
-	SetVertexDeclaration(dwShader);
-}
-void CStateManager::RestoreVertexDeclaration()
-{
-	SetVertexDeclaration(m_VertexDeclarationStack.back());
-	m_VertexDeclarationStack.pop_back();
-}
-void CStateManager::SetVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9 dwShader)
-{
-	m_lpD3DDev->SetVertexDeclaration(dwShader);
-	m_CurrentState.m_dwVertexDeclaration = dwShader;
-}
-void CStateManager::GetVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9* pdwShader)
-{
-	*pdwShader = m_CurrentState.m_dwVertexDeclaration;
-}
-// FVF
-void CStateManager::SaveFVF(DWORD dwShader)
-{
-	m_FVFStack.push_back(m_CurrentState.m_dwFVF);
-	SetFVF(dwShader);
-}
-void CStateManager::RestoreFVF()
-{
-	SetFVF(m_FVFStack.back());
-	m_FVFStack.pop_back();
-}
-void CStateManager::SetFVF(DWORD dwShader)
-{
-	//if (m_CurrentState.m_dwFVF == dwShader)
-	//	return;
-	m_lpD3DDev->SetFVF(dwShader);
-	m_CurrentState.m_dwFVF = dwShader;
-}
-void CStateManager::GetFVF(DWORD* pdwShader)
-{
-	*pdwShader = m_CurrentState.m_dwFVF;
 }
 
 // Pixel Shader

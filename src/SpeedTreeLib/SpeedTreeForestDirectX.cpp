@@ -45,7 +45,7 @@
 ///////////////////////////////////////////////////////////////////////  
 //	CSpeedTreeForestDirectX::CSpeedTreeForestDirectX
 
-CSpeedTreeForestDirectX::CSpeedTreeForestDirectX()  : m_dwBranchVertexShader(nullptr), m_pLeafVertexShaderDecl(nullptr), m_pLeafVertexShader(nullptr)
+CSpeedTreeForestDirectX::CSpeedTreeForestDirectX()  : m_pLeafVertexShader(nullptr)
 {
 }
 
@@ -62,16 +62,12 @@ CSpeedTreeForestDirectX::~CSpeedTreeForestDirectX()
 //	CSpeedTreeForestDirectX::InitVertexShaders
 bool CSpeedTreeForestDirectX::InitVertexShaders(void)
 {
-	// load the vertex shaders
-	if (!m_dwBranchVertexShader)
-		m_dwBranchVertexShader = LoadBranchShader(m_pDx);
+	if (!m_pLeafVertexShader)
+		LoadLeafShader(m_pDx, m_pLeafVertexShader);
 
-	if (!m_pLeafVertexShaderDecl || !m_pLeafVertexShader)
-		LoadLeafShader(m_pDx, m_pLeafVertexShaderDecl, m_pLeafVertexShader);
-
-	if (m_dwBranchVertexShader && m_pLeafVertexShaderDecl && m_pLeafVertexShader)
+	if (m_pLeafVertexShader)
 	{
-		CSpeedTreeWrapper::SetVertexShaders(m_dwBranchVertexShader, m_pLeafVertexShaderDecl, m_pLeafVertexShader);
+		CSpeedTreeWrapper::SetVertexShaders(m_pLeafVertexShader);
 		return true;
 	}
 
@@ -215,7 +211,7 @@ void CSpeedTreeForestDirectX::Render(unsigned long ulRenderBitVector)
 	}
 
 	// choose fixed function pipeline or custom shader for fronds and branches
-	STATEMANAGER.SetVertexDeclaration(m_dwBranchVertexShader);
+	m_dx->SetVertexDeclaration(VD_BRANCH);
 
 	// render branches
 	if (ulRenderBitVector & Forest_RenderBranches)
@@ -261,7 +257,8 @@ void CSpeedTreeForestDirectX::Render(unsigned long ulRenderBitVector)
 	// render leaves
 	if (ulRenderBitVector & Forest_RenderLeaves)
 	{
-		STATEMANAGER.SetVertexDeclaration(m_pLeafVertexShaderDecl);
+		m_dx->SetVertexDeclaration(VD_LEAF);
+
 		STATEMANAGER.SaveVertexShader(m_pLeafVertexShader);
 
 		if (STATEMANAGER.GetRenderState(D3DRS_FOGENABLE))

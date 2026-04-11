@@ -305,7 +305,8 @@ void CSpeedGrassWrapper::InitGraphics(void)
 //		pRegion->m_pVertexBuffer->SetStride(CIdvVertexBuffer::VERTEX_COLOR, 4, GL_UNSIGNED_BYTE, 0, (unsigned char*) pTexCoords1 - pBuffer);
 //		pRegion->m_pVertexBuffer->SetStride(CIdvVertexBuffer::VERTEX_POSITION, 3, GL_FLOAT, 0, pColors - pBuffer);
 
- 		DWORD dwFVF = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+		m_dx->SetVertexDeclaration(VD_PDT);
+
 // 		pRegion->m_VertexBuffer.Create();
 		
 		delete[] pBuffer;

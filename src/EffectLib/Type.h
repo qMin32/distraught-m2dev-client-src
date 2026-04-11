@@ -1,50 +1,6 @@
 #pragma once
 #include <d3dx9math.h>
 
-#define Clamp(x, min, max)  x = (x<min  ? min : x<max ? x : max);
-#define GRAVITY			D3DXVECTOR3(0.0f, 0.0f, -9.8f)
-
-#define	MAX_FRAME		20
-#define MAX_TEXTURE		20
-
-typedef	struct	_FVF_POINT
-{
-	float	x, y, z;
-} FVF_POINT;
-
-#ifndef D3DFVF_POINT
-#define	D3DFVF_POINT (D3DFVF_XYZ)
-#endif
-
-
-typedef	struct	_FVF_PT
-{
-	float	x, y, z;
-	float	tu, tv;
-} FVF_PT;
-
-#ifndef D3DFVF_PT
-#define	D3DFVF_PT (D3DFVF_XYZ|D3DFVF_TEX1)
-#endif
-
-typedef	struct	_FVF_PDT
-{
-	float	x, y, z;
-	DWORD	color;
-	float	tu, tv;
-} FVF_PDT;
-
-#ifndef D3DFVF_PDT
-#define	D3DFVF_PDT (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
-#endif
-
-inline FVF_PDT _FVF_PDT(float x, float y, float z, DWORD dif, float u, float v)
-{
-	FVF_PDT	result;
-	result.x = x; result.y = y; result.z = z; result.color = dif; result.tu = u; result.tv = v;
-	return	result;
-}
-
 enum EEffectType
 {
 	EFFECT_TYPE_PARTICLE = 1,

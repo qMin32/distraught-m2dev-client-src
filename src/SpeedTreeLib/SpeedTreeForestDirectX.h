@@ -60,8 +60,5 @@ class CSpeedTreeForestDirectX : public CSpeedTreeForest, public CGraphicBase, pu
 	private:
 		LPDIRECT3DDEVICE9		m_pDx;							// the rendering context
 
-		LPDIRECT3DVERTEXDECLARATION9 m_dwBranchVertexShader;			// branch/frond vertex shaders	
-
-		LPDIRECT3DVERTEXDECLARATION9	m_pLeafVertexShaderDecl;			// leaf vertex shader declaration
 		LPDIRECT3DVERTEXSHADER9			m_pLeafVertexShader;				// leaf vertex shader
 };

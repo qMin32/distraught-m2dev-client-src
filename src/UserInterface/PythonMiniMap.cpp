@@ -297,7 +297,7 @@ void CPythonMiniMap::Render(float fScreenX, float fScreenY)
 	STATEMANAGER.SetTexture(1, m_MiniMapFilterGraphicImageInstance.GetTexturePointer()->GetD3DTexture());
 	STATEMANAGER.SetTransform(D3DTS_TEXTURE1, &m_matMiniMapCover);
 
-	STATEMANAGER.SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+	m_dx->SetVertexDeclaration(VD_PT);
 	m_dx->SetVertexBuffer(m_VertexBuffer);
 	m_dx->SetIndexBuffer(m_IndexBuffer);
 	STATEMANAGER.SetTransform(D3DTS_WORLD, &m_matWorld);

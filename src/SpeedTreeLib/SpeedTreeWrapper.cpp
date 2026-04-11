@@ -24,8 +24,6 @@
 
 using namespace std;
 
-LPDIRECT3DVERTEXDECLARATION9 CSpeedTreeWrapper::ms_dwBranchVertexShader = nullptr;
-LPDIRECT3DVERTEXDECLARATION9 CSpeedTreeWrapper::ms_pLeafVertexShaderDecl = nullptr;
 LPDIRECT3DVERTEXSHADER9 CSpeedTreeWrapper::ms_pLeafVertexShader = nullptr;
 bool CSpeedTreeWrapper::ms_bSelfShadowOn = true;
 
@@ -49,23 +47,15 @@ CSpeedTreeWrapper::CSpeedTreeWrapper() :
 	m_pSpeedTree->SetLocalMatrices(0, 4);
 }
 
-void CSpeedTreeWrapper::SetVertexShaders(LPDIRECT3DVERTEXDECLARATION9 pBranchVertexShader, LPDIRECT3DVERTEXDECLARATION9 pLeafVertexShader, LPDIRECT3DVERTEXSHADER9 pVertexShader)
+void CSpeedTreeWrapper::SetVertexShaders(LPDIRECT3DVERTEXSHADER9 pVertexShader)
 {
-	ms_dwBranchVertexShader = pBranchVertexShader;
-	ms_pLeafVertexShaderDecl = pLeafVertexShader;
 	ms_pLeafVertexShader = pVertexShader;
 }
 
 void CSpeedTreeWrapper::OnRenderPCBlocker()
 {
-	if (!ms_dwBranchVertexShader || !ms_pLeafVertexShaderDecl || !ms_pLeafVertexShader)
+	if (!!ms_pLeafVertexShader)
 		CSpeedTreeForestDirectX::Instance().EnsureVertexShaders();
-
-	if (ms_dwBranchVertexShader == 0)
-	{
-		ms_dwBranchVertexShader = LoadBranchShader(ms_lpd3dDevice);
-		//LogBox("Vertex Shader not assigned. You must call CSpeedTreeWrapper::SetVertexShader for this");
-	}
 
 	CSpeedTreeForestDirectX::Instance().UpdateSystem(ELTimer_GetMSec() / 1000.0f);
 
@@ -97,7 +87,7 @@ void CSpeedTreeWrapper::OnRenderPCBlocker()
 	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, FALSE);
 
 	// choose fixed function pipeline or custom shader for fronds and branches
-	STATEMANAGER.SetVertexDeclaration(ms_dwBranchVertexShader);
+	m_dx->SetVertexDeclaration(VD_BRANCH);
 
 	{
 		LPDIRECT3DTEXTURE9 lpd3dTexture;
@@ -134,9 +124,10 @@ void CSpeedTreeWrapper::OnRenderPCBlocker()
 	}
 	RenderFronds();
 
-	if (ms_pLeafVertexShaderDecl && ms_pLeafVertexShader)
+	if (ms_pLeafVertexShader)
 	{
-		STATEMANAGER.SetVertexDeclaration(ms_pLeafVertexShaderDecl);
+		m_dx->SetVertexDeclaration(VD_LEAF);
+
 		STATEMANAGER.SaveVertexShader(ms_pLeafVertexShader);
 
 		{
@@ -167,13 +158,8 @@ void CSpeedTreeWrapper::OnRenderPCBlocker()
 
 void CSpeedTreeWrapper::OnRender()
 {
-	if (!ms_dwBranchVertexShader || !ms_pLeafVertexShaderDecl || !ms_pLeafVertexShader)
+	if (!ms_pLeafVertexShader)
 		CSpeedTreeForestDirectX::Instance().EnsureVertexShaders();
-
-	if (ms_dwBranchVertexShader == 0)
-	{
-		ms_dwBranchVertexShader = LoadBranchShader(ms_lpd3dDevice);
-	}
 
 	CSpeedTreeForestDirectX::Instance().UpdateSystem(ELTimer_GetMSec() / 1000.0f);
 
@@ -201,8 +187,7 @@ void CSpeedTreeWrapper::OnRender()
 	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 	STATEMANAGER.SaveRenderState(D3DRS_FOGENABLE, FALSE);
 
-	STATEMANAGER.SetVertexDeclaration(ms_dwBranchVertexShader);
-
+	m_dx->SetVertexDeclaration(VD_BRANCH);
 	SetupBranchForTreeType();
 	RenderBranches();
 
@@ -212,9 +197,10 @@ void CSpeedTreeWrapper::OnRender()
 	SetupFrondForTreeType();
 	RenderFronds();
 
-	if (ms_pLeafVertexShaderDecl && ms_pLeafVertexShader)
+	if (ms_pLeafVertexShader)
 	{
-		STATEMANAGER.SetVertexDeclaration(ms_pLeafVertexShaderDecl);
+		m_dx->SetVertexDeclaration(VD_LEAF);
+
 		STATEMANAGER.SaveVertexShader(ms_pLeafVertexShader);
 
 		SetupLeafForTreeType();
@@ -1028,7 +1014,7 @@ void CSpeedTreeWrapper::RenderBillboards(void) const
 			{ pCoords[9], pCoords[10], pCoords[11], pTexCoords[6], pTexCoords[7] },
 		};
 
-		STATEMANAGER.SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PT);
 		STATEMANAGER.SetRenderState(D3DRS_ALPHAREF, DWORD(m_pGeometryCache->m_sBillboard0.m_fAlphaTestValue));
 
 		ms_faceCount += 2;

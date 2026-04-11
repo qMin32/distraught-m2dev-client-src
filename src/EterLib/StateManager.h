@@ -134,8 +134,6 @@ public:
 
 		m_dwPixelShader = 0;
 		m_dwVertexShader = 0;
-		m_dwVertexDeclaration = 0;
-		m_dwFVF = D3DFVF_XYZ;
 		m_bVertexProcessing = FALSE;
 	}
 
@@ -152,8 +150,6 @@ public:
 	// Shaders
 	LPDIRECT3DPIXELSHADER9  m_dwPixelShader;
 	LPDIRECT3DVERTEXSHADER9 m_dwVertexShader;
-	LPDIRECT3DVERTEXDECLARATION9 m_dwVertexDeclaration;
-	DWORD					m_dwFVF;
 
 	D3DXMATRIX				m_Matrices[STATEMANAGER_MAX_TRANSFORMSTATES];
 
@@ -221,18 +217,6 @@ public:
 	void	RestoreVertexShader();
 	void	SetVertexShader(LPDIRECT3DVERTEXSHADER9 dwShader);
 	void	GetVertexShader(LPDIRECT3DVERTEXSHADER9* pdwShader);
-
-	// Vertex Declaration
-	void	SaveVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9 dwShader);
-	void	RestoreVertexDeclaration();
-	void	SetVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9 dwShader);
-	void	GetVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9* pdwShader);
-
-	// FVF
-	void	SaveFVF(DWORD dwShader);
-	void	RestoreFVF();
-	void	SetFVF(DWORD dwShader);
-	void	GetFVF(DWORD* pdwShader);
 
 	// Pixel Shader
 	void	SavePixelShader(LPDIRECT3DPIXELSHADER9 dwShader);
@@ -306,10 +290,8 @@ private:
 	std::vector<D3DXMATRIX>					m_TransformStack[STATEMANAGER_MAX_TRANSFORMSTATES];
 	std::vector<LPDIRECT3DBASETEXTURE9>		m_TextureStack[STATEMANAGER_MAX_STAGES];
 	std::vector<D3DMATERIAL9>				m_MaterialStack;
-	std::vector<DWORD>						m_FVFStack;
 	std::vector<LPDIRECT3DPIXELSHADER9>		m_PixelShaderStack;
 	std::vector<LPDIRECT3DVERTEXSHADER9>	m_VertexShaderStack;
-	std::vector<LPDIRECT3DVERTEXDECLARATION9> m_VertexDeclarationStack;
 	std::vector<BOOL>						m_VertexProcessingStack;
 	std::vector<CStreamData>				m_StreamStack[STATEMANAGER_MAX_STREAMS];
 	std::vector<CIndexData>					m_IndexStack;

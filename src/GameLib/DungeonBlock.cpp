@@ -14,7 +14,8 @@ class CDungeonModelInstance : public CGrannyModelInstance
 			if (IsEmpty())
 				return;
 
-			STATEMANAGER.SetVertexDeclaration(ms_pnt2VS);
+			m_dx->SetVertexDeclaration(VD_PNT2);
+
 			auto lpd3dRigidPNTVtxBuf = m_pModel->GetVertexBuffer();
 			if (lpd3dRigidPNTVtxBuf)
 			{
@@ -36,7 +37,7 @@ class CDungeonModelInstance : public CGrannyModelInstance
 			STATEMANAGER.SaveRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
 			STATEMANAGER.SaveRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCCOLOR);
 
-			STATEMANAGER.SetVertexDeclaration(ms_pnt2VS);
+			m_dx->SetVertexDeclaration(VD_PNT2);
 			auto lpd3dRigidPNTVtxBuf = m_pModel->GetVertexBuffer();
 			if (lpd3dRigidPNTVtxBuf)
 			{

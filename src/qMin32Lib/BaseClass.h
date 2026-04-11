@@ -11,7 +11,7 @@ public:
 public:
 	void RecreateResource(); //recreate all buffers
 	void DestroyResource();	 //destroy all buffers
-
+	void SetVertexDeclaration(VertexType type);
 
 public: // BaseClassResource.cpp
 	RefPtr<CVertexBuffer> CreateVertexBuffer(const void* data, UINT stride, UINT vertexCount, DWORD usage = D3DUSAGE_WRITEONLY);
@@ -22,5 +22,6 @@ public: // BaseClassResource.cpp
 
 private:
 	LPDIRECT3DDEVICE9EX m_device;
+	RefPtr<CVertexDecl> m_layout;
 };
 

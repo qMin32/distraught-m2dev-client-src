@@ -35,25 +35,6 @@
 #include <string>
 #include <d3d9.h>
 
-///////////////////////////////////////////////////////////////////////  
-//	Branch & Frond Vertex Formats
-
-static DWORD D3DFVF_SPEEDTREE_BRANCH_VERTEX =
-		D3DFVF_XYZ |							// always have the position
-	#ifdef WRAPPER_USE_DYNAMIC_LIGHTING			// precomputed colors or geometric normals
-		D3DFVF_NORMAL |
-	#else
-		D3DFVF_DIFFUSE |
-	#endif
-	#ifdef WRAPPER_RENDER_SELF_SHADOWS
-		D3DFVF_TEX2 | D3DFVF_TEXCOORDSIZE2(0) | D3DFVF_TEXCOORDSIZE2(1) // shadow texture coordinates
-	#else
-		D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE2(0)	// always have first texture layer coords
-	#endif
-	#ifdef WRAPPER_USE_GPU_WIND					
-		| D3DFVF_TEX3 | D3DFVF_TEXCOORDSIZE2(2)	// GPU Only - wind weight and index passed in second texture layer
-	#endif
-		;
 
 /////////////////////////////////////////////////////////////////////// 
 // FVF Branch Vertex Structure
@@ -122,51 +103,6 @@ static const char g_achSimpleVertexProgram[] =
 		"mad		oD0,		r2.x,		r5,			r4\n"	// compute the final color
 	#endif
 };
-
-
-///////////////////////////////////////////////////////////////////////  
-//	LoadBranchShader
-
-static LPDIRECT3DVERTEXDECLARATION9 LoadBranchShader(LPDIRECT3DDEVICE9 pDx)
-{
-	// branch shader declaration
-	D3DVERTEXELEMENT9 pBranchShaderDecl[] = {
-		{ 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-		{ 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
-		{ 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
-		{ 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 },
-		D3DDECL_END()
-	};
-
-	// assemble shader
-	LPDIRECT3DVERTEXDECLARATION9 dwShader = NULL;
-
-	if (pDx->CreateVertexDeclaration(pBranchShaderDecl, &dwShader) != D3D_OK)
-	{
-		wchar_t szError[1024];
-		swprintf_s(szError, L"Failed to create branch vertex shader.");
-		MessageBoxW(NULL, szError, L"Vertex Shader Error", MB_ICONSTOP);
-	}
-
-	return dwShader;
-}
-
-///////////////////////////////////////////////////////////////////////  
-//	Leaf Vertex Formats
-
-static DWORD D3DFVF_SPEEDTREE_LEAF_VERTEX =
-		D3DFVF_XYZ |							// always have the position
-	#ifdef WRAPPER_USE_DYNAMIC_LIGHTING			// precomputed colors or geometric normals
-		D3DFVF_NORMAL |
-	#else
-		D3DFVF_DIFFUSE |
-	#endif
-		D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE2(0)	// always have first texture layer coords
-	#if defined WRAPPER_USE_GPU_WIND || defined WRAPPER_USE_GPU_LEAF_PLACEMENT					
-		| D3DFVF_TEX3 | D3DFVF_TEXCOORDSIZE4(2)	// GPU Only - wind weight and index passed in second texture layer
-	#endif
-		;
-
 
 /////////////////////////////////////////////////////////////////////// 
 // FVF Leaf Vertex Structure
@@ -257,33 +193,14 @@ static const char g_achLeafVertexProgram[] =
 ///////////////////////////////////////////////////////////////////////  
 //	LoadLeafShader
 
-static void LoadLeafShader(LPDIRECT3DDEVICE9 pDx, LPDIRECT3DVERTEXDECLARATION9& pVertexDecl, LPDIRECT3DVERTEXSHADER9& pVertexShader)
+static void LoadLeafShader(LPDIRECT3DDEVICE9 pDx, LPDIRECT3DVERTEXSHADER9& pVertexShader)
 {
-	const D3DVERTEXELEMENT9 leafVertexDecl[] = {
-			{ 0,  0, D3DDECLTYPE_FLOAT3,  D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION,     0 },
-#ifdef WRAPPER_USE_DYNAMIC_LIGHTING
-			{ 0, 12, D3DDECLTYPE_FLOAT3,D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,			0 },
-			{ 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,		0 },
-	#if defined WRAPPER_USE_GPU_WIND || defined WRAPPER_USE_GPU_LEAF_PLACEMENT	
-			{ 0, 32, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,		2 },
-	#endif
-#else
-			{ 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR,		0 },
-			{ 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,		0 },
-	#if defined WRAPPER_USE_GPU_WIND || defined WRAPPER_USE_GPU_LEAF_PLACEMENT	
-			{ 0, 24, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,		2 },
-	#endif
-#endif
-			D3DDECL_END()
-	};
-
 	if (!pDx)
 	{
 		TraceError("Failed to load leaf shader: null D3D device.");
 		return;
 	}
 
-	LPDIRECT3DVERTEXDECLARATION9 pNewVertexDecl = nullptr;
 	LPDIRECT3DVERTEXSHADER9 pNewVertexShader = nullptr;
 	LPD3DXBUFFER pCode = nullptr, pError = nullptr;
 	const HRESULT hrAssemble = D3DXAssembleShader(g_achLeafVertexProgram, sizeof(g_achLeafVertexProgram) - 1, nullptr, nullptr, 0, &pCode, &pError);
@@ -298,20 +215,13 @@ static void LoadLeafShader(LPDIRECT3DDEVICE9 pDx, LPDIRECT3DVERTEXDECLARATION9& 
 		TraceError("Failed to assemble leaf vertex shader (hr=0x%08X). The error reported is [ %s ].", hrAssemble, pError ? pError->GetBufferPointer() : "unknown");
 	}
 
-	const HRESULT hrCreateDecl = pDx->CreateVertexDeclaration(leafVertexDecl, &pNewVertexDecl);
-	if (FAILED(hrCreateDecl))
-		TraceError("Failed to create leaf vertex declaration (hr=0x%08X).", hrCreateDecl);
-
-	if (pNewVertexDecl && pNewVertexShader)
+	if (pNewVertexShader)
 	{
-		SAFE_RELEASE(pVertexDecl);
 		SAFE_RELEASE(pVertexShader);
-		pVertexDecl = pNewVertexDecl;
 		pVertexShader = pNewVertexShader;
 	}
 	else
 	{
-		SAFE_RELEASE(pNewVertexDecl);
 		SAFE_RELEASE(pNewVertexShader);
 	}
 

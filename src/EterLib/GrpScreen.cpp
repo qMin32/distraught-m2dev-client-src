@@ -32,7 +32,7 @@ void CScreen::RenderLine3d(float sx, float sy, float sz, float ex, float ey, flo
 	{	
 		STATEMANAGER.SetTexture(0, NULL);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PDT);
 		STATEMANAGER.DrawPrimitive(D3DPT_LINELIST, 0, 1);
 	}
 }
@@ -64,7 +64,7 @@ void CScreen::RenderBox3d(float sx, float sy, float sz, float ex, float ey, floa
 	{
 		STATEMANAGER.SetTexture(0, NULL);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PDT);
 		STATEMANAGER.DrawPrimitive(D3DPT_LINELIST, 0, 4);
 	}
 }
@@ -87,7 +87,7 @@ void CScreen::RenderBar3d(float sx, float sy, float sz, float ex, float ey, floa
 	{
 		STATEMANAGER.SetTexture(0, NULL);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PDT);
 		STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	}
 }
@@ -109,7 +109,7 @@ void CScreen::RenderBar3d(const D3DXVECTOR3 * c_pv3Positions)
 	{
 		STATEMANAGER.SetTexture(0, NULL);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PDT);
 		STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	}
 }
@@ -132,7 +132,7 @@ void CScreen::RenderGradationBar3d(float sx, float sy, float sz, float ex, float
 	{
 		STATEMANAGER.SetTexture(0, NULL);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PDT);
 		STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	}
 }
@@ -156,7 +156,7 @@ void CScreen::RenderLineCube(float sx, float sy, float sz, float ex, float ey, f
 	{
 		STATEMANAGER.SetTexture(0, NULL);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PDT);
 		STATEMANAGER.SetTransform(D3DTS_WORLD, ms_lpd3dMatStack->GetTop());
 		SetDefaultIndexBuffer(DEFAULT_IB_LINE_CUBE);
 
@@ -183,7 +183,7 @@ void CScreen::RenderCube(float sx, float sy, float sz, float ex, float ey, float
 	{
 		STATEMANAGER.SetTexture(0, NULL);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PDT);
 		STATEMANAGER.SetTransform(D3DTS_WORLD, ms_lpd3dMatStack->GetTop());
 
 		SetDefaultIndexBuffer(DEFAULT_IB_FILL_CUBE);
@@ -221,7 +221,7 @@ void CScreen::RenderCube(float sx, float sy, float sz, float ex, float ey, float
 	{
 		STATEMANAGER.SetTexture(0, NULL);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+		m_dx->SetVertexDeclaration(VD_PDT);
 		STATEMANAGER.SetTransform(D3DTS_WORLD, ms_lpd3dMatStack->GetTop());
 
 		SetDefaultIndexBuffer(DEFAULT_IB_FILL_CUBE);
@@ -361,7 +361,7 @@ void CScreen::RenderD3DXMesh(LPD3DXMESH lpMesh, const D3DXMATRIX * c_pmatWorld, 
 	LPDIRECT3DVERTEXBUFFER9 lpVertexBuffer;
 	lpMesh->GetIndexBuffer(&lpIndexBuffer);
 	lpMesh->GetVertexBuffer(&lpVertexBuffer);
-	STATEMANAGER.SetFVF(lpMesh->GetFVF());
+	ms_lpd3dDevice->SetFVF(lpMesh->GetFVF());
 	STATEMANAGER.SetIndices(lpIndexBuffer, 0);
 	STATEMANAGER.SetStreamSource(0, lpVertexBuffer, 24);
 	STATEMANAGER.DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, lpMesh->GetNumVertices(), 0, lpMesh->GetNumFaces());
@@ -388,7 +388,7 @@ void CScreen::RenderTextureBox(float sx, float sy, float ex, float ey, float z, 
 		{ ex, ey, z, ms_diffuseColor, eu, ev },
 	};
 
-	STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+	m_dx->SetVertexDeclaration(VD_PDT);
 
 	SetDefaultIndexBuffer(DEFAULT_IB_FILL_RECT);
 	if (SetPDTStream(vertices, 4))
@@ -407,7 +407,7 @@ void CScreen::RenderBillboard(D3DXVECTOR3 * Position, D3DXCOLOR & Color)
 		{Position[3].x, Position[3].y, Position[3].z, Color, 1, 1},
 	};
 
-	STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+	m_dx->SetVertexDeclaration(VD_PDT);
 
 	SetDefaultIndexBuffer(DEFAULT_IB_FILL_RECT);
 	if (SetPDTStream(vertices, 4))

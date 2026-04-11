@@ -93,7 +93,7 @@ void CBlockTexture::Render(int ix, int iy)
 
 		STATEMANAGER.SetTexture(0, m_lpd3dTexture);
 		STATEMANAGER.SetTexture(1, NULL);
-		STATEMANAGER.SetFVF(D3DFVF_XYZ|D3DFVF_TEX1|D3DFVF_DIFFUSE);
+		m_dx->SetVertexDeclaration(VD_PDT);
 
 		STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 		STATEMANAGER.SaveRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);

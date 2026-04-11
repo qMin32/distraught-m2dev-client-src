@@ -65,7 +65,7 @@ void CMapOutdoor::__RenderTerrain_RenderHardwareTransformPatch()
 	// Render State & TextureStageState
 	//////////////////////////////////////////////////////////////////////////
 
-	STATEMANAGER.SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL);
+	m_dx->SetVertexDeclaration(VD_PN);
 
 	m_iRenderedSplatNumSqSum = 0;
 	m_iRenderedPatchNum = 0;
