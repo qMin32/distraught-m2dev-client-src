@@ -117,7 +117,6 @@ void CActorInstance::OnRender()
 		STATEMANAGER.SaveTextureStageState(0, D3DTSS_COLOROP,	D3DTOP_SELECTARG1);
 		STATEMANAGER.SaveTextureStageState(0, D3DTSS_ALPHAOP,	D3DTOP_DISABLE);
 		STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, FALSE);
-		STATEMANAGER.SaveRenderState(D3DRS_LIGHTING, FALSE);
 
 		s_kScreen.SetDiffuseColor(1.0f, 1.0f, 0.0f);
 		s_kScreen.RenderLine3d(kD3DVt3Cur.x, kD3DVt3Cur.y, kD3DVt3Cur.z, kD3DVt3AdvDir.x, kD3DVt3AdvDir.y, kD3DVt3AdvDir.z);
@@ -125,7 +124,6 @@ void CActorInstance::OnRender()
 		s_kScreen.SetDiffuseColor(0.0f, 1.0f, 1.0f);
 		s_kScreen.RenderLine3d(kD3DVt3Cur.x, kD3DVt3Cur.y, kD3DVt3Cur.z, kD3DVt3LookDir.x, kD3DVt3LookDir.y, kD3DVt3LookDir.z);
 
-		STATEMANAGER.RestoreRenderState(D3DRS_LIGHTING);
 		STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE);
 
 		STATEMANAGER.RestoreTextureStageState(0, D3DTSS_COLORARG1);
@@ -291,7 +289,6 @@ void CActorInstance::RenderCollisionData()
 {
 	static CScreen s_Screen;
 
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	if (m_pAttributeInstance)
 	{
@@ -371,7 +368,6 @@ void CActorInstance::RenderCollisionData()
 
 	STATEMANAGER.SetRenderState(D3DRS_ZENABLE, TRUE);
 	STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE);
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 

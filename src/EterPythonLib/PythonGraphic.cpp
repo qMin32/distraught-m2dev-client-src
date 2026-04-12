@@ -37,8 +37,6 @@ void CPythonGraphic::SetInterfaceRenderState()
 
 	CPythonGraphic::Instance().SetBlendOperation();
 	CPythonGraphic::Instance().SetOrtho2D(ms_iWidth, ms_iHeight, GetOrthoDepth());
-
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 void CPythonGraphic::SetGameRenderState()
@@ -48,7 +46,6 @@ void CPythonGraphic::SetGameRenderState()
 	STATEMANAGER.SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
 	STATEMANAGER.SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, TRUE);
 	STATEMANAGER.SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
 }
 

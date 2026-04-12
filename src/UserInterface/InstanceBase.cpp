@@ -2021,8 +2021,6 @@ void CInstanceBase::Render()
 			STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP,	D3DTOP_SELECTARG1);
 			STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP,	D3DTOP_DISABLE);	
 			STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, FALSE);
-			STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, FALSE);
-			STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 			
 			TPixelPosition px;
 			m_GraphicThingInstance.GetPixelPosition(&px);
@@ -2037,8 +2035,6 @@ void CInstanceBase::Render()
 			s_kScreen.SetDiffuseColor(0.0f, 0.0f, 1.0f);
 			s_kScreen.RenderLine3d(kD3DVt3Cur.x, kD3DVt3Cur.y, px.z, kD3DVt3Dest.x, kD3DVt3Dest.y, px.z);
 			STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE);
-			STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, TRUE);
-			STATEMANAGER.SetRenderState(D3DRS_LIGHTING, TRUE);
 		}
 	}	
 }

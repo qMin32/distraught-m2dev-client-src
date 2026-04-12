@@ -143,14 +143,9 @@ void CSpeedTreeForestDirectX::Render(unsigned long ulRenderBitVector)
 	if (!(ulRenderBitVector & Forest_RenderToShadow) && !(ulRenderBitVector & Forest_RenderToMiniMap))
 		UpdateCompundMatrix(CCameraManager::Instance().GetCurrentCamera()->GetEye(), mat.view, mat.proj);
 
-	DWORD dwLightState = STATEMANAGER.GetRenderState(D3DRS_LIGHTING);
 	DWORD dwColorVertexState = STATEMANAGER.GetRenderState(D3DRS_COLORVERTEX);
-	DWORD dwFogVertexMode = STATEMANAGER.GetRenderState(D3DRS_FOGVERTEXMODE);
 
-#ifdef WRAPPER_USE_DYNAMIC_LIGHTING
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, TRUE);
-#else
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
+#ifndef WRAPPER_USE_DYNAMIC_LIGHTING
 	STATEMANAGER.SetRenderState(D3DRS_COLORVERTEX, TRUE);
 #endif
 
@@ -201,14 +196,6 @@ void CSpeedTreeForestDirectX::Render(unsigned long ulRenderBitVector)
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-
-	// set up fog if it is enabled
-	if (STATEMANAGER.GetRenderState(D3DRS_FOGENABLE))
-	{
-		#ifdef WRAPPER_USE_GPU_WIND
-			STATEMANAGER.SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_NONE); // GPU needs to work on all cards
-		#endif
-	}
 
 	// choose fixed function pipeline or custom shader for fronds and branches
 	m_dx->SetVertexDeclaration(VD_BRANCH);
@@ -261,13 +248,6 @@ void CSpeedTreeForestDirectX::Render(unsigned long ulRenderBitVector)
 
 		STATEMANAGER.SaveVertexShader(m_pLeafVertexShader);
 
-		if (STATEMANAGER.GetRenderState(D3DRS_FOGENABLE))
-		{
-			#if defined WRAPPER_USE_GPU_WIND || defined WRAPPER_USE_GPU_LEAF_PLACEMENT
-				STATEMANAGER.SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_NONE);
-			#endif
-		}
-
 		if (ulRenderBitVector & Forest_RenderToShadow || ulRenderBitVector & Forest_RenderToMiniMap)
 		{
 			STATEMANAGER.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_NOTEQUAL);
@@ -305,7 +285,6 @@ void CSpeedTreeForestDirectX::Render(unsigned long ulRenderBitVector)
 	#ifndef WRAPPER_NO_BILLBOARD_MODE
 		if (ulRenderBitVector & Forest_RenderBillboards)
 		{
-			STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 			STATEMANAGER.SetRenderState(D3DRS_COLORVERTEX, FALSE);
 
 			itor = m_pMainTreeMap.begin();
@@ -326,12 +305,8 @@ void CSpeedTreeForestDirectX::Render(unsigned long ulRenderBitVector)
 		}
 	#endif
 
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, dwLightState);
 	STATEMANAGER.SetRenderState(D3DRS_COLORVERTEX, dwColorVertexState);
-	STATEMANAGER.SetRenderState(D3DRS_FOGVERTEXMODE, dwFogVertexMode);
 
-	// 셀프섀도우로 쓰는 TextureStage 1의 COLOROP와 ALPHAOP를 꺼줘야 다음 렌더링 할 놈들이
-	// 제대로 나온다. (안그러면 검게 나올 가능성이..)
 	if (!(ulRenderBitVector & Forest_RenderToShadow))
 	{
 		STATEMANAGER.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);

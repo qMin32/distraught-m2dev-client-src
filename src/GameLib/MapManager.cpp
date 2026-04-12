@@ -226,12 +226,6 @@ void CMapManager::BeginEnvironment()
 
 	CMapOutdoor& rkMap=GetMapOutdoorRef();
 
-	// Light always on
- 	STATEMANAGER.SaveRenderState(D3DRS_LIGHTING, TRUE);
-
-	// Fog
- 	STATEMANAGER.SaveRenderState(D3DRS_FOGENABLE, mc_pcurEnvironmentData->bFogEnable);
-
 	// Material
 	STATEMANAGER.SetMaterial(&mc_pcurEnvironmentData->Material);
 
@@ -248,7 +242,6 @@ void CMapManager::BeginEnvironment()
 	if (mc_pcurEnvironmentData->bFogEnable)
 	{
 		const DWORD dwFogColor = mc_pcurEnvironmentData->FogColor;
-		STATEMANAGER.SetRenderState(D3DRS_FOGCOLOR, dwFogColor);
 
 		const int iFogLevel = CPythonSystem::Instance().GetFogLevel(); // 2=Dense,1=Middle,0=Light
 
@@ -256,9 +249,6 @@ void CMapManager::BeginEnvironment()
 		{
 			const float fFogDensityLevel[3] = { 0.000006f, 0.000004f, 0.000002f };
 			float fDensity = mc_pcurEnvironmentData->bFogLevel * fFogDensityLevel[iFogLevel];
-
-			STATEMANAGER.SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_EXP);			// pixel fog
-			STATEMANAGER.SetRenderState(D3DRS_FOGDENSITY, *((DWORD *) &fDensity));	// vertex fog
 
 			float fApproxFogFar = 2.3f / fDensity;
 			CSpeedTreeForestDirectX& rkForest = CSpeedTreeForestDirectX::Instance();
@@ -276,11 +266,6 @@ void CMapManager::BeginEnvironment()
 
 			CSpeedTreeForestDirectX& rkForest=CSpeedTreeForestDirectX::Instance();
 			rkForest.SetFog(fFogNear, fFogFar);
-
-			STATEMANAGER.SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);		// vertex fox
-			STATEMANAGER.SetRenderState(D3DRS_RANGEFOGENABLE, TRUE);				// vertex fox
-			STATEMANAGER.SetRenderState(D3DRS_FOGSTART, *((DWORD *) &fFogNear));	// USED BY D3DFOG_LINEAR
-			STATEMANAGER.SetRenderState(D3DRS_FOGEND, *((DWORD *) &fFogFar));		// USED BY D3DFOG_LINEAR
 		}
 	}
 
@@ -291,9 +276,6 @@ void CMapManager::EndEnvironment()
 {
 	if (!mc_pcurEnvironmentData)
 		return;
-
-	STATEMANAGER.RestoreRenderState(D3DRS_LIGHTING);
-	STATEMANAGER.RestoreRenderState(D3DRS_FOGENABLE);
 }
 
 void CMapManager::SetEnvironmentData(int nEnvDataIndex)

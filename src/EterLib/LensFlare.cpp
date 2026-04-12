@@ -196,7 +196,6 @@ void CLensFlare::DrawBeforeFlare()
 	D3DXMatrixTranslation(&matWorld, m_afFlarePos[0], m_afFlarePos[1], 0.0f);
 	STATEMANAGER.SetTransform(D3DTS_WORLD, &matWorld);
 
-	STATEMANAGER.SaveRenderState(D3DRS_LIGHTING, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, FALSE);					// glDisable(GL_DEPTH_TEST);
 	STATEMANAGER.SaveRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE);			// glDisable(GL_CULL_FACE);
@@ -239,7 +238,6 @@ void CLensFlare::DrawBeforeFlare()
 	m_dx->SetVertexDeclaration(VD_PDT);
 	STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(TPDTVertex));
 
-	STATEMANAGER.RestoreRenderState(D3DRS_LIGHTING);
 	STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE); // glDisable(GL_DEPTH_TEST);
 	STATEMANAGER.RestoreRenderState(D3DRS_ZWRITEENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE); // glDisable(GL_CULL_FACE);
@@ -293,7 +291,6 @@ void CLensFlare::DrawFlare()
 	if (m_bEnabled && m_bFlareVisible && m_bDrawFlare && m_fAfterBright != 0.0f)
 	{
         //glPushAttrib(GL_ENABLE_BIT);
-		STATEMANAGER.SaveRenderState(D3DRS_LIGHTING, FALSE); // glDisable(GL_LIGHTING);
 		STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, FALSE); // glDisable(GL_DEPTH_TEST);
 		STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE); // glDisable(GL_CULL_FACE);
 		STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, FALSE); // glDisable(GL_ALPHA_TEST);
@@ -318,7 +315,6 @@ void CLensFlare::DrawFlare()
 					  static_cast<int>(m_afFlareWinPos[0]),
 					  static_cast<int>(m_afFlareWinPos[1]));
 
-		STATEMANAGER.RestoreRenderState(D3DRS_LIGHTING); // glDisable(GL_LIGHTING);
 		STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE); // glDisable(GL_DEPTH_TEST);
 		STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE); // glDisable(GL_CULL_FACE);
 		STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE); // glEnable(GL_BLEND);

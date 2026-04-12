@@ -323,7 +323,6 @@ void CWeaponTrace::Render()
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP, (m_bUseTexture)?D3DTOP_SELECTARG2:D3DTOP_SELECTARG1);
 	STATEMANAGER.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 	STATEMANAGER.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 	STATEMANAGER.SetTexture(0, lpTexture);
 	STATEMANAGER.SetTexture(1, NULL);
 	STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP,
@@ -331,8 +330,6 @@ void CWeaponTrace::Render()
 								 &m_PDTVertexVector[0],
 								 sizeof(TPDTVertex));
 	
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, TRUE);
-
 	STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ZFUNC);
 	STATEMANAGER.RestoreRenderState(D3DRS_ZWRITEENABLE);

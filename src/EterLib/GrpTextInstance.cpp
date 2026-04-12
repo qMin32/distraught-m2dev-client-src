@@ -566,10 +566,6 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 
 	STATEMANAGER.SaveRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	STATEMANAGER.SaveRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	DWORD dwFogEnable = STATEMANAGER.GetRenderState(D3DRS_FOGENABLE);
-	DWORD dwLighting = STATEMANAGER.GetRenderState(D3DRS_LIGHTING);
-	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, FALSE);
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	m_dx->SetVertexDeclaration(VD_PDT);
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1,	D3DTA_TEXTURE);
@@ -1041,9 +1037,6 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 	STATEMANAGER.RestoreRenderState(D3DRS_COLORWRITEENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_SRCBLEND);
 	STATEMANAGER.RestoreRenderState(D3DRS_DESTBLEND);
-
-	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, dwFogEnable);
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, dwLighting);
 
 	if (m_hyperlinkVector.size() != 0)
 	{

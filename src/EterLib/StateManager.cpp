@@ -190,12 +190,7 @@ void CStateManager::SetDefaultState()
 	SetRenderState(D3DRS_LASTPIXEL, TRUE);
 	SetRenderState(D3DRS_ALPHAREF, 1);
 	SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-	//SetRenderState(D3DRS_ZVISIBLE, FALSE);
-	SetRenderState(D3DRS_FOGSTART, 0);
-	SetRenderState(D3DRS_FOGEND, 0);
-	SetRenderState(D3DRS_FOGDENSITY, 0);
-	//SetRenderState(D3DRS_EDGEANTIALIAS, TRUE);
-	//SetRenderState(D3DRS_ZBIAS, 0);
+
 	SetRenderState(D3DRS_STENCILWRITEMASK, 0xFFFFFFFF);
 	SetRenderState(D3DRS_AMBIENT, 0x00000000);
 	SetRenderState(D3DRS_LOCALVIEWER, TRUE);
@@ -216,12 +211,7 @@ void CStateManager::SetDefaultState()
 	SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	SetRenderState(D3DRS_FOGENABLE, FALSE);
-	SetRenderState(D3DRS_FOGCOLOR, 0xFF000000);
-	// MR-14: Fog update by Alaric
-	SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_NONE);
-	// MR-14: -- END OF -- Fog update by Alaric
-	SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);
+
 	SetRenderState(D3DRS_RANGEFOGENABLE, FALSE);
 	SetRenderState(D3DRS_ZENABLE, TRUE);
 	SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
@@ -230,7 +220,10 @@ void CStateManager::SetDefaultState()
 	SetRenderState(D3DRS_STENCILENABLE, FALSE);
 	SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	SetRenderState(D3DRS_CLIPPING, TRUE);
+
+	// don't delete from here! 
 	SetRenderState(D3DRS_LIGHTING, FALSE);
+
 	SetRenderState(D3DRS_SPECULARENABLE, FALSE);
 	SetRenderState(D3DRS_COLORVERTEX, FALSE);
 	SetRenderState(D3DRS_WRAP0, 0);

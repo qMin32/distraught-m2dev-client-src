@@ -403,9 +403,6 @@ void CMapOutdoor::RenderArea(bool bRenderAmbience)
 	// Shadow Receiver
 	if (m_bDrawShadow && m_bDrawChrShadow)
 	{
-		if (mc_pEnvironmentData != NULL)
-			STATEMANAGER.SetRenderState(D3DRS_FOGCOLOR, 0xFFFFFFFF);
-
 		STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 		STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 		STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -434,9 +431,6 @@ void CMapOutdoor::RenderArea(bool bRenderAmbience)
 		STATEMANAGER.RestoreSamplerState(1, D3DSAMP_BORDERCOLOR);
 
 		STATEMANAGER.RestoreTransform(D3DTS_TEXTURE1);
-
-		if (mc_pEnvironmentData != NULL)
-			STATEMANAGER.SetRenderState(D3DRS_FOGCOLOR, mc_pEnvironmentData->FogColor);
 	}
 
 	STATEMANAGER.SaveRenderState(D3DRS_ZWRITEENABLE, TRUE);
@@ -741,10 +735,7 @@ void CMapOutdoor::NEW_DrawWireFrame(CTerrainPatchProxy * pTerrainPatchProxy, WOR
 {
 	DWORD dwFillMode = STATEMANAGER.GetRenderState(D3DRS_FILLMODE);
 	STATEMANAGER.SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	
-	DWORD dwFogEnable = STATEMANAGER.GetRenderState(D3DRS_FOGENABLE);
-	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, FALSE);
-	
+		
 	STATEMANAGER.SetTexture(0, NULL);
 	STATEMANAGER.SetTexture(1, NULL);
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
@@ -752,7 +743,6 @@ void CMapOutdoor::NEW_DrawWireFrame(CTerrainPatchProxy * pTerrainPatchProxy, WOR
 	STATEMANAGER.DrawIndexedPrimitive(ePrimitiveType, 0, m_iPatchTerrainVertexCount, 0, wPrimitiveCount);
 	
 	STATEMANAGER.SetRenderState(D3DRS_FILLMODE, dwFillMode);
-	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, dwFogEnable);
 	
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
@@ -777,9 +767,6 @@ void CMapOutdoor::DrawWireFrame(long patchnum, WORD wPrimitiveCount, D3DPRIMITIV
 
 	DWORD dwFillMode = STATEMANAGER.GetRenderState(D3DRS_FILLMODE);
 	STATEMANAGER.SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-
-	DWORD dwFogEnable = STATEMANAGER.GetRenderState(D3DRS_FOGENABLE);
-	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, FALSE);
 	
 	STATEMANAGER.SetTexture(0, NULL);
 	STATEMANAGER.SetTexture(1, NULL);
@@ -788,7 +775,6 @@ void CMapOutdoor::DrawWireFrame(long patchnum, WORD wPrimitiveCount, D3DPRIMITIV
 	STATEMANAGER.DrawIndexedPrimitive(ePrimitiveType, 0, m_iPatchTerrainVertexCount, 0, wPrimitiveCount);
 
 	STATEMANAGER.SetRenderState(D3DRS_FILLMODE, dwFillMode);
-	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, dwFogEnable);
 
  	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);

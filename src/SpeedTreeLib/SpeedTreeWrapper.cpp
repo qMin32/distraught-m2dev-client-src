@@ -75,16 +75,12 @@ void CSpeedTreeWrapper::OnRenderPCBlocker()
 	STATEMANAGER.SetTextureStageState(1, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 	STATEMANAGER.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 
-	DWORD dwLighting = STATEMANAGER.GetRenderState(D3DRS_LIGHTING);
-	DWORD dwFogEnable = STATEMANAGER.GetRenderState(D3DRS_FOGENABLE);
 	DWORD dwAlphaBlendEnable = STATEMANAGER.GetRenderState(D3DRS_ALPHABLENDENABLE);
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_COLORVERTEX, TRUE);
 	STATEMANAGER.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, FALSE);
 
 	// choose fixed function pipeline or custom shader for fronds and branches
 	m_dx->SetVertexDeclaration(VD_BRANCH);
@@ -141,7 +137,6 @@ void CSpeedTreeWrapper::OnRenderPCBlocker()
 	}
 	EndLeafForTreeType();
 
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 	STATEMANAGER.SetRenderState(D3DRS_COLORVERTEX, FALSE);
 	RenderBillboards();
 
@@ -150,8 +145,6 @@ void CSpeedTreeWrapper::OnRenderPCBlocker()
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHATESTENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHAFUNC);
 	STATEMANAGER.SetRenderState(D3DRS_ALPHABLENDENABLE, dwAlphaBlendEnable);
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, dwLighting);
-	STATEMANAGER.SetRenderState(D3DRS_FOGENABLE, dwFogEnable);
 
 	STATEMANAGER.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 }
@@ -180,12 +173,10 @@ void CSpeedTreeWrapper::OnRender()
 	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
 	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 
-	STATEMANAGER.SaveRenderState(D3DRS_LIGHTING, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_COLORVERTEX, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-	STATEMANAGER.SaveRenderState(D3DRS_FOGENABLE, FALSE);
 
 	m_dx->SetVertexDeclaration(VD_BRANCH);
 	SetupBranchForTreeType();
@@ -209,16 +200,13 @@ void CSpeedTreeWrapper::OnRender()
 	}
 	EndLeafForTreeType();
 
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 	STATEMANAGER.SetRenderState(D3DRS_COLORVERTEX, FALSE);
 	RenderBillboards();
 
-	STATEMANAGER.RestoreRenderState(D3DRS_LIGHTING);
 	STATEMANAGER.RestoreRenderState(D3DRS_COLORVERTEX);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHATESTENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHAFUNC);
 	STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE);
-	STATEMANAGER.RestoreRenderState(D3DRS_FOGENABLE);
 }
 
 ///////////////////////////////////////////////////////////////////////  

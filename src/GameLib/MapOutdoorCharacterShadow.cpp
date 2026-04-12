@@ -95,9 +95,6 @@ bool CMapOutdoor::BeginRenderCharacterShadowToTexture()
 
 	STATEMANAGER.SaveTransform(D3DTS_VIEW, &matLightView);
 	STATEMANAGER.SaveTransform(D3DTS_PROJECTION, &matLightProj);
-
-	dwLightEnable = STATEMANAGER.GetRenderState(D3DRS_LIGHTING);
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, FALSE);
 	
 	STATEMANAGER.SaveRenderState(D3DRS_TEXTUREFACTOR, 0xFF808080);
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
@@ -133,6 +130,5 @@ void CMapOutdoor::EndRenderCharacterShadowToTexture()
 	STATEMANAGER.RestoreTransform(D3DTS_PROJECTION);
 
 	// Restore Device Context
-	STATEMANAGER.SetRenderState(D3DRS_LIGHTING, dwLightEnable);
 	STATEMANAGER.RestoreRenderState(D3DRS_TEXTUREFACTOR);
 }
