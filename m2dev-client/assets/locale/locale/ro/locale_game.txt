@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Crește atacul și evadarea
 STAT_TOOLTIP_INT	Crește PM, atacul magic și apărarea
 STAT_TOOLTIP_STR	Crește valoarea atacului și daunele
 SYMBOLLIST_TITLE	Anunță steagul breslei
-SYSTEM_OPTION_CPU_TILING_1	Modul CPU-Tiling poate îmbunătăți vinteza unui computer mai slab.
-SYSTEM_OPTION_CPU_TILING_2	Dacă apar probleme cu grafica, alege ,System Option‘ sau ,CONFIG.exe‘
-SYSTEM_OPTION_CPU_TILING_3	și treci astfel în modul GPU-Tiling
-SYSTEM_OPTION_GPU_TILING_1	Modul GPU-Tiling poate rula mai încet pe un computer mai slab
-SYSTEM_OPTION_GPU_TILING_2	Dacă sunt probleme cu grafica, "System Options" sau "CONFIG.exe"
-SYSTEM_OPTION_GPU_TILING_3	și treci astfel în modul GPU-Tiling
-SYSTEM_OPTION_TILING_EXIT	Pentru trecerea în modul Placare, jocul trebuie re-pornit.
 TARGET_BUTTON_ACCEPT_FIGHT	Aprobă
 TARGET_BUTTON_AVENGE	Răzbunare
 TARGET_BUTTON_BUILDING_DESTROY	Distruge

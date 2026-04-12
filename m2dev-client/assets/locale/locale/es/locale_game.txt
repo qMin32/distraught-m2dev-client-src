@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Aumenta el ataque y la evasión
 STAT_TOOLTIP_INT	Aumenta SP, ataque y defensa mágicos.
 STAT_TOOLTIP_STR	Aumenta valor de ataque y de daño
 SYMBOLLIST_TITLE	Registrar bandera de gremio
-SYSTEM_OPTION_CPU_TILING_1	El modo sin superposición de la CPU puede mejorar la velocidad de un PC más débil.
-SYSTEM_OPTION_CPU_TILING_2	Si hay problemas con los gráficos selecciona 'Opción del Sistema' o 'CONFIG.exe‘
-SYSTEM_OPTION_CPU_TILING_3	y cambia a Modo GPU Sin Superposición.
-SYSTEM_OPTION_GPU_TILING_1	El Modo GPU Sin Superposición puede ir lento en un PC débil.
-SYSTEM_OPTION_GPU_TILING_2	Si tienes problemas con los gráficos, elige 'Opciones del sistema' o 'CONFIG.exe'
-SYSTEM_OPTION_GPU_TILING_3	y cambia a Modo GPU Sin Superposición
-SYSTEM_OPTION_TILING_EXIT	Para cambiar al modo sin superposición se debe reiniciar el juego.
 TARGET_BUTTON_ACCEPT_FIGHT	Aceptar
 TARGET_BUTTON_AVENGE	Vengar
 TARGET_BUTTON_BUILDING_DESTROY	Destruir

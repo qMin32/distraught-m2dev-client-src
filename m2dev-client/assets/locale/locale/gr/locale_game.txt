@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Αυξάνει επίθεση και αποφυγή
 STAT_TOOLTIP_INT	Αύξηση SP, Μαγικής Επίθεσης και Άμυνας
 STAT_TOOLTIP_STR	Αυξάνει αξία επίθεσης και ζημιά
 SYMBOLLIST_TITLE	Καταχώρηση σημαίας Συντεχνίας
-SYSTEM_OPTION_CPU_TILING_1	Η κατάσταση CPU Tiling μπορεί να αναβαθμίσει την ταχύτητα ενός αργού υπολογιστή.
-SYSTEM_OPTION_CPU_TILING_2	Αν παρουσιαστούν προβλήματα γραφικών, επίλεξε «Ρυθμίσεις συστήματος» ή «CONFIG.exe».
-SYSTEM_OPTION_CPU_TILING_3	και άλλαξε έτσι την κατάσταση σε GPU Tiling.
-SYSTEM_OPTION_GPU_TILING_1	Η κατάσταση GPU Tiling μπορεί να εκτελείται πιο αργά σε έναν αργό υπολογιστή.
-SYSTEM_OPTION_GPU_TILING_2	Αν υπάρχουν προβλήματα γραφικών, επίλεξε «Επιλογές συστήματος» ή «CONFIG.exe».
-SYSTEM_OPTION_GPU_TILING_3	και άλλαξε έτσι την κατάσταση σε GPU Tiling.
-SYSTEM_OPTION_TILING_EXIT	Για την αλλαγή της κατάστασης Tiling πρέπει να γίνει επανεκκίνηση παιχνιδιού.
 TARGET_BUTTON_ACCEPT_FIGHT	Συμφωνία
 TARGET_BUTTON_AVENGE	Εκδίκηση
 TARGET_BUTTON_BUILDING_DESTROY	Καταστροφή

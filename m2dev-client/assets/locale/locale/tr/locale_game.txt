@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Saldırı ve Savuşturma'yı arttıryor
 STAT_TOOLTIP_INT	SP, Büyülü Saldırı ve Savunma'yı artırıyor
 STAT_TOOLTIP_STR	Saldırı Değeri'ni ve Hasarı arttırıyor
 SYMBOLLIST_TITLE	Lonca Bayrağı kaydedildi.
-SYSTEM_OPTION_CPU_TILING_1	CPU modu zayıf bilgisayarların daha hızlı çalışmasını sağlar.
-SYSTEM_OPTION_CPU_TILING_2	Eğer grafiklerde problem varsa diğer seçeneği işaretleyiniz ,Sistem seçenekleri‘ veya ,CONFIG.exe‘
-SYSTEM_OPTION_CPU_TILING_3	ve GPU modunu seçin.
-SYSTEM_OPTION_GPU_TILING_1	GPU Modu zayıf bilgisayarları daha yavaş çalıştırır.
-SYSTEM_OPTION_GPU_TILING_2	Grafik ile ilgili sorunlarda, 'Sistem Seçenekleri' veya 'CONFIG.exe'yi seç
-SYSTEM_OPTION_GPU_TILING_3	GPU modunu değiştirin.
-SYSTEM_OPTION_TILING_EXIT	Tiling-Modu değişimi için oyun yeniden başlatılmalı.
 TARGET_BUTTON_ACCEPT_FIGHT	Anlaşma
 TARGET_BUTTON_AVENGE	İntikam
 TARGET_BUTTON_BUILDING_DESTROY	Yıkmak

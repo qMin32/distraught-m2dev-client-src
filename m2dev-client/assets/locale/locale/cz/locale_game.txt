@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Útok a vyhýbání se zlepší
 STAT_TOOLTIP_INT	Zvyšuje MB, útok magií a obranu
 STAT_TOOLTIP_STR	Hodnota útoku a poškození se zlepší
 SYMBOLLIST_TITLE	Nahlásit prapor cechu
-SYSTEM_OPTION_CPU_TILING_1	Modus CPU-Tiling může zvýšit rychlost slabšího počítače.
-SYSTEM_OPTION_CPU_TILING_2	Pokud se vyskytují problémy s grafikou, zvol ,Nastavení systému‘ nebo ,CONFIG.exe‘
-SYSTEM_OPTION_CPU_TILING_3	a přepni do GPU-Tiling módu
-SYSTEM_OPTION_GPU_TILING_1	Modus GPU-Tiling může na slabších počítačích běžet pomalu
-SYSTEM_OPTION_GPU_TILING_2	Pokud se vyskytují problémy s grafikou, zvol ,Nastavení systému‘ nebo ,CONFIG.exe‘
-SYSTEM_OPTION_GPU_TILING_3	a přepni do módu CPU-Tiling
-SYSTEM_OPTION_TILING_EXIT	Na změnu Tiling-módu musí hra být restartována.
 TARGET_BUTTON_ACCEPT_FIGHT	Souhlasit
 TARGET_BUTTON_AVENGE	Pomsta
 TARGET_BUTTON_BUILDING_DESTROY	Zničit

@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Podwyższa atak i uniki
 STAT_TOOLTIP_INT	Podwyższa PE, magiczny atak i obronę.
 STAT_TOOLTIP_STR	Podwyższa Wartość Ataku i Uszkodzeń
 SYMBOLLIST_TITLE	Zarejestruj Flagę Gildii
-SYSTEM_OPTION_CPU_TILING_1	CPU TNL może ulepszyć szybkość słabszego PC.
-SYSTEM_OPTION_CPU_TILING_2	Jeśli jest problem z grafiką, wybierz ,Opcje System lub ,CONFIG.exe;
-SYSTEM_OPTION_CPU_TILING_3	i zmień na GPU TNL.
-SYSTEM_OPTION_GPU_TILING_1	GPU TNL może działać wolniej na słabszych PC.
-SYSTEM_OPTION_GPU_TILING_2	Jeśli zaistnieją problem z grafiką, wybierz 'Opcje Systemu' lub 'CONFIG.exe'
-SYSTEM_OPTION_GPU_TILING_3	i zmień na GPU TNL
-SYSTEM_OPTION_TILING_EXIT	Aby zmienić tryb TNL trzeba zrestartować grę.
 TARGET_BUTTON_ACCEPT_FIGHT	Zgoda
 TARGET_BUTTON_AVENGE	Zemsta
 TARGET_BUTTON_BUILDING_DESTROY	Zniszcz

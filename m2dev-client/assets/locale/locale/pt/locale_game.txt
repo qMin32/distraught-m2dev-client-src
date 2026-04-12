@@ -579,13 +579,6 @@ STAT_TOOLTIP_DEX	Aumenta o Ataque e a Evasão
 STAT_TOOLTIP_INT	Aumenta a MN, Ataque Mágico e Defesa
 STAT_TOOLTIP_STR	Aumenta o Valor de Ataque e o Dano
 SYMBOLLIST_TITLE	Registar Bandeira da Guild
-SYSTEM_OPTION_CPU_TILING_1	CPU Tiling Mode pode melhorar a velocidade de um PC mais fraco.
-SYSTEM_OPTION_CPU_TILING_2	Se existirem problemas com os gráficos, escolhe entre ,Systemoption‘ ou ,CONFIG.exe‘
-SYSTEM_OPTION_CPU_TILING_3	e altera para GPU Tiling Mode.
-SYSTEM_OPTION_GPU_TILING_1	GPU Tiling Mode pode tornar lento um PC mais fraco.
-SYSTEM_OPTION_GPU_TILING_2	Se existirem problemas com os gráficos, escolhe entre 'System Option' ou 'CONFIG.exe'
-SYSTEM_OPTION_GPU_TILING_3	e altera para GPU Tiling Mode.
-SYSTEM_OPTION_TILING_EXIT	Para alterar para Tiling Mode o jogo tem de ser reiniciado.
 TARGET_BUTTON_ACCEPT_FIGHT	Concordo
 TARGET_BUTTON_AVENGE	Vingança
 TARGET_BUTTON_BUILDING_DESTROY	Destruir

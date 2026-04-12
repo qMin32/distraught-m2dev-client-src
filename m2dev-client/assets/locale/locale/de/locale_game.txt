@@ -565,13 +565,6 @@ STAT_TOOLTIP_DEX	Erhöht Angriff und Ausweichen
 STAT_TOOLTIP_INT	Erhöht MP, Magie-Angriff und -Verteidig.
 STAT_TOOLTIP_STR	Erhöht Angriffswert und Schaden
 SYMBOLLIST_TITLE	Gildenfahne anmelden
-SYSTEM_OPTION_CPU_TILING_1	CPU-Tiling-Modus kann die Geschwindigkeit eines schwächeren PC verbessern.
-SYSTEM_OPTION_CPU_TILING_2	Wenn Probleme mit der Grafik auftreten, wähle ,Systemoption‘ oder ,CONFIG.exe‘
-SYSTEM_OPTION_CPU_TILING_3	und wechsel so zum GPU-Tiling-Modus.
-SYSTEM_OPTION_GPU_TILING_1	GPU-Tiling-Modus kann auf einem schwächeren PC langsam laufen.
-SYSTEM_OPTION_GPU_TILING_2	Wenn Probleme mit der Grafik auftreten, wähle 'Systemoptionen' oder 'CONFIG.exe'
-SYSTEM_OPTION_GPU_TILING_3	und wechsel so zum CPU-Tiling-Modus.
-SYSTEM_OPTION_TILING_EXIT	Für den Wechsel des Tiling-Modus muss das Spiel neu gestartet werden.
 TARGET_BUTTON_ACCEPT_FIGHT	Zustimmen
 TARGET_BUTTON_AVENGE	Rache
 TARGET_BUTTON_BUILDING_DESTROY	Zerstören

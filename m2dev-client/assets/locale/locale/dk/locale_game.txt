@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Nøjagtighed og flugt bliver forbedret
 STAT_TOOLTIP_INT	MP, magisk styrke og forsvar bliver forbedret.
 STAT_TOOLTIP_STR	Angrebsværdi og skade bliver forbedret
 SYMBOLLIST_TITLE	Tilmeld Ordensflag
-SYSTEM_OPTION_CPU_TILING_1	CPU-Tiling-Mode kan øge hastigheden for svage computere.
-SYSTEM_OPTION_CPU_TILING_2	Hvis der opstår grafik-problemer, vælg "Systemindstillinger" eller "config.exe"
-SYSTEM_OPTION_CPU_TILING_3	og skift til GPU-Tiling-Mode
-SYSTEM_OPTION_GPU_TILING_1	GPU-Tiling-Mode kan køres på svagere computere
-SYSTEM_OPTION_GPU_TILING_2	Hvis der opstår grafik-problemer, vælg 'Systemindstillinger' eller 'Config.exe'
-SYSTEM_OPTION_GPU_TILING_3	og skift til CPU-Tiling-Mode
-SYSTEM_OPTION_TILING_EXIT	For at skifte til Tiling-Mode skal spillet genstartes.
 TARGET_BUTTON_ACCEPT_FIGHT	Accepter
 TARGET_BUTTON_AVENGE	Hævn
 TARGET_BUTTON_BUILDING_DESTROY	Ødelægge

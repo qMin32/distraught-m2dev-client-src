@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Verhoogd Aanval en Handigheid
 STAT_TOOLTIP_INT	Verhoogd TP, magische aanvalskracht en verdediging
 STAT_TOOLTIP_STR	Verhoogd Aanvals waarde en Schade
 SYMBOLLIST_TITLE	Registreer Gilde Vlag	
-SYSTEM_OPTION_CPU_TILING_1	CPU Tiling Mode kan de snelheid van een zwakke PC verhogen.	
-SYSTEM_OPTION_CPU_TILING_2	Al er een probleem is met de illustraties kies dan ,Systemoption‘ of ,CONFIG.exe‘	
-SYSTEM_OPTION_CPU_TILING_3	en verander naar GPU Tiling Mode.	
-SYSTEM_OPTION_GPU_TILING_1	GPU Tiling Mode kan langzaam draaien op een zwakke PC.
-SYSTEM_OPTION_GPU_TILING_2	Als er problemen zijn met de illustraties, kies 'Systeem Opties‘ of 'CONFIG.exe‘
-SYSTEM_OPTION_GPU_TILING_3	en verander naar GPU Tiling Mode.
-SYSTEM_OPTION_TILING_EXIT	Om naar de Tiling Mode te veranderen moet het spel gerestart worden.
 TARGET_BUTTON_ACCEPT_FIGHT	Toestemmen	
 TARGET_BUTTON_AVENGE	Wraak	
 TARGET_BUTTON_BUILDING_DESTROY	Vernietigen	

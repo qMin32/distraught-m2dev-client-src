@@ -565,13 +565,6 @@ STAT_TOOLTIP_DEX	Növekszik a támadás és a kitérés
 STAT_TOOLTIP_INT	Növekszik a MP valamint a mágikus támadás és védekezés
 STAT_TOOLTIP_STR	Növekszik a támadóérték és a sérülés
 SYMBOLLIST_TITLE	Céh zászló bejelentés
-SYSTEM_OPTION_CPU_TILING_1	CPU-tiling módban a gyengébb PC sebessége fokozható.
-SYSTEM_OPTION_CPU_TILING_2	Grafikai problémák esetén válaszd a 'Rendszer tulajdonságokat' vagy a CONFIG.exe-t.
-SYSTEM_OPTION_CPU_TILING_3	és válts GPU-tiling módra.
-SYSTEM_OPTION_GPU_TILING_1	A GPU-tiling mód egy gyengébb PC-n lassan futhat
-SYSTEM_OPTION_GPU_TILING_2	Grafikai problémák esetén válaszd a 'Rendszer tulajdonságokat' vagy a 'CONFIG.exe'-t.
-SYSTEM_OPTION_GPU_TILING_3	és válts CPU-tiling módra.
-SYSTEM_OPTION_TILING_EXIT	Mozaik módra váltáshoz újra kell indítani a játékot.
 TARGET_BUTTON_ACCEPT_FIGHT	Egyetért
 TARGET_BUTTON_AVENGE	Bosszú
 TARGET_BUTTON_BUILDING_DESTROY	Elpusztít

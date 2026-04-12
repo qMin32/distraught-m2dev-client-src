@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Повышает Атаку и Уклон
 STAT_TOOLTIP_INT	Повышает МП, магическую атаку и магическую защиту.
 STAT_TOOLTIP_STR	Повышает Показатель Атаки и Урон
 SYMBOLLIST_TITLE	Регистрировать флаг Гильдии
-SYSTEM_OPTION_CPU_TILING_1	Фрагментационный режим может улучшить скорость слабого компьютера.
-SYSTEM_OPTION_CPU_TILING_2	Если есть проблемы с графикой, выберите 'Системные Опции' или файл ,CONFIG.exe‘
-SYSTEM_OPTION_CPU_TILING_3	и перейдите таким образом на Фрагментационный режим (GPU-Tiling).
-SYSTEM_OPTION_GPU_TILING_1	Фрагментационный режим (GPU-Tiling) работает на слабом PC довольно медленно.
-SYSTEM_OPTION_GPU_TILING_2	Если возникли проблемы с графикой, выберите  'Системные Опции' или файл 'CONFIG.exe'
-SYSTEM_OPTION_GPU_TILING_3	и перейдите таким образом на Фрагментационный режим( CPU-Tiling).
-SYSTEM_OPTION_TILING_EXIT	Для замены Фрагментационного режима необходимо прервать игру.
 TARGET_BUTTON_ACCEPT_FIGHT	Согласиться
 TARGET_BUTTON_AVENGE	Отмщение
 TARGET_BUTTON_BUILDING_DESTROY	Разрушить

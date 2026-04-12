@@ -567,13 +567,6 @@ STAT_TOOLTIP_DEX	Precisione e Fuga aumentati
 STAT_TOOLTIP_INT	MP e Difesa-Attacco magici aumentati
 STAT_TOOLTIP_STR	Valori Attacco e Danno migliorati
 SYMBOLLIST_TITLE	Registrare la bandiera della Gilda
-SYSTEM_OPTION_CPU_TILING_1	La modalità CPU Tiling può migliorare la velocità di un PC lento.
-SYSTEM_OPTION_CPU_TILING_2	Se si dovessero verificare problemi con la grafica, scegli ,Opzioni di sistema‘ o ,CONFIG.exe‘
-SYSTEM_OPTION_CPU_TILING_3	ed usa così il GPU-Tiling-Modus
-SYSTEM_OPTION_GPU_TILING_1	La modalità GPU Tiling potrebbe andare più lentamente su un PC vecchio
-SYSTEM_OPTION_GPU_TILING_2	Se si verificano dei problemi con la grafica scegli "Opzioni di Sistema" o "CONFIG.exe"
-SYSTEM_OPTION_GPU_TILING_3	e cambia in modalità CPU Tiling
-SYSTEM_OPTION_TILING_EXIT	Per cambiare la modalità Tiling devi riavviare il gioco.
 TARGET_BUTTON_ACCEPT_FIGHT	Accetta
 TARGET_BUTTON_AVENGE	Vendetta
 TARGET_BUTTON_BUILDING_DESTROY	Distruggi

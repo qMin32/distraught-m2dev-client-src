@@ -565,13 +565,6 @@ STAT_TOOLTIP_DEX	Attaque et esquive augmentées
 STAT_TOOLTIP_INT	Augmente PM, attaque & défense magique.
 STAT_TOOLTIP_STR	Attaque et dégâts améliorés.
 SYMBOLLIST_TITLE	Enregistrer le drapeau de Guilde
-SYSTEM_OPTION_CPU_TILING_1	CPU Tiling Mode peut améliorer la vitesse sur une configuration modeste.
-SYSTEM_OPTION_CPU_TILING_2	Si vous rencontrez des problèmes avec les éléments graphiques choisissez ,Systemoption ou ,CONFIG.exe
-SYSTEM_OPTION_CPU_TILING_3	et changez le CPU Tiling Mode.
-SYSTEM_OPTION_GPU_TILING_1	GPU Tiling Mode peut ralentir une configuration modeste.
-SYSTEM_OPTION_GPU_TILING_2	Si vous rencontrez des problèmes avec les éléments graphiques allez dans les "Options système" ou lancez "CONFIG.exe"
-SYSTEM_OPTION_GPU_TILING_3	et change le CPU Tiling Mode
-SYSTEM_OPTION_TILING_EXIT	Il faut redémarrer le programme pour pouvoir changer le Tiling Mode.
 TARGET_BUTTON_ACCEPT_FIGHT	Accepter
 TARGET_BUTTON_AVENGE	Revanche
 TARGET_BUTTON_BUILDING_DESTROY	Détruire
