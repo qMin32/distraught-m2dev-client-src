@@ -30,17 +30,14 @@ class OptionDialog(ui.ScriptWindow):
 		print(" -------------------------------------- DELETE SYSTEM OPTION DIALOG")
 
 	def __Initialize(self):
-		self.tilingMode = 0
 		self.titleBar = 0
 		self.changeMusicButton = 0
 		self.selectMusicFile = 0
 		self.ctrlMusicVolume = 0
 		self.ctrlSoundVolume = 0
 		self.musicListDlg = 0
-		self.tilingApplyButton = 0
 		self.cameraModeButtonList = []
 		self.fogModeButtonList = []
-		self.tilingModeButtonList = []
 		self.ctrlShadowQuality = 0
 		
 	def Destroy(self):
@@ -70,10 +67,6 @@ class OptionDialog(ui.ScriptWindow):
 			self.fogModeButtonList.append(GetObject("fog_level0"))
 			self.fogModeButtonList.append(GetObject("fog_level1"))
 			self.fogModeButtonList.append(GetObject("fog_level2"))
-			self.tilingModeButtonList.append(GetObject("tiling_cpu"))
-			self.tilingModeButtonList.append(GetObject("tiling_gpu"))
-			self.tilingApplyButton=GetObject("tiling_apply")
-			#self.ctrlShadowQuality = GetObject("shadow_bar")
 		except:
 			import exception
 			exception.Abort("OptionDialog.__Load_BindObject")
@@ -104,13 +97,6 @@ class OptionDialog(ui.ScriptWindow):
 		self.fogModeButtonList[1].SAFE_SetEvent(self.__OnClickFogModeLevel1Button)
 		self.fogModeButtonList[2].SAFE_SetEvent(self.__OnClickFogModeLevel2Button)
 
-		self.tilingModeButtonList[0].SAFE_SetEvent(self.__OnClickTilingModeCPUButton)
-		self.tilingModeButtonList[1].SAFE_SetEvent(self.__OnClickTilingModeGPUButton)
-
-		self.tilingApplyButton.SAFE_SetEvent(self.__OnClickTilingApplyButton)
-
-		self.__SetCurTilingMode()
-
 		# MR-14: Fog update by Alaric
 		self.__ClickRadioButton(self.fogModeButtonList, systemSetting.GetFogLevel())
 		# MR-14: -- END OF -- Fog update by Alaric
@@ -120,27 +106,6 @@ class OptionDialog(ui.ScriptWindow):
 			self.selectMusicFile.SetText(uiSelectMusic.DEFAULT_THEMA)
 		else:
 			self.selectMusicFile.SetText(musicInfo.fieldMusic[:MUSIC_FILENAME_MAX_LEN])
-
-	def __OnClickTilingModeCPUButton(self):
-		self.__NotifyChatLine(localeInfo.SYSTEM_OPTION_CPU_TILING_1)
-		self.__NotifyChatLine(localeInfo.SYSTEM_OPTION_CPU_TILING_2)
-		self.__NotifyChatLine(localeInfo.SYSTEM_OPTION_CPU_TILING_3)
-		self.__SetTilingMode(0)
-
-	def __OnClickTilingModeGPUButton(self):
-		self.__NotifyChatLine(localeInfo.SYSTEM_OPTION_GPU_TILING_1)
-		self.__NotifyChatLine(localeInfo.SYSTEM_OPTION_GPU_TILING_2)
-		self.__NotifyChatLine(localeInfo.SYSTEM_OPTION_GPU_TILING_3)
-		self.__SetTilingMode(1)
-
-	def __OnClickTilingApplyButton(self):
-		self.__NotifyChatLine(localeInfo.SYSTEM_OPTION_TILING_EXIT)
-		if 0==self.tilingMode:
-			background.EnableSoftwareTiling(1)
-		else:
-			background.EnableSoftwareTiling(0)
-
-		net.ExitGame()
 
 	def __OnClickChangeMusicButton(self):
 		if not self.musicListDlg:
@@ -161,11 +126,6 @@ class OptionDialog(ui.ScriptWindow):
 			eachButton.SetUp()
 
 		selButton.Down()
-
-
-	def __SetTilingMode(self, index):
-		self.__ClickRadioButton(self.tilingModeButtonList, index)
-		self.tilingMode=index
 
 	def __SetCameraMode(self, index):
 		constInfo.SET_CAMERA_MAX_DISTANCE_INDEX(index)
@@ -242,14 +202,7 @@ class OptionDialog(ui.ScriptWindow):
 		ui.ScriptWindow.Show(self)
 
 	def Close(self):
-		self.__SetCurTilingMode()
 		self.Hide()
-
-	def __SetCurTilingMode(self):
-		if background.IsSoftwareTiling():
-			self.__SetTilingMode(0)
-		else:
-			self.__SetTilingMode(1)	
 
 	def __NotifyChatLine(self, text):
 		chat.AppendChat(chat.CHAT_TYPE_INFO, text)
