@@ -28,3 +28,8 @@ void BaseClass::SetVertexDeclaration(VertexType type)
 {
     m_device->SetVertexDeclaration(m_layout->GetVertexDeclaration(type));
 }
+
+RefPtr<ShadersContainer> BaseClass::GetShaderContained()
+{
+    return m_shadersContainer;
+}

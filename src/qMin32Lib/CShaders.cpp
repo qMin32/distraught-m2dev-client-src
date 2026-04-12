@@ -7,6 +7,11 @@
 #include <d3dcompiler.h>
 #pragma comment (lib, "d3dcompiler.lib")
 
+// Tested only in debug mode so far.
+// Not sure if reading from the pack works in release builds.
+// Any brave soul to test/fix release mode? :))
+
+
 static std::string BuildShaderPath(const std::string& basePath)
 {
 #ifdef _DEBUG

@@ -16,6 +16,9 @@
 
 #include "MonsterAreaInfo.h"
 
+//step 1: include light in core file to get the classes 
+#include "qMin32Lib/Core.h"
+#include "qMin32Lib/CLight.h"
 
 #define LOAD_SIZE_WIDTH				1
 
@@ -676,4 +679,20 @@ class CMapOutdoor : public CMapBase
 
 	private:
 		bool m_bSettingTerrainVisible;
+
+	//step 2: create function to set constants ,i make them to explain how shaders work
+	private: // don t need to acces them from other class so private
+		CNewLight m_light; //to get the light and send it to pixel shader
+
+		// metin is "old style" rendering with pass , diffuse texture index 0, alpha texture index1 
+		void BeginTerrainSplat(const float4x4& matTex0, const float4x4& matTex1,
+			LPDIRECT3DTEXTURE9 diffuseTex, LPDIRECT3DTEXTURE9 alphaTex);
+
+		//for shadow for texture ,the index is the same, 0 and 1, this is rendering with pass... 
+		//static shadow texture index0 and dynamic shadow texture index 1 
+		void BeginTerrainShadow(const float4x4& staticShadow, const float4x4& dynamicShadow,
+			LPDIRECT3DTEXTURE9 staticShadowTex, LPDIRECT3DTEXTURE9 dynamicShadowTex, bool useDynamicShadow);
+
+		//after we finish to render terrain,we need to set shaders to null
+		void EndTerrainShader();
 };

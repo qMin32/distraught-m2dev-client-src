@@ -1,5 +1,6 @@
 #pragma once
 #include "Core.h"
+#include <string>
 
 class ShadersContainer
 {
@@ -8,7 +9,6 @@ public:
 
 	static RefPtr<CShaders> GetTerrain();
 	static RefPtr<CShaders> GetTerrainShadow();
-
 
 private:
 	static RefPtr<CShaders> TerrainShader;
