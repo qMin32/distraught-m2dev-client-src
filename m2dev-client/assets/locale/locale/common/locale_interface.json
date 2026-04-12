@@ -1,0 +1,425 @@
+{
+  "ACCEPT": {
+    "en": "Accept"
+  },
+  "MESSAGE": {
+    "en": "This is a Message"
+  },
+  "ATTACH_METIN_INFO": {
+    "en": "Do you want to use the Spirit Stone?"
+  },
+  "ATTACH_METIN_TITLE": {
+    "en": "Use Spirit Stone"
+  },
+  "CANCEL": {
+    "en": "Cancel"
+  },
+  "CHANGE_PASSWORD_CONFIRM": {
+    "en": "Confirm new Password"
+  },
+  "CHANGE_PASSWORD_NEW": {
+    "en": "New Password"
+  },
+  "CHANGE_PASSWORD_OLD": {
+    "en": "Old Password"
+  },
+  "CHANGE_PASSWORD_TITLE": {
+    "en": "Password Change"
+  },
+  "CHARACTER_ACTION": {
+    "en": "Emotion"
+  },
+  "CHARACTER_MAIN": {
+    "en": "Character"
+  },
+  "CHARACTER_MUTUAL_ACTION": {
+    "en": "Mutual Emotion"
+  },
+  "CHARACTER_NORMAL_ACTION": {
+    "en": "Normal Emotion"
+  },
+  "CHARACTER_QUEST": {
+    "en": "Missions"
+  },
+  "CHARACTER_SKILL": {
+    "en": "Skill"
+  },
+  "CLOSE": {
+    "en": "Close"
+  },
+  "COSTUME_TITLE": {
+    "en": "Costumes"
+  },
+  "COSTUME_WINDOW_TITLE": {
+    "en": "Costumes"
+  },
+  "CREATE_ATT_GRADE": {
+    "en": "STR"
+  },
+  "CREATE_CREATE": {
+    "en": "Create"
+  },
+  "CREATE_DEX_GRADE": {
+    "en": "DEX"
+  },
+  "CREATE_HP": {
+    "en": "HP"
+  },
+  "CREATE_MAN": {
+    "en": "Man"
+  },
+  "CREATE_NAME": {
+    "en": "Name"
+  },
+  "CREATE_NEXT": {
+    "en": "Next"
+  },
+  "CREATE_PREV": {
+    "en": "Back"
+  },
+  "CREATE_SEX": {
+    "en": "Gender"
+  },
+  "CREATE_SHAPE": {
+    "en": "Shape"
+  },
+  "CREATE_SP": {
+    "en": "INT"
+  },
+  "CREATE_WOMAN": {
+    "en": "Woman"
+  },
+  "CUBE_INFO_TITLE": {
+    "en": "Refinement Handbook"
+  },
+  "CUBE_REQUIRE_MATERIAL": {
+    "en": "Required materials"
+  },
+  "CUBE_REQUIRE_MATERIAL_OR": {
+    "en": "or"
+  },
+  "CUBE_TITLE": {
+    "en": "Refinement Window"
+  },
+  "DO_REFINE": {
+    "en": "Refine"
+  },
+  "DRAGONSOUL_ACTIVATE": {
+    "en": "Activate"
+  },
+  "DRAGONSOUL_PAGE_BUTTON_1": {
+    "en": "Rough"
+  },
+  "DRAGONSOUL_PAGE_BUTTON_2": {
+    "en": "Cut"
+  },
+  "DRAGONSOUL_PAGE_BUTTON_3": {
+    "en": "Rare"
+  },
+  "DRAGONSOUL_PAGE_BUTTON_4": {
+    "en": "Antique"
+  },
+  "DRAGONSOUL_PAGE_BUTTON_5": {
+    "en": "Legendary"
+  },
+  "DRAGONSOUL_REFINE_WINDOW_TITLE": {
+    "en": "Refinement Window"
+  },
+  "DRAGONSOUL_TAP_TITLE_1": {
+    "en": "Dragon Diamond"
+  },
+  "DRAGONSOUL_TAP_TITLE_2": {
+    "en": "Dragon Ruby"
+  },
+  "DRAGONSOUL_TAP_TITLE_3": {
+    "en": "Dragon Jade"
+  },
+  "DRAGONSOUL_TAP_TITLE_4": {
+    "en": "Dragon Sapphire"
+  },
+  "DRAGONSOUL_TAP_TITLE_5": {
+    "en": "Dragon Garnet"
+  },
+  "DRAGONSOUL_TAP_TITLE_6": {
+    "en": "Dragon Onyx"
+  },
+  "DRAGONSOUL_TITLE": {
+    "en": "Dragon Stone Alchemy"
+  },
+  "EMPIRE_EXIT": {
+    "en": "Exit"
+  },
+  "EMPIRE_NEXT": {
+    "en": "Next"
+  },
+  "EMPIRE_PREV": {
+    "en": "Back"
+  },
+  "EMPIRE_SELECT": {
+    "en": "Choose"
+  },
+  "EXCHANGE_ACCEPT": {
+    "en": "Accept"
+  },
+  "EXCHANGE_TITLE": {
+    "en": "Trade"
+  },
+  "GAMEOPTION_TITLE": {
+    "en": "Game Options"
+  },
+  "GAME_EXIT_OBSERVER": {
+    "en": "End Observer Mode"
+  },
+  "GAME_HELP": {
+    "en": "Help"
+  },
+  "GAME_QUEST": {
+    "en": "Tasks"
+  },
+  "GAME_SKILL_UP": {
+    "en": "Raise Skills"
+  },
+  "GAME_STAT_UP": {
+    "en": "Raise State"
+  },
+  "GRADE_SELECT": {
+    "en": "Class"
+  },
+  "GUILD_BASENAME": {
+    "en": "Base Name"
+  },
+  "GUILD_BOARD_ID": {
+    "en": "Name"
+  },
+  "GUILD_BOARD_REFRESH": {
+    "en": "Refresh (F5)"
+  },
+  "GUILD_BOARD_TEXT": {
+    "en": "Message"
+  },
+  "GUILD_BUILDING_CATEGORY_TITLE": {
+    "en": "Building Units"
+  },
+  "GUILD_BUILDING_CHANGE": {
+    "en": "Change"
+  },
+  "GUILD_BUILDING_DIRECTION": {
+    "en": "Orientation"
+  },
+  "GUILD_BUILDING_GRADE": {
+    "en": "Rank"
+  },
+  "GUILD_BUILDING_INFO": {
+    "en": "Buildings and Cost Information"
+  },
+  "GUILD_BUILDING_LIST_TITLE": {
+    "en": "Building List"
+  },
+  "GUILD_BUILDING_LOG": {
+    "en": "Log"
+  },
+  "GUILD_BUILDING_NAME": {
+    "en": "Building name"
+  },
+  "GUILD_BUILDING_OPERATE": {
+    "en": "Operate"
+  },
+  "GUILD_BUILDING_PLY": {
+    "en": "Plywood"
+  },
+  "GUILD_BUILDING_POSITION": {
+    "en": "Position"
+  },
+  "GUILD_BUILDING_PREVIEW": {
+    "en": "Preview"
+  },
+  "GUILD_BUILDING_PRICE": {
+    "en": "Price"
+  },
+  "GUILD_BUILDING_REFRESH": {
+    "en": "Refresh (F5)"
+  },
+  "GUILD_BUILDING_STONE": {
+    "en": "Stone"
+  },
+  "GUILD_BUILDING_TITLE": {
+    "en": "Guild House Building"
+  },
+  "GUILD_CRYSTAL": {
+    "en": "Crystal"
+  },
+  "GUILD_DEPOSIT": {
+    "en": "Deposit"
+  },
+  "GUILD_DROP_RESOURCE1": {
+    "en": "Here"
+  },
+  "GUILD_DROP_RESOURCE2": {
+    "en": "Drop Resource"
+  },
+  "GUILD_GEM": {
+    "en": "Gem"
+  },
+  "GUILD_GRADE_CHANGE_GRADE_NAME": {
+    "en": "New rank name"
+  },
+  "GUILD_GRADE_NUM": {
+    "en": "Nr."
+  },
+  "GUILD_GRADE_PERMISSION_DELETE": {
+    "en": "Kick"
+  },
+  "GUILD_GRADE_PERMISSION_JOIN": {
+    "en": "Invite"
+  },
+  "GUILD_GRADE_PERMISSION_NOTICE": {
+    "en": "Write"
+  },
+  "GUILD_GRADE_PERMISSION_SKILL": {
+    "en": "Skills"
+  },
+  "GUILD_GRADE_RANK": {
+    "en": "Rank"
+  },
+  "GUILD_GRADE_WRITE": {
+    "en": "Write"
+  },
+  "GUILD_INFO": {
+    "en": "Guild Information"
+  },
+  "GUILD_INFO_CUR_EXP": {
+    "en": "Experience"
+  },
+  "GUILD_INFO_DECALRE_WAR": {
+    "en": "Declare War"
+  },
+  "GUILD_INFO_ENEMY_GUILD": {
+    "en": "Enemy Guild"
+  },
+  "GUILD_INFO_ENEMY_GUILD_EMPTY": {
+    "en": "None"
+  },
+  "GUILD_INFO_LEVEL": {
+    "en": "Guild Level"
+  },
+  "GUILD_INFO_MASTER": {
+    "en": "Leader"
+  },
+  "GUILD_INFO_MASTER_VALUE": {
+    "en": "Leader"
+  },
+  "GUILD_INFO_MEMBER_AVG_LEVEL": {
+    "en": "Average Level"
+  },
+  "GUILD_INFO_MEMBER_NUM": {
+    "en": "No. of members"
+  },
+  "GUILD_INFO_NAME": {
+    "en": "Guild name"
+  },
+  "GUILD_INFO_NAME_VALUE": {
+    "en": "This is a Guild Name"
+  },
+  "GUILD_INFO_OFFER_EXP": {
+    "en": "Invest"
+  },
+  "GUILD_INFO_REST_EXP": {
+    "en": "Needed Exp."
+  },
+  "GUILD_INFO_UPLOAD_MARK": {
+    "en": "Upload Sign"
+  },
+  "GUILD_INFO_UPLOAD_SYMBOL": {
+    "en": "Upload Flag"
+  },
+  "GUILD_MARK": {
+    "en": "Guild Sign"
+  },
+  "GUILD_MEMBER_JOB": {
+    "en": "Class"
+  },
+  "GUILD_MEMBER_KNIGHT": {
+    "en": "Leader"
+  },
+  "GUILD_MEMBER_LEVEL": {
+    "en": "Level"
+  },
+  "GUILD_MEMBER_NAME": {
+    "en": "Name"
+  },
+  "GUILD_MEMBER_RANK": {
+    "en": "Rank"
+  },
+  "GUILD_MEMBER_SPECIFIC_GRAVITY": {
+    "en": "Invested"
+  },
+  "GUILD_METIN_STONE": {
+    "en": "Spirit Stone"
+  },
+  "GUILD_MINENAL": {
+    "en": "Mineral"
+  },
+  "GUILD_MONEY": {
+    "en": "Yang"
+  },
+  "GUILD_NAME": {
+    "en": "Guild"
+  },
+  "GUILD_RESOURCE_INFO": {
+    "en": "Resources Information"
+  },
+  "GUILD_SKILL_ACTIVE": {
+    "en": "Active"
+  },
+  "GUILD_SKIlL_HEAL_GSP": {
+    "en": "Win back Power"
+  },
+  "GUILD_SKILL_PASSIVE": {
+    "en": "Passive"
+  },
+  "GUILD_SKILL_POWER": {
+    "en": "Energy"
+  },
+  "GUILD_SKILL_STATE": {
+    "en": "Skills of the Guild"
+  },
+  "GUILD_WAR_ACCEPT": {
+    "en": "Accept War Declaration"
+  },
+  "GUILD_WAR_BATTLE_TYPE": {
+    "en": "Battle Type"
+  },
+  "GUILD_WAR_CTF": {
+    "en": "Flag"
+  },
+  "GUILD_WAR_DECLARE": {
+    "en": "Declare Guild War"
+  },
+  "GUILD_WAR_ENEMY": {
+    "en": "Enemy"
+  },
+  "GUILD_WAR_NORMAL": {
+    "en": "Field"
+  },
+  "GUILD_WAR_WARP": {
+    "en": "Arena"
+  },
+  "GUILD_WATER": {
+    "en": "Water"
+  },
+  "GUILD_WATER_STONE": {
+    "en": "Waterstone"
+  },
+  "GUILD_WITHDRAW": {
+    "en": "Take"
+  },
+  "YES": {
+    "en": "Yes"
+  },
+  "NO": {
+    "en": "No"
+  },
+  "ZONE_MAP": {
+    "en": "Large Map"
+  }
+}
