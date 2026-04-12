@@ -20,7 +20,7 @@ void CMapOutdoor::BeginTerrainSplat(const float4x4& matTex0, const float4x4& mat
 	//after we set the shader we can send the light to shader
 	m_light.SetToShader(shader);
 
-	//now we can start to sent the constant for vertexshader
+	//now we can start to send the constant for vertexshader
 	auto vsConstant = shader->GetConstantVs(); //get vertex shader constant table
 	vsConstant.SetMatrix("g_mView", &mat.view); //send view matrix
 	vsConstant.SetMatrix("g_mProj", &mat.proj); //send projection matrix
@@ -52,11 +52,6 @@ void CMapOutdoor::BeginTerrainSplat(const float4x4& matTex0, const float4x4& mat
 	//set texture for pixel shader 
 	STATEMANAGER.SetTexture(0, diffuseTex);
 	STATEMANAGER.SetTexture(1, alphaTex);
-
-	STATEMANAGER.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	STATEMANAGER.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 }
 
 void CMapOutdoor::BeginTerrainShadow(const float4x4& staticShadow, const float4x4& dynamicShadow, LPDIRECT3DTEXTURE9 staticShadowTex, LPDIRECT3DTEXTURE9 dynamicShadowTex, bool useDynamicShadow)
@@ -88,11 +83,6 @@ void CMapOutdoor::BeginTerrainShadow(const float4x4& staticShadow, const float4x
 	psConstant.SetInt("g_useDynamicShadow", &flag);
 	STATEMANAGER.SetTexture(0, staticShadowTex);
 	STATEMANAGER.SetTexture(1, useDynamicShadow ? dynamicShadowTex : nullptr);
-
-	STATEMANAGER.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	STATEMANAGER.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 }
 
 void CMapOutdoor::EndTerrainShader()
@@ -104,8 +94,8 @@ void CMapOutdoor::EndTerrainShader()
 	STATEMANAGER.SetTexture(1, nullptr);
 }
 
-// in shaders when we use shaders,we don t need Set/Get/SaveTransform, or Set/Get/SaveTextureStageState 
-// because shader will handle those things for us, but we still need to set some render state for example alpha blending and alpha test, and we also need to set texture stage state for example color operation and alpha operation, and we also need to set sampler state for example address mode, filter mode.
+// in shaders we don t need Set/Get/SaveTransform, or Set/Get/SaveTextureStageState 
+// because shader will handle those things for us, but we still need to set some render state
 // let's start to delete them 
 void CMapOutdoor::__RenderTerrain_RenderHardwareTransformPatch()
 {
@@ -125,9 +115,6 @@ void CMapOutdoor::__RenderTerrain_RenderHardwareTransformPatch()
 		fFogFarDistance=10000.0f;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////
-	// Render State & TextureStageState	
-
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHAREF, 0x00000000);
@@ -242,9 +229,6 @@ void CMapOutdoor::__RenderTerrain_RenderHardwareTransformPatch()
 
 	std::sort(m_RenderedTextureNumVector.begin(),m_RenderedTextureNumVector.end());
 
-	//////////////////////////////////////////////////////////////////////////
-	// Render State & TextureStageState
-
 	STATEMANAGER.RestoreRenderState(D3DRS_TEXTUREFACTOR);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHATESTENABLE);
@@ -287,12 +271,10 @@ void CMapOutdoor::__HardwareTransformPatch_RenderPatchSplat(long patchnum, WORD 
 
 	TTerrainSplatPatch& rTerrainSplatPatch = pTerrain->GetTerrainSplatPatch();
 
-
 	m_matWorldForCommonUse._41 = -(float)(wCoordX * CTerrainImpl::TERRAIN_XSIZE);
 	m_matWorldForCommonUse._42 = (float)(wCoordY * CTerrainImpl::TERRAIN_YSIZE);
 
 	D3DXMATRIX matTexTransform, matSplatAlphaTexTransform;
-
 
 	D3DXMatrixMultiply(&matTexTransform, &m_matViewInverse, &m_matWorldForCommonUse);
 	D3DXMatrixMultiply(&matSplatAlphaTexTransform, &matTexTransform, &m_matSplatAlpha);

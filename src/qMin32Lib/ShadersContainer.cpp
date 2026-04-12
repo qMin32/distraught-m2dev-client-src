@@ -15,6 +15,7 @@
 
 RefPtr<CShaders> ShadersContainer::TerrainShader = nullptr;
 RefPtr<CShaders> ShadersContainer::TerrainShadowShader = nullptr;
+RefPtr<CShaders> ShadersContainer::WaterShader = nullptr;
 
 ShadersContainer::ShadersContainer(BaseClass* base)
 {
@@ -29,6 +30,7 @@ ShadersContainer::ShadersContainer(BaseClass* base)
 # else
      TerrainShader = base->CreateShaderA("terrain");
      TerrainShadowShader = base->CreateShaderA("shadow");
+     WaterShader = base->CreateShaderA("water");
 # endif
 }
 
@@ -40,4 +42,9 @@ RefPtr<CShaders> ShadersContainer::GetTerrain()
 RefPtr<CShaders> ShadersContainer::GetTerrainShadow()
 {
     return TerrainShadowShader;
+}
+
+RefPtr<CShaders> ShadersContainer::GetWater()
+{
+    return WaterShader;
 }

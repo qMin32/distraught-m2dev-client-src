@@ -76,7 +76,7 @@ using float3 = D3DXVECTOR3;
 using float4 = D3DXVECTOR4;
 using float4x4 = D3DXMATRIX;
 
-enum LightType
+enum LightType : int
 {
 	Point = 1,
 	Spot = 2,

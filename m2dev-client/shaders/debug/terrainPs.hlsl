@@ -36,7 +36,7 @@ float4 main(VS_OUT input) : COLOR0
 {
     float3 n = normalize(input.Normal);
     float3 blend = abs(n);
-    blend = pow(blend, 1.0f);
+    blend = pow(blend, 5.0f);
     blend /= (blend.x + blend.y + blend.z + 0.0001f);
 
     float texScale = 0.0024f;
@@ -88,7 +88,7 @@ float4 main(VS_OUT input) : COLOR0
 
     float3 color = ambient + sky + lit;
 
-    float fogDistance = 1.3f;
+    float fogDistance = 1.4f;
     float fogFactor = saturate((g_fFogFar * fogDistance - input.FogDist) / (g_fFogFar * fogDistance - g_fFogNear));
     fogFactor = pow(fogFactor, 0.5f);
 

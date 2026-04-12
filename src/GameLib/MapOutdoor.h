@@ -568,7 +568,6 @@ class CMapOutdoor : public CMapBase
 
 	protected:
 		float	m_fOpaqueWaterDepth;
-		CGraphicImageInstance m_WaterInstances[30];
 
 	public:
 		float	GetOpaqueWaterDepth() { return m_fOpaqueWaterDepth;	}
@@ -695,4 +694,8 @@ class CMapOutdoor : public CMapBase
 
 		//after we finish to render terrain,we need to set shaders to null
 		void EndTerrainShader();
+
+		//water
+		CGraphicImageInstance m_WaterNormalMap;
+		void BeginWaterShader();
 };

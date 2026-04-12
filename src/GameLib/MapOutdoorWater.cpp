@@ -4,22 +4,57 @@
 
 #include "MapOutdoor.h"
 #include "TerrainPatch.h"
+#include "qMin32Lib/All.h"
+
+//now we will use one texture,not 30
 
 void CMapOutdoor::LoadWaterTexture()
 {
 	UnloadWaterTexture();
-	char buf[256];
-	for (int i = 0; i < 30; ++i)
-	{
-		sprintf(buf, "d:/ymir Work/special/water/%02d.dds", i+1);
-		m_WaterInstances[i].SetImagePointer((CGraphicImage *) CResourceManager::Instance().GetResourcePointer(buf));
-	}
+	m_WaterNormalMap.SetImagePointer((CGraphicImage*)
+		CResourceManager::Instance().GetResourcePointer("d:/ymir Work/special/water/water_normal.dds"));
 }
 
 void CMapOutdoor::UnloadWaterTexture()
 {
-	for (int i = 0; i < 30; ++i)
-		m_WaterInstances[i].Destroy();
+	m_WaterNormalMap.Destroy();
+}
+
+void CMapOutdoor::BeginWaterShader()
+{
+	m_dx->SetVertexDeclaration(VD_PD);
+	auto shader = m_dx->GetShaderContained()->GetWater();
+	m_dx->SetShader(shader);
+
+	auto vsConstant = shader->GetConstantVs();
+	vsConstant.SetMatrix("g_mView", &mat.view);
+	vsConstant.SetMatrix("g_mProj", &mat.proj);
+
+	float texScaleX = m_fWaterTexCoordBase;
+	float texScaleY = -m_fWaterTexCoordBase;
+	vsConstant.SetFloat("g_fTexScaleX", &texScaleX);
+	vsConstant.SetFloat("g_fTexScaleY", &texScaleY);
+
+	float fTime = ELTimer_GetMSec() / 1000.0f;
+	vsConstant.SetFloat("g_fTime", &fTime);
+
+	float fogNear = mc_pEnvironmentData ? mc_pEnvironmentData->GetFogNearDistance() : 5000.0f;
+	float fogFar = mc_pEnvironmentData ? mc_pEnvironmentData->GetFogFarDistance() : 10000.0f;
+
+	D3DXCOLOR fogColor = mc_pEnvironmentData
+		? D3DXCOLOR(mc_pEnvironmentData->FogColor)
+		: D3DXCOLOR(1, 1, 1, 1);
+	ColorStruct fogCol(fogColor.r, fogColor.g, fogColor.b, fogColor.a);
+
+	auto psConstant = shader->GetConstantPs();
+	psConstant.SetFloat("g_fFogNear", &fogNear);
+	psConstant.SetFloat("g_fFogFar", &fogFar);
+	psConstant.SetColor("g_vFogColor", &fogCol);
+
+	ColorStruct waterColor(0.1f, 0.3f, 0.6f, 0.65f);
+	psConstant.SetColor("g_vWaterColor", &waterColor);
+
+	STATEMANAGER.SetTexture(0, m_WaterNormalMap.GetTexturePointer()->GetD3DTexture());
 }
 
 void CMapOutdoor::RenderWater()
@@ -30,112 +65,51 @@ void CMapOutdoor::RenderWater()
 	if (!IsVisiblePart(PART_WATER))
 		return;
 
-	//////////////////////////////////////////////////////////////////////////
-	// RenderState
 	D3DXMATRIX matTexTransformWater;
-	
+	D3DXMatrixScaling(&matTexTransformWater, m_fWaterTexCoordBase, -m_fWaterTexCoordBase, 0.0f);
+
 	STATEMANAGER.SaveRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-	STATEMANAGER.SaveRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1);
-	STATEMANAGER.SaveRenderState(D3DRS_COLORVERTEX, TRUE);
+	STATEMANAGER.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	STATEMANAGER.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-	STATEMANAGER.SetTexture(0, m_WaterInstances[((ELTimer_GetMSec() / 70) % 30)].GetTexturePointer()->GetD3DTexture());
+	BeginWaterShader();
 
-	D3DXMatrixScaling(&matTexTransformWater, m_fWaterTexCoordBase, -m_fWaterTexCoordBase, 0.0f);
-	D3DXMatrixMultiply(&matTexTransformWater, &m_matViewInverse, &matTexTransformWater);
-	
-	STATEMANAGER.SaveTransform(D3DTS_TEXTURE0, &matTexTransformWater);
-	m_dx->SetVertexDeclaration(VD_PD);
-
-	STATEMANAGER.SaveTextureStageState(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEPOSITION);
-	STATEMANAGER.SaveTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
-
-	STATEMANAGER.SaveSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
-	STATEMANAGER.SaveSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
-	STATEMANAGER.SaveSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-	STATEMANAGER.SaveSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	STATEMANAGER.SaveSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-	
-
-	STATEMANAGER.SetTexture(1,NULL);
-	STATEMANAGER.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	STATEMANAGER.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
-	// RenderState
-	//////////////////////////////////////////////////////////////////////////
-
-	// 물 위 아래 애니시키기...
 	static float s_fWaterHeightCurrent = 0;
 	static float s_fWaterHeightBegin = 0;
 	static float s_fWaterHeightEnd = 0;
 	static DWORD s_dwLastHeightChangeTime = CTimer::Instance().GetCurrentMillisecond();
 	static DWORD s_dwBlendtime = 300;
 
-	// 1.5초 마다 변경
 	if ((CTimer::Instance().GetCurrentMillisecond() - s_dwLastHeightChangeTime) > s_dwBlendtime)
 	{
 		s_dwBlendtime = random_range(1000, 3000);
-
-		if (s_fWaterHeightEnd == 0)
-			s_fWaterHeightEnd = -random_range(0, 15);
-		else
-			s_fWaterHeightEnd = 0;
-
+		s_fWaterHeightEnd = (s_fWaterHeightEnd == 0) ? -random_range(0, 15) : 0;
 		s_fWaterHeightBegin = s_fWaterHeightCurrent;
 		s_dwLastHeightChangeTime = CTimer::Instance().GetCurrentMillisecond();
 	}
-
-	s_fWaterHeightCurrent = s_fWaterHeightBegin + (s_fWaterHeightEnd - s_fWaterHeightBegin) * (float) ((CTimer::Instance().GetCurrentMillisecond() - s_dwLastHeightChangeTime) / (float) s_dwBlendtime);
-	m_matWorldForCommonUse._43 = s_fWaterHeightCurrent;
+	s_fWaterHeightCurrent = s_fWaterHeightBegin +
+		(s_fWaterHeightEnd - s_fWaterHeightBegin) *
+		((CTimer::Instance().GetCurrentMillisecond() - s_dwLastHeightChangeTime) / (float)s_dwBlendtime);
 
 	m_matWorldForCommonUse._41 = 0.0f;
 	m_matWorldForCommonUse._42 = 0.0f;
-	STATEMANAGER.SetTransform(D3DTS_WORLD, &m_matWorldForCommonUse);
-	
+	m_matWorldForCommonUse._43 = s_fWaterHeightCurrent;
+
 	float fFogDistance = __GetFogDistance();
 
-	std::vector<std::pair<float, long> >::iterator i;
+	for (auto i = m_PatchVector.begin(); i != m_PatchVector.end(); ++i)
+		DrawWater(i->second);
 
-	for(i = m_PatchVector.begin();i != m_PatchVector.end(); ++i)
-	{
-		if (i->first<fFogDistance)	
-			DrawWater(i->second);
-	}
-
-	STATEMANAGER.SetTexture(0, NULL);
-	STATEMANAGER.SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-
-	for(i = m_PatchVector.begin();i != m_PatchVector.end(); ++i)
-	{
-		if (i->first>=fFogDistance)	
-			DrawWater(i->second);
-	}
-
-	// 렌더링 한 후에는 물 z 위치를 복구
 	m_matWorldForCommonUse._43 = 0.0f;
 
-	//////////////////////////////////////////////////////////////////////////
-	// RenderState
-	STATEMANAGER.RestoreTransform(D3DTS_TEXTURE0);
-	STATEMANAGER.RestoreSamplerState(0, D3DSAMP_MINFILTER);
-	STATEMANAGER.RestoreSamplerState(0, D3DSAMP_MAGFILTER);
-	STATEMANAGER.RestoreSamplerState(0, D3DSAMP_MIPFILTER);
-	STATEMANAGER.RestoreSamplerState(0, D3DSAMP_ADDRESSU);
-	STATEMANAGER.RestoreSamplerState(0, D3DSAMP_ADDRESSV);
-	STATEMANAGER.RestoreTextureStageState(0, D3DTSS_TEXCOORDINDEX);
-	STATEMANAGER.RestoreTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS);
-	
-	STATEMANAGER.RestoreRenderState(D3DRS_DIFFUSEMATERIALSOURCE);
-	STATEMANAGER.RestoreRenderState(D3DRS_COLORVERTEX);
+	m_dx->SetShader(nullptr);
+	STATEMANAGER.SetTexture(0, nullptr);
+
 	STATEMANAGER.RestoreRenderState(D3DRS_ZWRITEENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE);
-	STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE);	
+	STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE);
 }
 
 void CMapOutdoor::DrawWater(long patchnum)
