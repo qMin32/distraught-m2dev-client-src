@@ -134,7 +134,6 @@ public:
 
 		m_dwPixelShader = 0;
 		m_dwVertexShader = 0;
-		m_bVertexProcessing = FALSE;
 	}
 
 	// Renderstates
@@ -157,8 +156,6 @@ public:
 
 	CStreamData				m_StreamData[STATEMANAGER_MAX_STREAMS];
 	CIndexData				m_IndexData;
-
-	BOOL					m_bVertexProcessing;
 };
 
 class CStateManager : public CSingleton<CStateManager>
@@ -226,10 +223,6 @@ public:
 	void SaveTransform(D3DTRANSFORMSTATETYPE Transform, const D3DXMATRIX* pMatrix);
 	void RestoreTransform(D3DTRANSFORMSTATETYPE Transform);
 
-	// VertexProcessing
-	void SaveVertexProcessing(BOOL IsON);
-	void RestoreVertexProcessing();
-
 	// Don't cache-check the transform.  To much to do
 	void SetTransform(D3DTRANSFORMSTATETYPE Type, const D3DXMATRIX* pMatrix);
 	void GetTransform(D3DTRANSFORMSTATETYPE Type, D3DXMATRIX* pMatrix);
@@ -289,7 +282,6 @@ private:
 	std::vector<D3DMATERIAL9>				m_MaterialStack;
 	std::vector<LPDIRECT3DPIXELSHADER9>		m_PixelShaderStack;
 	std::vector<LPDIRECT3DVERTEXSHADER9>	m_VertexShaderStack;
-	std::vector<BOOL>						m_VertexProcessingStack;
 	std::vector<CStreamData>				m_StreamStack[STATEMANAGER_MAX_STREAMS];
 	std::vector<CIndexData>					m_IndexStack;
 

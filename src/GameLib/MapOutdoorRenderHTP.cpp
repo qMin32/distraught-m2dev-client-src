@@ -300,13 +300,13 @@ void CMapOutdoor::__HardwareTransformPatch_RenderPatchSplat(long patchnum, WORD 
 	// before draw function we need to set shader,but we will use BeginTerrainSplat/Shadow() 
 	// function to set shader and set constant for shader, and also set texture for shader,
 	// so we need to call BeginTerrainSplat/Shadow()  before we call DrawIndexedPrimitive() function
+	STATEMANAGER.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	STATEMANAGER.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	STATEMANAGER.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	STATEMANAGER.SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	for (DWORD j = 1; j < pTerrain->GetNumTextures(); ++j)
 	{
-		STATEMANAGER.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-		STATEMANAGER.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-		STATEMANAGER.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-		STATEMANAGER.SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 		TTerainSplat& rSplat = rTerrainSplatPatch.Splats[j];
 

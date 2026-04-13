@@ -103,3 +103,4 @@ struct Light
 	float Theta = 0.0f;
 	float Phi = 0.0f;
 };
+

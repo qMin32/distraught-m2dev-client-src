@@ -145,7 +145,6 @@ void CStateManager::SetDefaultState()
 	m_MaterialStack.clear();
 	m_PixelShaderStack.clear();
 	m_VertexShaderStack.clear();
-	m_VertexProcessingStack.clear();
 	m_IndexStack.clear();
 
 	m_bScene = false;
@@ -197,7 +196,7 @@ void CStateManager::SetDefaultState()
 	SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
 	SetRenderState(D3DRS_VERTEXBLEND, D3DVBF_DISABLE);
 	SetRenderState(D3DRS_CLIPPLANEENABLE, 0);
-	SaveVertexProcessing(FALSE);
+	m_lpD3DDev->SetSoftwareVertexProcessing(false);
 	SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 	SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
 	SetRenderState(D3DRS_MULTISAMPLEMASK, 0xFFFFFFFF);
@@ -235,137 +234,17 @@ void CStateManager::SetDefaultState()
 	SetRenderState(D3DRS_WRAP6, 0);
 	SetRenderState(D3DRS_WRAP7, 0);
 
-	SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-	SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
-	SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-	SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	for (DWORD i = 0; i < 8; ++i)
+	{
+		SetSamplerState(i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		SetSamplerState(i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		SetSamplerState(i, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
-	SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-	SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	SetTextureStageState(1, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+		SetSamplerState(i, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+		SetSamplerState(i, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 
-	SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	SetTextureStageState(2, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	SetTextureStageState(2, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	SetTextureStageState(2, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-	SetTextureStageState(2, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	SetTextureStageState(2, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-	SetTextureStageState(3, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	SetTextureStageState(3, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	SetTextureStageState(3, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	SetTextureStageState(3, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-	SetTextureStageState(3, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	SetTextureStageState(3, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-	SetTextureStageState(4, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	SetTextureStageState(4, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	SetTextureStageState(4, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	SetTextureStageState(4, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-	SetTextureStageState(4, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	SetTextureStageState(4, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-	SetTextureStageState(5, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	SetTextureStageState(5, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	SetTextureStageState(5, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	SetTextureStageState(5, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-	SetTextureStageState(5, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	SetTextureStageState(5, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-	SetTextureStageState(6, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	SetTextureStageState(6, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	SetTextureStageState(6, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	SetTextureStageState(6, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-	SetTextureStageState(6, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	SetTextureStageState(6, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-	SetTextureStageState(7, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	SetTextureStageState(7, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	SetTextureStageState(7, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	SetTextureStageState(7, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-	SetTextureStageState(7, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	SetTextureStageState(7, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-	SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
-	SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
-	SetTextureStageState(2, D3DTSS_TEXCOORDINDEX, 2);
-	SetTextureStageState(3, D3DTSS_TEXCOORDINDEX, 3);
-	SetTextureStageState(4, D3DTSS_TEXCOORDINDEX, 4);
-	SetTextureStageState(5, D3DTSS_TEXCOORDINDEX, 5);
-	SetTextureStageState(6, D3DTSS_TEXCOORDINDEX, 6);
-	SetTextureStageState(7, D3DTSS_TEXCOORDINDEX, 7);
-
-	SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-	SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-	SetSamplerState(2, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(2, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(2, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-	SetSamplerState(3, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(3, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(3, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-	SetSamplerState(4, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(4, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(4, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-	SetSamplerState(5, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(5, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(5, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-	SetSamplerState(6, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(6, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(6, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-	SetSamplerState(7, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(7, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	SetSamplerState(7, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-	SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	SetSamplerState(2, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	SetSamplerState(2, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	SetSamplerState(3, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	SetSamplerState(3, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	SetSamplerState(4, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	SetSamplerState(4, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	SetSamplerState(5, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	SetSamplerState(5, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	SetSamplerState(6, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	SetSamplerState(6, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-	SetSamplerState(7, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-	SetSamplerState(7, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-
-	SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, 0);
-	SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, 0);
-	SetTextureStageState(2, D3DTSS_TEXTURETRANSFORMFLAGS, 0);
-	SetTextureStageState(3, D3DTSS_TEXTURETRANSFORMFLAGS, 0);
-	SetTextureStageState(4, D3DTSS_TEXTURETRANSFORMFLAGS, 0);
-	SetTextureStageState(5, D3DTSS_TEXTURETRANSFORMFLAGS, 0);
-	SetTextureStageState(6, D3DTSS_TEXTURETRANSFORMFLAGS, 0);
-	SetTextureStageState(7, D3DTSS_TEXTURETRANSFORMFLAGS, 0);
-
-	SetTexture(0, NULL);
-	SetTexture(1, NULL);
-	SetTexture(2, NULL);
-	SetTexture(3, NULL);
-	SetTexture(4, NULL);
-	SetTexture(5, NULL);
-	SetTexture(6, NULL);
-	SetTexture(7, NULL);
+		SetTexture(i, NULL);
+	}
 
 	SetPixelShader(0);
 
@@ -578,19 +457,6 @@ void CStateManager::SetVertexShader(LPDIRECT3DVERTEXSHADER9 dwShader)
 void CStateManager::GetVertexShader(LPDIRECT3DVERTEXSHADER9* pdwShader)
 {
 	*pdwShader = m_CurrentState.m_dwVertexShader;
-}
-
-// Vertex Processing
-void CStateManager::SaveVertexProcessing(BOOL IsON)
-{
-	m_VertexProcessingStack.push_back(m_CurrentState.m_bVertexProcessing);
-	m_lpD3DDev->SetSoftwareVertexProcessing(IsON);
-	m_CurrentState.m_bVertexProcessing = IsON;
-}
-void CStateManager::RestoreVertexProcessing()
-{
-	m_lpD3DDev->SetSoftwareVertexProcessing(m_VertexProcessingStack.back());
-	m_VertexProcessingStack.pop_back();
 }
 
 // Pixel Shader

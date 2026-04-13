@@ -32,5 +32,9 @@ public:
 	//create shaders with common name, for example "terrain" will create "terrainVs" and "terrainPs"
 	RefPtr<CShaders> CreateShaderA(const std::string& Name = "");
 	void SetShader(const RefPtr<CShaders>& shader);
+
+public:
+	/////////////////////////// BaseClassHelper.cpp ///////////////////////////
+	bool CreateRenderTarget(UINT size, D3DFORMAT format, LPDIRECT3DTEXTURE9* outTex, LPDIRECT3DSURFACE9* outSurf, LPDIRECT3DSURFACE9* outDepth);
 };
 

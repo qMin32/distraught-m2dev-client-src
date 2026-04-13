@@ -197,18 +197,9 @@ bool CSnowEnvironment::__CreateBlurTexture()
 	if (!m_bBlurEnable)
 		return true;
 
-	if (FAILED(ms_lpd3dDevice->CreateTexture(m_wBlurTextureSize, m_wBlurTextureSize, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &m_lpSnowTexture, nullptr)))
+	if (!m_dx->CreateRenderTarget(m_wBlurTextureSize, D3DFMT_X8R8G8B8, &m_lpSnowTexture, &m_lpSnowRenderTargetSurface, &m_lpSnowDepthSurface))
 		return false;
-	if (FAILED(m_lpSnowTexture->GetSurfaceLevel(0, &m_lpSnowRenderTargetSurface)))
-		return false;
-	if (FAILED(ms_lpd3dDevice->CreateDepthStencilSurface(m_wBlurTextureSize, m_wBlurTextureSize, D3DFMT_D16, D3DMULTISAMPLE_NONE, 0, TRUE, &m_lpSnowDepthSurface, nullptr)))
-		return false;
-
-	if (FAILED(ms_lpd3dDevice->CreateTexture(m_wBlurTextureSize, m_wBlurTextureSize, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &m_lpAccumTexture, nullptr)))
-		return false;
-	if (FAILED(m_lpAccumTexture->GetSurfaceLevel(0, &m_lpAccumRenderTargetSurface)))
-		return false;
-	if (FAILED(ms_lpd3dDevice->CreateDepthStencilSurface(m_wBlurTextureSize, m_wBlurTextureSize, D3DFMT_D16, D3DMULTISAMPLE_NONE, 0, TRUE, &m_lpAccumDepthSurface, nullptr)))
+	if (!m_dx->CreateRenderTarget(m_wBlurTextureSize, D3DFMT_X8R8G8B8, &m_lpAccumTexture, &m_lpAccumRenderTargetSurface, &m_lpAccumDepthSurface))
 		return false;
 
 	return true;

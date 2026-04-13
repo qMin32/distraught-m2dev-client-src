@@ -454,13 +454,6 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 
 		void		RestoreRenderMode();
 
-		void		BeginDiffuseRender();
-		void		EndDiffuseRender();
-		void		BeginOpacityRender();
-		void		EndOpacityRender();
-
-		void		BeginBlendRender();
-		void		EndBlendRender();
 		void		SetBlendRenderMode();
 		void		SetAlphaValue(float fAlpha);
 		float		GetAlphaValue();
@@ -468,13 +461,9 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 		void		SetSpecularInfo(BOOL bEnable, int iPart, float fAlpha);
 		void		SetSpecularInfoForce(BOOL bEnable, int iPart, float fAlpha);
 
-		void		BeginAddRender();
-		void		EndAddRender();
 		void		SetAddRenderMode();
 		void		SetAddColor(const D3DXCOLOR & c_rColor);
 
-		void		BeginModulateRender();
-		void		EndModulateRender();
 		void		SetModulateRenderMode();
 
 		void		SetRenderMode(int iRenderMode);
