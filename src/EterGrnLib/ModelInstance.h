@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "Motion.h"
 #include "qMin32Lib/Core.h"
+#include "qMin32Lib/CLight.h"
 
 class CGrannyModelInstance : public CGraphicCollisionObject
 {
@@ -201,4 +202,10 @@ class CGrannyModelInstance : public CGraphicCollisionObject
 #endif
 	public:
 		bool							HaveBlendThing() { return m_pModel->HaveBlendThing(); }
+
+	private:
+		void BeginShaderRender(const RefPtr<CShaders>& shader);
+	public:
+		static CNewLight		 ms_meshLight;
+
 };

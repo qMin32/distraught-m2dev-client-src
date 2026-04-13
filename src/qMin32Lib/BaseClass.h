@@ -6,7 +6,7 @@ class BaseClass
 {
 public:
 	BaseClass(LPDIRECT3DDEVICE9EX device);
-	~BaseClass() {};
+	~BaseClass();
 
 public:
 	void RecreateResource(); //recreate all buffers

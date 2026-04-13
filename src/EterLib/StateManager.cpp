@@ -212,7 +212,6 @@ void CStateManager::SetDefaultState()
 	SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-	SetRenderState(D3DRS_RANGEFOGENABLE, FALSE);
 	SetRenderState(D3DRS_ZENABLE, TRUE);
 	SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
@@ -223,6 +222,7 @@ void CStateManager::SetDefaultState()
 
 	// don't delete from here! 
 	SetRenderState(D3DRS_LIGHTING, FALSE);
+	SetRenderState(D3DRS_FOGENABLE, FALSE);
 
 	SetRenderState(D3DRS_SPECULARENABLE, FALSE);
 	SetRenderState(D3DRS_COLORVERTEX, FALSE);

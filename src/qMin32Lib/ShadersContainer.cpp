@@ -32,6 +32,8 @@ ShadersContainer::ShadersContainer(BaseClass* base)
      SkyDiffuse = base->CreateShaderA("skyDiffuse");
      SkyClouds = base->CreateShaderA("skyClouds");
      LensFlare = base->CreateShaderA("LensFlare");
+     MeshPnt = base->CreateShaderA("MeshPnt");
+     MeshPnt2 = base->CreateShaderA("MeshPnt2");
 }
 
 RefPtr<CShaders> ShadersContainer::GetTerrain()
@@ -67,4 +69,14 @@ RefPtr<CShaders> ShadersContainer::GetSkyCloud()
 RefPtr<CShaders> ShadersContainer::GetLensFlare()
 {
     return LensFlare;
+}
+
+RefPtr<CShaders> ShadersContainer::GetMeshPnt()
+{
+    return MeshPnt;
+}
+
+RefPtr<CShaders> ShadersContainer::GetMeshPnt2()
+{
+    return MeshPnt2;
 }

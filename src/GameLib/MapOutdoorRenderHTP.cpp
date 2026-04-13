@@ -48,20 +48,23 @@ void CMapOutdoor::BeginTerrainSplat(const float4x4& matTex0, const float4x4& mat
 	m_light.SetDiffuse(mc_pEnvironmentData->DirLights->Diffuse);
 	m_light.SetAmbient(mc_pEnvironmentData->DirLights->Ambient);
 	m_light.SetSpecular(mc_pEnvironmentData->DirLights->Specular);
+	CGrannyModelInstance::ms_meshLight = m_light;
 
 	//set texture for pixel shader 
 	STATEMANAGER.SetTexture(0, diffuseTex);
 	STATEMANAGER.SetTexture(1, alphaTex);
+	STATEMANAGER.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+	STATEMANAGER.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 }
 
 void CMapOutdoor::BeginTerrainShadow(const float4x4& staticShadow, const float4x4& dynamicShadow, LPDIRECT3DTEXTURE9 staticShadowTex, LPDIRECT3DTEXTURE9 dynamicShadowTex, bool useDynamicShadow)
 {
-	//like the function before,the same order 
 	m_dx->SetVertexDeclaration(VD_PN);
 
 	auto shader = m_dx->GetShaderContained()->GetShadow();
 	m_dx->SetShader(shader);
-
 
 	auto vsConstant = shader->GetConstantVs();
 	vsConstant.SetMatrix("g_mView", &mat.view);
@@ -83,6 +86,11 @@ void CMapOutdoor::BeginTerrainShadow(const float4x4& staticShadow, const float4x
 	psConstant.SetInt("g_useDynamicShadow", &flag);
 	STATEMANAGER.SetTexture(0, staticShadowTex);
 	STATEMANAGER.SetTexture(1, useDynamicShadow ? dynamicShadowTex : nullptr);
+
+	STATEMANAGER.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+	STATEMANAGER.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+	STATEMANAGER.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 }
 
 void CMapOutdoor::EndTerrainShader()
@@ -124,6 +132,8 @@ void CMapOutdoor::__RenderTerrain_RenderHardwareTransformPatch()
 	CSpeedTreeWrapper::ms_bSelfShadowOn = true;
 	STATEMANAGER.SetBestFiltering(0);
 	STATEMANAGER.SetBestFiltering(1);
+
+	m_dx->SetVertexDeclaration(VD_PN);
 
 	m_matWorldForCommonUse._41 = 0.0f;
 	m_matWorldForCommonUse._42 = 0.0f;
@@ -235,7 +245,6 @@ void CMapOutdoor::__RenderTerrain_RenderHardwareTransformPatch()
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHAREF);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHAFUNC);
 
-	//now here we need to use EndTerrainShaders()
 	EndTerrainShader();
 }
 
@@ -287,10 +296,6 @@ void CMapOutdoor::__HardwareTransformPatch_RenderPatchSplat(long patchnum, WORD 
 
 	int iPrevRenderedSplatNum = m_iRenderedSplatNum;
 
-	STATEMANAGER.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	STATEMANAGER.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	STATEMANAGER.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	STATEMANAGER.SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	// before draw function we need to set shader,but we will use BeginTerrainSplat/Shadow() 
 	// function to set shader and set constant for shader, and also set texture for shader,
@@ -298,6 +303,11 @@ void CMapOutdoor::__HardwareTransformPatch_RenderPatchSplat(long patchnum, WORD 
 
 	for (DWORD j = 1; j < pTerrain->GetNumTextures(); ++j)
 	{
+		STATEMANAGER.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+		STATEMANAGER.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		STATEMANAGER.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+		STATEMANAGER.SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
 		TTerainSplat& rSplat = rTerrainSplatPatch.Splats[j];
 
 		if (!rSplat.Active)

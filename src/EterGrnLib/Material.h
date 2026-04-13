@@ -46,6 +46,8 @@ class CGrannyMaterial : public CReferenceObject
 		void					ApplyRenderState();
 		void					RestoreRenderState();
 
+		void SetConstantsToShader(const RefPtr<CShaders>& shader);
+
 	protected:
 		void					Initialize();
 
@@ -75,10 +77,8 @@ class CGrannyMaterial : public CReferenceObject
 
 		BOOL					__IsSpecularEnable() const;
 
-		void					__ApplyDiffuseRenderState();
-		void					__RestoreDiffuseRenderState();
-		void					__ApplySpecularRenderState();
-		void					__RestoreSpecularRenderState();
+		void					ApplyToShaders();
+		void					RestoreFromShaders();
 
 	protected:
 		granny_material *		m_pgrnMaterial;
@@ -101,6 +101,8 @@ class CGrannyMaterial : public CReferenceObject
 			SPHEREMAP_NUM = 10,
 		};
 		static CGraphicImageInstance ms_akSphereMapInstance[SPHEREMAP_NUM];
+
+		RefPtr<CShaders> m_shader;
 };
 
 class CGrannyMaterialPalette

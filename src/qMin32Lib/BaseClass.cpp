@@ -12,6 +12,12 @@ BaseClass::BaseClass(LPDIRECT3DDEVICE9EX device) : m_device(device)
 	m_shadersContainer = std::make_shared<ShadersContainer>(this);
 }
 
+BaseClass::~BaseClass()
+{
+    m_layout.reset();
+	m_shadersContainer.reset();
+}
+
 void BaseClass::RecreateResource()
 {
     CIndexBuffer::RecreateAll();

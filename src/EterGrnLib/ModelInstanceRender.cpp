@@ -2,8 +2,10 @@
 #include "Eterlib/StateManager.h"
 #include "ModelInstance.h"
 #include "Model.h"
-#include "../qMin32Lib/BaseClass.h"
-#include "../qMin32Lib/CBuffers.h"
+#include "../qMin32Lib/All.h"
+#include "EterLib/Camera.h"
+
+CNewLight      CGrannyModelInstance::ms_meshLight;
 
 void CGrannyModelInstance::DeformNoSkin(const D3DXMATRIX * c_pWorldMatrix)
 {
@@ -12,6 +14,26 @@ void CGrannyModelInstance::DeformNoSkin(const D3DXMATRIX * c_pWorldMatrix)
 
 	UpdateWorldPose();
 	UpdateWorldMatrices(c_pWorldMatrix);
+}
+
+void CGrannyModelInstance::BeginShaderRender(const RefPtr<CShaders>& shader)
+{
+	if (!m_pModel)
+		return;
+
+	m_dx->SetShader(shader);
+
+	auto vsConst = shader->GetConstantVs();
+	vsConst.SetMatrix("g_mView", &mat.view);
+	vsConst.SetMatrix("g_mProj", &mat.proj);
+
+	auto* cam = CCameraManager::Instance().GetCurrentCamera();
+	D3DXVECTOR3 pos = cam->GetEye();
+	vsConst.SetVector("g_vCameraPos", &pos);
+
+	auto psConst = shader->GetConstantPs();
+	psConst.SetVector("g_vCameraPos", &pos);
+	ms_meshLight.SetToShader(shader);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +65,7 @@ void CGrannyModelInstance::RenderWithOneTexture()
 		m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
 		RenderMeshNodeListWithOneTexture(CGrannyMesh::TYPE_RIGID, CGrannyMaterial::TYPE_DIFFUSE_PNT);
 	}
+	m_dx->SetShader(nullptr);
 }
 
 void CGrannyModelInstance::BlendRenderWithOneTexture()
@@ -59,15 +82,16 @@ void CGrannyModelInstance::BlendRenderWithOneTexture()
 
 	if (lpd3dDeformPNTVtxBuf)
 	{
-m_dx->SetVertexBuffer(lpd3dDeformPNTVtxBuf);
+		m_dx->SetVertexBuffer(lpd3dDeformPNTVtxBuf);
 		RenderMeshNodeListWithOneTexture(CGrannyMesh::TYPE_DEFORM, CGrannyMaterial::TYPE_BLEND_PNT);
 	}
 
 	if (lpd3dRigidPNTVtxBuf)
 	{
-m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
+		m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
 		RenderMeshNodeListWithOneTexture(CGrannyMesh::TYPE_RIGID, CGrannyMaterial::TYPE_BLEND_PNT);
 	}
+	m_dx->SetShader(nullptr);
 }
 
 // With Two Texture
@@ -86,14 +110,15 @@ void CGrannyModelInstance::RenderWithTwoTexture()
 
 	if (lpd3dDeformPNTVtxBuf)
 	{
-m_dx->SetVertexBuffer(lpd3dDeformPNTVtxBuf);
+		m_dx->SetVertexBuffer(lpd3dDeformPNTVtxBuf);
 		RenderMeshNodeListWithTwoTexture(CGrannyMesh::TYPE_DEFORM, CGrannyMaterial::TYPE_DIFFUSE_PNT);
 	}
 	if (lpd3dRigidPNTVtxBuf)
 	{
-m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
+		m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
 		RenderMeshNodeListWithTwoTexture(CGrannyMesh::TYPE_RIGID, CGrannyMaterial::TYPE_DIFFUSE_PNT);
 	}
+	m_dx->SetShader(nullptr);
 }
 
 void CGrannyModelInstance::BlendRenderWithTwoTexture()
@@ -110,15 +135,16 @@ void CGrannyModelInstance::BlendRenderWithTwoTexture()
 
 	if (lpd3dDeformPNTVtxBuf)
 	{
-m_dx->SetVertexBuffer(lpd3dDeformPNTVtxBuf);
+		m_dx->SetVertexBuffer(lpd3dDeformPNTVtxBuf);
 		RenderMeshNodeListWithTwoTexture(CGrannyMesh::TYPE_DEFORM, CGrannyMaterial::TYPE_BLEND_PNT);
 	}
 
 	if (lpd3dRigidPNTVtxBuf)
 	{
-m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
+		m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
 		RenderMeshNodeListWithTwoTexture(CGrannyMesh::TYPE_RIGID, CGrannyMaterial::TYPE_BLEND_PNT);
 	}
+	m_dx->SetShader(nullptr);
 }
 
 void CGrannyModelInstance::RenderWithoutTexture()
@@ -137,17 +163,18 @@ void CGrannyModelInstance::RenderWithoutTexture()
 
 	if (lpd3dDeformPNTVtxBuf)
 	{
-m_dx->SetVertexBuffer(lpd3dDeformPNTVtxBuf);
+		m_dx->SetVertexBuffer(lpd3dDeformPNTVtxBuf);
 		RenderMeshNodeListWithoutTexture(CGrannyMesh::TYPE_DEFORM, CGrannyMaterial::TYPE_DIFFUSE_PNT);
 		RenderMeshNodeListWithoutTexture(CGrannyMesh::TYPE_DEFORM, CGrannyMaterial::TYPE_BLEND_PNT);
 	}
 
 	if (lpd3dRigidPNTVtxBuf)
 	{
-m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
+		m_dx->SetVertexBuffer(lpd3dRigidPNTVtxBuf);
 		RenderMeshNodeListWithoutTexture(CGrannyMesh::TYPE_RIGID, CGrannyMaterial::TYPE_DIFFUSE_PNT);
 		RenderMeshNodeListWithoutTexture(CGrannyMesh::TYPE_RIGID, CGrannyMaterial::TYPE_BLEND_PNT);
 	}
+	m_dx->SetShader(nullptr);
 }
 
 
@@ -172,8 +199,10 @@ void CGrannyModelInstance::RenderMeshNodeListWithOneTexture(CGrannyMesh::EType e
 		const CGrannyMesh * pMesh = pMeshNode->pMesh;
 		int vtxMeshBasePos = pMesh->GetVertexBasePosition();
 		m_dx->SetIndexBuffer(lpd3dIdxBuf);
-
-		STATEMANAGER.SetTransform(D3DTS_WORLD, &m_meshMatrices[pMeshNode->iMesh]);
+		auto shader = m_dx->GetShaderContained()->GetMeshPnt();
+		auto vsConst = shader->GetConstantVs();
+		vsConst.SetMatrix("g_mWorld", &m_meshMatrices[pMeshNode->iMesh]);
+		BeginShaderRender(shader);
 
 		/////
 		const CGrannyMesh::TTriGroupNode* pTriGroupNode = pMesh->GetTriGroupNodeList(eMtrlType);
@@ -185,14 +214,8 @@ void CGrannyModelInstance::RenderMeshNodeListWithOneTexture(CGrannyMesh::EType e
 
 			// MR-12: Fix specular isolation issue
 			CGrannyMaterial& rkMtrl = m_kMtrlPal.GetMaterialRef(pTriGroupNode->mtrlIndex);
-
-			if (!material_data_.pImage)
-			{
-				if (std::fabs(rkMtrl.GetSpecularPower() - material_data_.fSpecularPower) >= std::numeric_limits<float>::epsilon())
-					rkMtrl.SetSpecularInfo(material_data_.isSpecularEnable, material_data_.fSpecularPower, material_data_.bSphereMapIndex);
-			}
-			// MR-12: -- END OF -- Fix specular isolation issue
-
+			
+			rkMtrl.SetConstantsToShader(shader);
 			rkMtrl.ApplyRenderState();
 			STATEMANAGER.DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vtxMeshBasePos, 0, vtxCount, pTriGroupNode->idxPos, pTriGroupNode->triCount);
 			rkMtrl.RestoreRenderState();
@@ -220,7 +243,10 @@ void CGrannyModelInstance::RenderMeshNodeListWithTwoTexture(CGrannyMesh::EType e
 		const CGrannyMesh * pMesh = pMeshNode->pMesh;
 		int vtxMeshBasePos = pMesh->GetVertexBasePosition();
 		m_dx->SetIndexBuffer(lpd3dIdxBuf);
-		STATEMANAGER.SetTransform(D3DTS_WORLD, &m_meshMatrices[pMeshNode->iMesh]);
+		auto shader = m_dx->GetShaderContained()->GetMeshPnt2();
+		auto vsConst = shader->GetConstantVs();
+		vsConst.SetMatrix("g_mWorld", &m_meshMatrices[pMeshNode->iMesh]);
+		BeginShaderRender(shader);
 
 		/////
 		const CGrannyMesh::TTriGroupNode* pTriGroupNode = pMesh->GetTriGroupNodeList(eMtrlType);
@@ -229,9 +255,11 @@ void CGrannyModelInstance::RenderMeshNodeListWithTwoTexture(CGrannyMesh::EType e
 		{
 			ms_faceCount += pTriGroupNode->triCount;
 
-			const CGrannyMaterial& rkMtrl=m_kMtrlPal.GetMaterialRef(pTriGroupNode->mtrlIndex);
+			CGrannyMaterial& rkMtrl=m_kMtrlPal.GetMaterialRef(pTriGroupNode->mtrlIndex);
+			rkMtrl.SetConstantsToShader(shader);
 			STATEMANAGER.SetTexture(0, rkMtrl.GetD3DTexture(0));
 			STATEMANAGER.SetTexture(1, rkMtrl.GetD3DTexture(1));
+
 			STATEMANAGER.DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vtxMeshBasePos, 0, vtxCount, pTriGroupNode->idxPos, pTriGroupNode->triCount);
 			pTriGroupNode = pTriGroupNode->pNextTriGroupNode;
 		}
@@ -257,7 +285,10 @@ void CGrannyModelInstance::RenderMeshNodeListWithoutTexture(CGrannyMesh::EType e
 		int vtxMeshBasePos = pMesh->GetVertexBasePosition();
 
 		m_dx->SetIndexBuffer(lpd3dIdxBuf);
-		STATEMANAGER.SetTransform(D3DTS_WORLD, &m_meshMatrices[pMeshNode->iMesh]);
+		auto shader = m_dx->GetShaderContained()->GetMeshPnt();
+		auto vsConst = shader->GetConstantVs();
+		vsConst.SetMatrix("g_mWorld", &m_meshMatrices[pMeshNode->iMesh]);
+		BeginShaderRender(shader);
 
 		/////
 		const CGrannyMesh::TTriGroupNode* pTriGroupNode = pMesh->GetTriGroupNodeList(eMtrlType);

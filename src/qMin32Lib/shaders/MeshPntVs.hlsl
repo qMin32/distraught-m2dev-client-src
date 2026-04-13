@@ -1,0 +1,51 @@
+float4x4 g_mWorld;
+float4x4 g_mView;
+float4x4 g_mProj;
+float4x4 g_mLightViewProj;
+
+struct VS_INPUT
+{
+    float3 Position : POSITION0;
+    float3 Normal   : NORMAL0;
+    float2 TexCoord : TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+    float4 Position    : POSITION0;
+    float2 TexCoord    : TEXCOORD0;
+    float3 WorldNormal : TEXCOORD1;
+    float3 WorldPos    : TEXCOORD2;
+    float4 Diffuse     : COLOR0;
+    float2 SphereUV    : TEXCOORD3;
+    float4 ShadowPos   : TEXCOORD4;
+};
+
+bool g_bRenderingShadowMap;
+
+VS_OUTPUT main(VS_INPUT input)
+{
+    VS_OUTPUT output;
+    float4 worldPos = mul(float4(input.Position, 1.0f), g_mWorld);
+
+    output.WorldPos = worldPos.xyz;
+    
+    output.ShadowPos = mul(worldPos, g_mLightViewProj);
+    
+    if (g_bRenderingShadowMap)
+        output.Position = output.ShadowPos;
+    else
+    {
+        float4 viewPos = mul(worldPos, g_mView);
+        output.Position = mul(viewPos, g_mProj);
+    }
+    
+    output.TexCoord = input.TexCoord;
+    float3x3 normalMatrix = (float3x3)g_mWorld;
+    output.WorldNormal = normalize(mul(normalMatrix, input.Normal));
+    output.Diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float3 normalCS = mul(output.WorldNormal, (float3x3)g_mView);
+    output.SphereUV = normalCS.xy * 1.0f + 1.0f;
+    
+    return output;
+}

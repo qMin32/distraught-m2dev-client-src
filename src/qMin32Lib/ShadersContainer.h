@@ -17,6 +17,10 @@ public:
 	RefPtr<CShaders> GetSkyCloud();
 	RefPtr<CShaders> GetLensFlare();
 
+	//mesh
+	RefPtr<CShaders> GetMeshPnt();
+	RefPtr<CShaders> GetMeshPnt2();
+
 private:
 	RefPtr<CShaders> TerrainShader;
 	RefPtr<CShaders> ShadowShader;
@@ -26,5 +30,8 @@ private:
 	RefPtr<CShaders> SkyDiffuse;
 	RefPtr<CShaders> SkyClouds;
 	RefPtr<CShaders> LensFlare;
+
+	RefPtr<CShaders> MeshPnt;
+	RefPtr<CShaders> MeshPnt2;
 };
 
