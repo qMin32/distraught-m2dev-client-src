@@ -29,7 +29,7 @@
 #include "Camera.h"
 #include "StateManager.h"
 #include "ResourceManager.h"
-
+#include "qMin32Lib/All.h"
 #include <math.h>
 using namespace std;
 
@@ -181,74 +181,73 @@ void CLensFlare::Compute(const D3DXVECTOR3 & c_rv3LightDirection)
 
 void CLensFlare::DrawBeforeFlare()
 {
-    if (!m_bFlareVisible || !m_bEnabled || !m_bShowMainFlare)
-        return;
+	if (!m_bFlareVisible || !m_bEnabled || !m_bShowMainFlare)
+		return;
 
 	if (m_SunFlareImageInstance.IsEmpty())
 		return;
 
 	D3DXMATRIX matProj;
 	D3DXMatrixOrthoOffCenterRH(&matProj, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f);
-	STATEMANAGER.SaveTransform(D3DTS_PROJECTION, &matProj);
-	STATEMANAGER.SaveTransform(D3DTS_VIEW, &MatIdentity());
 
 	D3DXMATRIX matWorld;
 	D3DXMatrixTranslation(&matWorld, m_afFlarePos[0], m_afFlarePos[1], 0.0f);
-	STATEMANAGER.SetTransform(D3DTS_WORLD, &matWorld);
 
-	STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, FALSE);					// glDisable(GL_DEPTH_TEST);
+	STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_ZWRITEENABLE, FALSE);
-	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE);			// glDisable(GL_CULL_FACE);
-	STATEMANAGER.SaveRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);		// glShadeModel(GL_FLAT);
-    STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, FALSE);			// glDisable(GL_ALPHA_TEST);
-    STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// glEnable(GL_BLEND);
+	STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	STATEMANAGER.SaveRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
+	STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	STATEMANAGER.SaveRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
 
 	float fAspectRatio = ms_Viewport.Width / float(ms_Viewport.Height);
 	float fHeight = m_fSunSize * fAspectRatio;
 	D3DXCOLOR color(1.0f, 1.0f, 1.0f, 1.0f);
 
 	TPDTVertex vertices[4];
-	vertices[0].position = { -m_fSunSize , -fHeight, 0.0f };
+	vertices[0].position = { -m_fSunSize, -fHeight, 0.0f };
 	vertices[0].diffuse = color;
 	vertices[0].texCoord = { 0.0f, 0.0f };
 
-	vertices[1].position = { -m_fSunSize , fHeight, 0.0f };
+	vertices[1].position = { -m_fSunSize,  fHeight, 0.0f };
 	vertices[1].diffuse = color;
 	vertices[1].texCoord = { 0.0f, 1.0f };
 
-	vertices[2].position = { m_fSunSize , -fHeight, 0.0f };
+	vertices[2].position = { m_fSunSize, -fHeight, 0.0f };
 	vertices[2].diffuse = color;
 	vertices[2].texCoord = { 1.0f, 0.0f };
 
-	vertices[3].position = { m_fSunSize , fHeight, 0.0f };
+	vertices[3].position = { m_fSunSize,  fHeight, 0.0f };
 	vertices[3].diffuse = color;
 	vertices[3].texCoord = { 1.0f, 1.0f };
 
+	auto shader = m_dx->GetShaderContained()->GetLensFlare();
+	m_dx->SetVertexDeclaration(VD_PDT);
+	m_dx->SetShader(shader);
+
+	auto vsC = shader->GetConstantVs();
+	vsC.SetMatrix("g_mWorld", &matWorld);
+	vsC.SetMatrix("g_mView", &MatIdentity());
+	vsC.SetMatrix("g_mProj", &matProj);
+
 	STATEMANAGER.SetTexture(0, m_SunFlareImageInstance.GetTexturePointer()->GetD3DTexture());
 	STATEMANAGER.SetTexture(1, NULL);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	
-	m_dx->SetVertexDeclaration(VD_PDT);
+
 	STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(TPDTVertex));
 
-	STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE); // glDisable(GL_DEPTH_TEST);
+	m_dx->SetShader(nullptr);
+	STATEMANAGER.SetTexture(0, nullptr);
+
+	STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ZWRITEENABLE);
-	STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE); // glDisable(GL_CULL_FACE);
-	STATEMANAGER.RestoreRenderState(D3DRS_SHADEMODE); // glShadeModel(GL_FLAT);
-	STATEMANAGER.RestoreRenderState(D3DRS_ALPHATESTENABLE); // glDisable(GL_ALPHA_TEST);
-	STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE); // glEnable(GL_BLEND);
+	STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE);
+	STATEMANAGER.RestoreRenderState(D3DRS_SHADEMODE);
+	STATEMANAGER.RestoreRenderState(D3DRS_ALPHATESTENABLE);
+	STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_SRCBLEND);
 	STATEMANAGER.RestoreRenderState(D3DRS_DESTBLEND);
-
-	STATEMANAGER.RestoreTransform(D3DTS_VIEW);
-	STATEMANAGER.RestoreTransform(D3DTS_PROJECTION);
 }
 
 
@@ -260,7 +259,7 @@ void CLensFlare::DrawAfterFlare()
 	if (m_bEnabled && m_fAfterBright != 0.0f && m_bDrawBrightScreen)
 	{
 		SetDiffuseColor(m_afColor[0], m_afColor[1], m_afColor[2], m_fAfterBright);
-		RenderBar2d(0.0f, 0.0f, 1024.0f, 1024.0f);
+		RenderBar2d(0.0f, 0.0f, (float)ms_Viewport.Width, (float)ms_Viewport.Height);
 	}
 }
 
@@ -290,40 +289,37 @@ void CLensFlare::DrawFlare()
 {
 	if (m_bEnabled && m_bFlareVisible && m_bDrawFlare && m_fAfterBright != 0.0f)
 	{
-        //glPushAttrib(GL_ENABLE_BIT);
-		STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, FALSE); // glDisable(GL_DEPTH_TEST);
-		STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE); // glDisable(GL_CULL_FACE);
-		STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, FALSE); // glDisable(GL_ALPHA_TEST);
-		STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE); // glEnable(GL_BLEND);
+		STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, FALSE);
+		STATEMANAGER.SaveRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+		STATEMANAGER.SaveRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+		STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
 		D3DXMATRIX matProj;
 		D3DXMatrixOrthoOffCenterRH(&matProj, 0.0f, ms_Viewport.Width, ms_Viewport.Height, 0.0f, -1.0f, 1.0f);
-		STATEMANAGER.SaveTransform(D3DTS_PROJECTION, &matProj);
-		STATEMANAGER.SaveTransform(D3DTS_VIEW, &MatIdentity());
 
-		STATEMANAGER.SetTransform(D3DTS_WORLD, &MatIdentity());
-		//glMatrixMode(GL_MODELVIEW);
-		//glLoadIdentity();
+		auto shader = m_dx->GetShaderContained()->GetLensFlare();
+		m_dx->SetVertexDeclaration(VD_PDT);
+		m_dx->SetShader(shader);
 
-		//glDisable(GL_TEXTURE_2D);
+		auto vsC = shader->GetConstantVs();
+		vsC.SetMatrix("g_mWorld", &MatIdentity());
+		vsC.SetMatrix("g_mView", &MatIdentity());
+		vsC.SetMatrix("g_mProj", &matProj);
+
 		DrawAfterFlare();
 
-		//glEnable(GL_TEXTURE_2D);
 		m_cFlare.Draw(m_fAfterBright,
-					  ms_Viewport.Width,
-					  ms_Viewport.Height,
-					  static_cast<int>(m_afFlareWinPos[0]),
-					  static_cast<int>(m_afFlareWinPos[1]));
+			ms_Viewport.Width,
+			ms_Viewport.Height,
+			static_cast<int>(m_afFlareWinPos[0]),
+			static_cast<int>(m_afFlareWinPos[1]));
 
-		STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE); // glDisable(GL_DEPTH_TEST);
-		STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE); // glDisable(GL_CULL_FACE);
-		STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE); // glEnable(GL_BLEND);
-		STATEMANAGER.RestoreRenderState(D3DRS_ALPHATESTENABLE); // glDisable(GL_ALPHA_TEST);
+		m_dx->SetShader(nullptr);
 
-		STATEMANAGER.RestoreTransform(D3DTS_PROJECTION);
-		STATEMANAGER.RestoreTransform(D3DTS_VIEW);
-		//glDisable(GL_TEXTURE_2D);
-        //glPopAttrib();
+		STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE);
+		STATEMANAGER.RestoreRenderState(D3DRS_CULLMODE);
+		STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE);
+		STATEMANAGER.RestoreRenderState(D3DRS_ALPHATESTENABLE);
 	}
 }
 
@@ -514,13 +510,6 @@ void CFlare::Draw(float fBrightScale, int nWidth, int nHeight, int nX, int nY)
 
 	STATEMANAGER.SetTexture(1, NULL);
 	m_dx->SetVertexDeclaration(VD_PDT);
-
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1,	D3DTA_TEXTURE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG2,	D3DTA_DIFFUSE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP,	D3DTOP_MODULATE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAARG1,	D3DTA_TEXTURE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAARG2,	D3DTA_DIFFUSE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP,	D3DTOP_MODULATE);
 
 	for (unsigned int i = 0; i < m_vFlares.size(); i++)
 	{

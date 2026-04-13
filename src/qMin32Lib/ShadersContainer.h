@@ -15,6 +15,7 @@ public:
 	RefPtr<CShaders> GetSkyTexture();
 	RefPtr<CShaders> GetSkyDiffuse();
 	RefPtr<CShaders> GetSkyCloud();
+	RefPtr<CShaders> GetLensFlare();
 
 private:
 	RefPtr<CShaders> TerrainShader;
@@ -24,5 +25,6 @@ private:
 	RefPtr<CShaders> SkyTexture;
 	RefPtr<CShaders> SkyDiffuse;
 	RefPtr<CShaders> SkyClouds;
+	RefPtr<CShaders> LensFlare;
 };
 
