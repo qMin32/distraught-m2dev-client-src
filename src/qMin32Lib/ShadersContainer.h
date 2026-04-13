@@ -7,13 +7,22 @@ class ShadersContainer
 public:
 	ShadersContainer(BaseClass* base);
 
-	static RefPtr<CShaders> GetTerrain();
-	static RefPtr<CShaders> GetTerrainShadow();
-	static RefPtr<CShaders> GetWater();
+	RefPtr<CShaders> GetTerrain();
+	RefPtr<CShaders> GetShadow();
+	RefPtr<CShaders> GetWater();
+
+	//skybox 
+	RefPtr<CShaders> GetSkyTexture();
+	RefPtr<CShaders> GetSkyDiffuse();
+	RefPtr<CShaders> GetSkyCloud();
 
 private:
-	static RefPtr<CShaders> TerrainShader;
-	static RefPtr<CShaders> TerrainShadowShader;
-	static RefPtr<CShaders> WaterShader;
+	RefPtr<CShaders> TerrainShader;
+	RefPtr<CShaders> ShadowShader;
+	RefPtr<CShaders> WaterShader;
+
+	RefPtr<CShaders> SkyTexture;
+	RefPtr<CShaders> SkyDiffuse;
+	RefPtr<CShaders> SkyClouds;
 };
 

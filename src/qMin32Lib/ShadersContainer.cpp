@@ -12,11 +12,6 @@
 /// in DEBUG shaders are read from where the exe is + folders shaders/debug/.hlsl shaders
 /// in Release (not tested) shaders are read from binary file (.cso) from pack + shaders/release/.cso binary file
 
-
-RefPtr<CShaders> ShadersContainer::TerrainShader = nullptr;
-RefPtr<CShaders> ShadersContainer::TerrainShadowShader = nullptr;
-RefPtr<CShaders> ShadersContainer::WaterShader = nullptr;
-
 ShadersContainer::ShadersContainer(BaseClass* base)
 {
 # ifdef USING_CreateShader
@@ -29,9 +24,13 @@ ShadersContainer::ShadersContainer(BaseClass* base)
 #    endif
 # else
      TerrainShader = base->CreateShaderA("terrain");
-     TerrainShadowShader = base->CreateShaderA("shadow");
-     WaterShader = base->CreateShaderA("water");
+     ShadowShader = base->CreateShaderA("shadow");
 # endif
+     WaterShader = base->CreateShaderA("water");
+
+     SkyTexture = base->CreateShaderA("skyTex");
+     SkyDiffuse = base->CreateShaderA("skyDiffuse");
+     SkyClouds = base->CreateShaderA("skyClouds");
 }
 
 RefPtr<CShaders> ShadersContainer::GetTerrain()
@@ -39,12 +38,27 @@ RefPtr<CShaders> ShadersContainer::GetTerrain()
     return TerrainShader;
 }
 
-RefPtr<CShaders> ShadersContainer::GetTerrainShadow()
+RefPtr<CShaders> ShadersContainer::GetShadow()
 {
-    return TerrainShadowShader;
+    return ShadowShader;
 }
 
 RefPtr<CShaders> ShadersContainer::GetWater()
 {
     return WaterShader;
+}
+
+RefPtr<CShaders> ShadersContainer::GetSkyTexture()
+{
+    return SkyTexture;
+}
+
+RefPtr<CShaders> ShadersContainer::GetSkyDiffuse()
+{
+    return SkyDiffuse;
+}
+
+RefPtr<CShaders> ShadersContainer::GetSkyCloud()
+{
+    return SkyClouds;
 }

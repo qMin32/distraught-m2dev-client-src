@@ -59,7 +59,7 @@ void CMapOutdoor::BeginTerrainShadow(const float4x4& staticShadow, const float4x
 	//like the function before,the same order 
 	m_dx->SetVertexDeclaration(VD_PN);
 
-	auto shader = m_dx->GetShaderContained()->GetTerrainShadow();
+	auto shader = m_dx->GetShaderContained()->GetShadow();
 	m_dx->SetShader(shader);
 
 

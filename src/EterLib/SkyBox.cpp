@@ -5,7 +5,7 @@
 #include "ResourceManager.h"
 
 #include "EterBase/Timer.h"
-
+#include "qMin32Lib/All.h"
 //////////////////////////////////////////////////////////////////////////
 // CSkyObjectQuad
 //////////////////////////////////////////////////////////////////////////
@@ -805,63 +805,57 @@ void CSkyBox::Update()
 
 void CSkyBox::Render()
 {
-	// 2004.01.25 myevan 처리를 렌더링 후반으로 옮기고, DepthTest 처리
-	STATEMANAGER.SaveRenderState(D3DRS_ZENABLE,	TRUE);
+	STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
-	STATEMANAGER.SaveTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-	STATEMANAGER.SaveTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	STATEMANAGER.SaveTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
-	STATEMANAGER.SetTexture(1, NULL);
-	STATEMANAGER.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	STATEMANAGER.SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
-
 	m_dx->SetVertexDeclaration(VD_PDT);
-
-	STATEMANAGER.SetTransform(D3DTS_WORLD, &m_matWorld);
-
-	//Render Face
-	if( m_ucRenderMode == CSkyObject::SKY_RENDER_MODE_TEXTURE )
+	if (m_ucRenderMode == SKY_RENDER_MODE_TEXTURE)
 	{
-		STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+		auto shader = m_dx->GetShaderContained()->GetSkyTexture();
+
+		m_dx->SetShader(shader);
+
+		auto vsC = shader->GetConstantVs();
+		vsC.SetMatrix("g_mWorld", &m_matWorld);
+		vsC.SetMatrix("g_mView", &mat.view);
+		vsC.SetMatrix("g_mProj", &mat.proj);
+
 		STATEMANAGER.SaveSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
 		STATEMANAGER.SaveSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-		for (unsigned int i = 0; i < 6; ++i)
+		for (int i = 0; i < 6; ++i)
 		{
-			CGraphicImageInstance * pFaceImageInstance = m_GraphicImageInstanceMap[m_Faces[i].m_strFaceTextureFileName];
-			if (!pFaceImageInstance)
-				break;
-
-			STATEMANAGER.SetTexture( 0, pFaceImageInstance->GetTextureReference().GetD3DTexture() );
-
+			CGraphicImageInstance* pFace = m_GraphicImageInstanceMap[m_Faces[i].m_strFaceTextureFileName];
+			if (!pFace) break;
+			STATEMANAGER.SetTexture(0, pFace->GetTextureReference().GetD3DTexture());
 			m_Faces[i].Render();
 		}
-
-		//STATEMANAGER.SetTexture( 0, NULL );
 
 		STATEMANAGER.RestoreSamplerState(0, D3DSAMP_ADDRESSU);
 		STATEMANAGER.RestoreSamplerState(0, D3DSAMP_ADDRESSV);
 	}
 	else
 	{
-		for (unsigned int i = 0; i < 6; ++i)
-		{
+		auto shader = m_dx->GetShaderContained()->GetSkyDiffuse();
+
+		m_dx->SetShader(shader);
+
+		auto vsC = shader->GetConstantVs();
+		vsC.SetMatrix("g_mWorld", &m_matWorld);
+		vsC.SetMatrix("g_mView", &mat.view);
+		vsC.SetMatrix("g_mProj", &mat.proj);
+
+		for (int i = 0; i < 6; ++i)
 			m_Faces[i].Render();
-		}
 	}
+
+	m_dx->SetShader(nullptr);
+	STATEMANAGER.SetTexture(0, nullptr);
 
 	STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ZWRITEENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ALPHABLENDENABLE);
-
-	STATEMANAGER.RestoreTextureStageState(0, D3DTSS_COLOROP);
-	STATEMANAGER.RestoreTextureStageState(0, D3DTSS_COLORARG1);
-	STATEMANAGER.RestoreTextureStageState(0, D3DTSS_COLORARG2);
 }
 
 void CSkyBox::RenderCloud()
@@ -869,52 +863,45 @@ void CSkyBox::RenderCloud()
 	if (m_FaceCloud.m_strfacename.empty())
 		return;
 
-	CGraphicImageInstance * pCloudGraphicImageInstance = m_GraphicImageInstanceMap[m_FaceCloud.m_strfacename];
-	if (!pCloudGraphicImageInstance)
+	CGraphicImageInstance* pCloud = m_GraphicImageInstanceMap[m_FaceCloud.m_strfacename];
+	if (!pCloud)
 		return;
 
-	// 2004.01.25 myevan 처리를 렌더링 후반으로 옮기고, DepthTest 처리
-	STATEMANAGER.SaveRenderState(D3DRS_ZENABLE,	TRUE);
+	STATEMANAGER.SaveRenderState(D3DRS_ZENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	STATEMANAGER.SaveRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	STATEMANAGER.SaveRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	STATEMANAGER.SaveRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
 
-	STATEMANAGER.SaveTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
-
-	m_matTextureCloud._31 = m_fCloudPositionU;
-	m_matTextureCloud._32 = m_fCloudPositionV;
-	
 	DWORD dwCurTime = CTimer::Instance().GetCurrentMillisecond();
-	
-	m_fCloudPositionU += m_fCloudScrollSpeedU * (float)( dwCurTime - m_dwlastTime ) * 0.001f;
-	if (m_fCloudPositionU >= 1.0f)
-		m_fCloudPositionU = 0.0f;
-	
-	m_fCloudPositionV += m_fCloudScrollSpeedV * (float)( dwCurTime - m_dwlastTime ) * 0.001f;
-	if (m_fCloudPositionV >= 1.0f)
-		m_fCloudPositionV = 0.0f;
-	
+	m_fCloudPositionU += m_fCloudScrollSpeedU * (float)(dwCurTime - m_dwlastTime) * 0.001f;
+	if (m_fCloudPositionU >= 1.0f) m_fCloudPositionU = 0.0f;
+	m_fCloudPositionV += m_fCloudScrollSpeedV * (float)(dwCurTime - m_dwlastTime) * 0.001f;
+	if (m_fCloudPositionV >= 1.0f) m_fCloudPositionV = 0.0f;
 	m_dwlastTime = dwCurTime;
-	
-	STATEMANAGER.SaveTransform(D3DTS_TEXTURE0, &m_matTextureCloud);
 
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATEINVALPHA_ADDCOLOR);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
- 	STATEMANAGER.SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	
+	m_dx->SetVertexDeclaration(VD_PDT);
+	auto shader = m_dx->GetShaderContained()->GetSkyCloud();
+
+	m_dx->SetShader(shader);
 	D3DXMATRIX matProjCloud;
 	D3DXMatrixPerspectiveFovRH(&matProjCloud, D3DX_PI * 0.25f, 1.33333f, 50.0f, 999999.0f);
-	STATEMANAGER.SetTransform(D3DTS_WORLD, &m_matWorldCloud);
-	STATEMANAGER.SaveTransform(D3DTS_PROJECTION, &matProjCloud);
-	STATEMANAGER.SetTexture(0, pCloudGraphicImageInstance->GetTexturePointer()->GetD3DTexture());
+
+	auto vsC = shader->GetConstantVs();
+	vsC.SetMatrix("g_mWorld", &m_matWorldCloud);
+	vsC.SetMatrix("g_mView", &mat.view);
+	vsC.SetMatrix("g_mProj", &matProjCloud);
+
+	float2 scroll(m_fCloudPositionU, m_fCloudPositionV);
+	float2 scale(m_fCloudTextureScaleX, m_fCloudTextureScaleY);
+	vsC.SetVector("g_vCloudScroll", &scroll);
+	vsC.SetVector("g_vCloudTexScale", &scale);
+
+	STATEMANAGER.SetTexture(0, pCloud->GetTexturePointer()->GetD3DTexture());
 	m_FaceCloud.Render();
-	STATEMANAGER.RestoreTransform(D3DTS_PROJECTION);
-	
-	STATEMANAGER.RestoreTransform(D3DTS_TEXTURE0);
-	STATEMANAGER.RestoreTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS);
+
+	m_dx->SetShader(nullptr);
+	STATEMANAGER.SetTexture(0, nullptr);
 
 	STATEMANAGER.RestoreRenderState(D3DRS_ZENABLE);
 	STATEMANAGER.RestoreRenderState(D3DRS_ZWRITEENABLE);
