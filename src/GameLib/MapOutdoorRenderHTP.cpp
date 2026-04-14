@@ -22,6 +22,9 @@ void CMapOutdoor::BeginTerrainSplat(const float4x4& matTex0, const float4x4& mat
 
 	//now we can start to send the constant for vertexshader
 	auto vsConstant = shader->GetConstantVs(); //get vertex shader constant table
+	m_matWorldForCommonUse._41 = 0.0f;
+	m_matWorldForCommonUse._42 = 0.0f;
+	vsConstant.SetMatrix("g_mWorld", &m_matWorldForCommonUse);
 	vsConstant.SetMatrix("g_mView", &mat.view); //send view matrix
 	vsConstant.SetMatrix("g_mProj", &mat.proj); //send projection matrix
 	vsConstant.SetMatrix("g_mTex0Transform", &matTex0); //send transform matrix for diffuse
@@ -48,6 +51,8 @@ void CMapOutdoor::BeginTerrainSplat(const float4x4& matTex0, const float4x4& mat
 	m_light.SetDiffuse(mc_pEnvironmentData->DirLights->Diffuse);
 	m_light.SetAmbient(mc_pEnvironmentData->DirLights->Ambient);
 	m_light.SetSpecular(mc_pEnvironmentData->DirLights->Specular);
+
+	//set light for mesh 
 	CGrannyModelInstance::ms_meshLight = m_light;
 
 	//set texture for pixel shader 
@@ -67,6 +72,9 @@ void CMapOutdoor::BeginTerrainShadow(const float4x4& staticShadow, const float4x
 	m_dx->SetShader(shader);
 
 	auto vsConstant = shader->GetConstantVs();
+	m_matWorldForCommonUse._41 = 0.0f;
+	m_matWorldForCommonUse._42 = 0.0f;
+	vsConstant.SetMatrix("g_mWorld", &m_matWorldForCommonUse);
 	vsConstant.SetMatrix("g_mView", &mat.view);
 	vsConstant.SetMatrix("g_mProj", &mat.proj);
 	vsConstant.SetMatrix("g_mStaticShadow", &staticShadow);
@@ -134,9 +142,6 @@ void CMapOutdoor::__RenderTerrain_RenderHardwareTransformPatch()
 	STATEMANAGER.SetBestFiltering(1);
 
 	m_dx->SetVertexDeclaration(VD_PN);
-
-	m_matWorldForCommonUse._41 = 0.0f;
-	m_matWorldForCommonUse._42 = 0.0f;
 
 	m_iRenderedSplatNumSqSum = 0;
 	m_iRenderedPatchNum = 0;

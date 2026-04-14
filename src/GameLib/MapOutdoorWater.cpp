@@ -27,6 +27,9 @@ void CMapOutdoor::BeginWaterShader()
 	m_dx->SetShader(shader);
 
 	auto vsConstant = shader->GetConstantVs();
+	m_matWorldForCommonUse._41 = 0.0f;
+	m_matWorldForCommonUse._42 = 0.0f;
+	vsConstant.SetMatrix("g_mWorld", &m_matWorldForCommonUse);
 	vsConstant.SetMatrix("g_mView", &mat.view);
 	vsConstant.SetMatrix("g_mProj", &mat.proj);
 
@@ -93,8 +96,6 @@ void CMapOutdoor::RenderWater()
 		(s_fWaterHeightEnd - s_fWaterHeightBegin) *
 		((CTimer::Instance().GetCurrentMillisecond() - s_dwLastHeightChangeTime) / (float)s_dwBlendtime);
 
-	m_matWorldForCommonUse._41 = 0.0f;
-	m_matWorldForCommonUse._42 = 0.0f;
 	m_matWorldForCommonUse._43 = s_fWaterHeightCurrent;
 
 	float fFogDistance = __GetFogDistance();

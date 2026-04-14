@@ -20,7 +20,5 @@ struct Light
     float Theta;
     float Phi;
 };
-
 Light gLight;
-
 

@@ -5,14 +5,7 @@ bool  g_bSpecularEnable;
 float g_fSpecularPower;
 float4 g_vCameraPos;
 
-sampler2D g_texDiffuse : register(s0) = sampler_state
-{
-    MinFilter = Linear;
-    MagFilter = Linear;
-    MipFilter = Linear;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
+sampler2D g_texDiffuse : register(s0);
 
 struct VS_OUTPUT
 {

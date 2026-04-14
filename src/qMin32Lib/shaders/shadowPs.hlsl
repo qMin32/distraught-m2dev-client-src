@@ -3,23 +3,8 @@ float g_fFogFar;
 float4 g_vFogColor;
 int g_useDynamicShadow;
 
-sampler2D StaticShadowSampler : register(s0) = sampler_state
-{
-    MinFilter = Linear;
-    MagFilter = Linear;
-    MipFilter = None;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
-sampler2D DynamicShadowSampler : register(s1) = sampler_state
-{
-    MinFilter = Linear;
-    MagFilter = Linear;
-    MipFilter = None;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+sampler2D StaticShadowSampler : register(s0);
+sampler2D DynamicShadowSampler : register(s1);
 
 float4 main(float2 suv : TEXCOORD0,
             float2 duv : TEXCOORD1,

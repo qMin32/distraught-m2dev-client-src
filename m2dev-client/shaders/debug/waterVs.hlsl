@@ -1,3 +1,4 @@
+float4x4 g_mWorld;
 float4x4 g_mView;
 float4x4 g_mProj;
 float g_fTexScaleX;
@@ -23,7 +24,7 @@ VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
 
-    float4 vWorldPos = float4(input.vPos, 1.0f);
+    float4 vWorldPos = mul(float4(input.vPos, 1.0f), g_mWorld);
     float4 vViewPos = mul(vWorldPos, g_mView);
     output.vPos = mul(vViewPos, g_mProj);
 

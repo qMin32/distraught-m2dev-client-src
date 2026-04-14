@@ -1,3 +1,4 @@
+float4x4 g_mWorld;
 float4x4 g_mView;
 float4x4 g_mProj;
 float4x4 g_mStaticShadow;
@@ -22,13 +23,13 @@ VS_OUT main(VS_IN input)
 {
 	VS_OUT output;
 	
-	float4 worldPos = float4(input.Position, 1.0f);
+	 float4 worldPos = mul(float4(input.Position, 1.0f), g_mWorld);
 	float4 viewPos = mul(worldPos, g_mView);
 	
 	output.Position = mul(viewPos, g_mProj);
 
-	float4 suv = mul(viewPos, g_mStaticShadow);
-	float4 duv = mul(viewPos, g_mDynamicShadow);
+	float4 suv = mul(float4(viewPos.xyz, 1.0f), g_mStaticShadow);
+	float4 duv =mul(float4(viewPos.xyz, 1.0f), g_mDynamicShadow);
 	
     output.SaticUV = suv.xy;
 	output.DynUV = duv.xy;
